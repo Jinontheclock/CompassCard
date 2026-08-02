@@ -4,10 +4,10 @@
 export default function NotePanel({ children }) {
   return (
     <div className="note-panel">
-      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-        <circle cx="9" cy="9" r="8" fill="none" stroke="currentColor" strokeWidth="1.4" />
-        <circle cx="9" cy="5.4" r="1" fill="currentColor" />
-        <path d="M9 8v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="10" cy="6" r="1.1" fill="currentColor" />
+        <path d="M10 9v5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
       <p>{children}</p>
     </div>

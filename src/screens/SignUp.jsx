@@ -19,7 +19,7 @@ export default function SignUp({ onBack, onNext, onLogin }) {
         <h1 className="scr-title">Sign Up</h1>
         <p className="scr-sub">One account for your cards, passes and history.</p>
 
-        <div className="stack-24">
+        <div className="stack-fields">
           <Field label="Email" type="email" placeholder="name@email.com" value={email} onChange={setEmail} />
           <Field label="Password" type="password" placeholder="••••••••" value={password} onChange={setPassword} />
           <Field

@@ -1,6 +1,7 @@
 /* The phone screen: a fixed 402×874 canvas that fills whatever frame it is
    given. The portfolio's iframe renders exactly this size, so the layout is
-   designed at it rather than for it. */
+   designed at it rather than for it. Positions and sizes below are the ones
+   in the Figma frames, not approximations of them. */
 .screen {
   position: relative;
   width: 100%;
@@ -18,62 +19,67 @@
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  color: var(--ink);
+  color: var(--text-primary);
 }
 .scr--dark {
   background: var(--compass-800);
-  color: #ffffff;
+  color: var(--compass-100);
 }
 
 /* ── iOS chrome ── */
 .status-bar {
-  position: relative;
   flex: 0 0 62px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 22px 0 30px;
-  color: var(--ink);
+  justify-content: center;
+  padding: 2.333px 9px 0;
+  color: var(--labels-primary);
 }
 .status-bar--light {
-  color: #ffffff;
+  color: var(--labels-primary-dark);
 }
-.status-time {
-  font: 700 15px / 20px var(--font);
-}
-.status-notch {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 116px;
-  height: 32px;
-  border-radius: 16px;
-  background: #000000;
-}
-.status-icons {
+.status-time,
+.status-levels {
+  flex: 1 1 0;
+  min-width: 1px;
+  height: 13px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+}
+.status-time {
+  padding-right: 6px;
+  /* the iOS clock, not the app's type: SF Pro Semibold at 17/22 */
+  font: 590 17px / 22px -apple-system, "SF Pro Text", "SF Pro", system-ui, sans-serif;
+}
+.status-levels {
+  padding-right: 1px;
+}
+.status-island {
+  flex: 0 0 auto;
+  width: 125px;
+  height: 37px;
+  border-radius: 100px;
+  background: #000000;
 }
 
 .home-indicator {
   flex: 0 0 34px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 8px;
 }
 .home-indicator::after {
   content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  width: 144px;
-  height: 5px;
-  border-radius: 3px;
-  background: var(--ink);
+  width: var(--home-indicator-width);
+  height: var(--home-indicator-height);
+  border-radius: 100px;
+  background: var(--labels-primary);
 }
 .home-indicator--light::after {
-  background: #ffffff;
+  background: var(--labels-primary-dark);
 }
 
 /* ── nav row ── */
@@ -82,7 +88,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 var(--margin);
 }
 .nav-back,
 .nav-account {
@@ -93,19 +99,20 @@
 }
 .nav-back {
   gap: 4px;
-  font: 400 17px / 24px var(--font);
+  padding: 8px 0;
+  font: var(--app-body);
   color: var(--compass-600);
 }
 .nav-title {
-  font: var(--subhead);
+  font: var(--app-subhead);
 }
 .nav-account {
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  background: #efefef;
-  color: var(--ink);
+  width: 38px;
+  height: 38px;
+  border-radius: 19px;
+  background: var(--card-bg);
+  color: var(--text-primary);
 }
 
 /* ── body ── */
@@ -113,37 +120,41 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 16px;
+  padding: 0 var(--margin);
 }
+/* the title sits in an 8px-padded row whose bottom padding is pulled back,
+   so the subtitle rides directly under the cap height */
 .scr-title {
-  margin: 0;
-  font: var(--title);
+  margin: 0 0 -8px;
+  padding: 8px 0;
+  font: var(--app-title);
+  letter-spacing: var(--app-title-tracking);
 }
 .scr-sub {
-  margin: 2px 0 0;
-  font: var(--body);
-  color: var(--ink-secondary);
+  margin: 0;
+  font: var(--app-body);
+  color: var(--text-secondary);
 }
-.stack-24 {
-  margin-top: 32px;
+.stack-fields {
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 .scr-footer {
   flex: 0 0 auto;
-  padding: 0 16px;
+  padding: 0 var(--margin) 12px;
 }
 .scr-footnote {
   margin: 13px 0 0;
   text-align: center;
-  font: var(--body);
-  color: var(--ink-secondary);
+  font: var(--app-body);
+  color: var(--text-secondary);
 }
 .linkish {
   all: unset;
   cursor: pointer;
-  color: var(--compass-600);
+  color: var(--compass-700);
 }
 
 /* ── field ── */
@@ -152,22 +163,22 @@
 }
 .field-label {
   display: block;
-  font: var(--body);
-  color: var(--ink-secondary);
+  font: var(--app-body);
+  color: var(--text-secondary);
 }
 .field-input {
   margin-top: 4px;
   width: 100%;
   height: 50px;
-  padding: 0 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: 10px;
-  background: var(--panel);
-  font: var(--body);
-  color: var(--ink);
+  padding: 0 17px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font: var(--app-body);
+  color: var(--text-primary);
 }
 .field-input::placeholder {
-  color: #9b9b9b;
+  color: var(--text-muted);
 }
 .field-input:focus {
   outline: 2px solid var(--compass-400);
@@ -178,20 +189,22 @@
 .note-panel {
   margin-top: 20px;
   display: flex;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 10px;
-  background: #f0f0f0;
-  color: var(--ink-secondary);
+  gap: 12px;
+  padding: 15px 17px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
 }
 .note-panel svg {
   flex: 0 0 auto;
-  margin-top: 2px;
+  margin-top: 1px;
   color: var(--compass-600);
 }
 .note-panel p {
   margin: 0;
-  font: 400 15px / 21px var(--font);
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-primary);
 }
 
 /* ── buttons ── */
@@ -202,13 +215,13 @@
   width: 100%;
   height: 50px;
   border: 1px solid transparent;
-  border-radius: 8px;
-  font: 700 17px / 24px var(--font);
+  border-radius: var(--radius);
+  font: var(--app-subhead);
   cursor: pointer;
 }
 .btn--primary {
   background: var(--compass-600);
-  color: #ffffff;
+  color: var(--bg);
 }
 .btn--onDark {
   background: var(--compass-100);
@@ -216,8 +229,8 @@
 }
 .btn--outline {
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.55);
-  color: #ffffff;
+  border-color: var(--compass-100);
+  color: var(--compass-100);
 }
 
 /* ── landing ── */
@@ -237,26 +250,29 @@
 }
 .landing-title {
   margin: 24px 0 0;
-  font: var(--display);
+  font: var(--app-display);
+  letter-spacing: var(--app-display-tracking);
+  color: var(--compass-100);
 }
 .landing-sub {
-  margin: 26px 0 0;
-  /* the Figma text box is 317 wide, which is what breaks the line after
-     "pay," rather than a word earlier */
-  max-width: 317px;
+  margin: 20px 0 0;
+  /* the Figma text box is 290 wide with 4.85 of inset either side, which is
+     what breaks the line after "pay," rather than a word earlier */
+  max-width: 290px;
+  padding: 0 4.85px;
   text-align: center;
-  font: 700 20px / 26px var(--font);
+  font: var(--app-subhead);
   color: var(--compass-200);
 }
 .landing-note {
-  margin: 14px 0 0;
-  font: var(--body);
+  margin: 8px 0 0;
+  font: var(--app-body);
   color: var(--compass-300);
 }
 .landing-card {
   margin-top: 52px;
   width: 274px;
-  height: auto;
+  height: 172px;
 }
 .landing-actions {
   flex: 0 0 auto;
