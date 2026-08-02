@@ -130,10 +130,18 @@
   font: var(--app-title);
   letter-spacing: var(--app-title-tracking);
 }
+/* Login has no subtitle to tuck under, so its title keeps the whole box */
+.scr-title--alone {
+  margin-bottom: 0;
+}
 .scr-sub {
   margin: 0;
   font: var(--app-body);
   color: var(--text-secondary);
+}
+.forgot {
+  margin: 20px 0 0;
+  font: var(--app-body);
 }
 .stack-fields {
   margin-top: 16px;
@@ -180,6 +188,10 @@
 .field-input::placeholder {
   color: var(--text-muted);
 }
+/* the masked value is set wide in the frames — 3.4px at 17 is 0.2em */
+.field-input[type="password"]::placeholder {
+  letter-spacing: 0.2em;
+}
 .field-input:focus {
   outline: 2px solid var(--compass-400);
   outline-offset: -2px;
@@ -200,6 +212,10 @@
 }
 .note-panel img {
   flex: 0 0 auto;
+}
+/* the info glyph is wrapped in a margin frame that drops it a pixel; the
+   success glyph sits flush with the top of the text */
+.note-icon--info {
   margin-top: 1px;
 }
 .note-panel p {
@@ -233,6 +249,61 @@
   background: transparent;
   border-color: var(--compass-100);
   color: var(--compass-100);
+}
+
+/* ── card register ── */
+.reg-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.reg-label {
+  font: var(--app-body);
+  color: var(--text-secondary);
+}
+.reg-hint {
+  font: var(--app-caption);
+  letter-spacing: var(--app-caption-tracking);
+  color: var(--text-secondary);
+}
+/* 54 rather than the 50 of an editable field — this pair is read, not typed */
+.reg-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 54px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.reg-cardno {
+  gap: 10px;
+}
+.reg-cvn {
+  width: 120px;
+}
+.reg-digits {
+  font: var(--app-subhead);
+}
+/* how far the entry has got: keyed in, being typed, still waiting */
+.reg-digits--entered {
+  color: var(--text-primary);
+}
+.reg-digits--active {
+  color: var(--text-secondary);
+}
+.reg-digits--waiting {
+  color: var(--text-muted);
+}
+/* The group separators and the masked CVN are set in the kit's own face at
+   16px, which is between two steps of this scale and has no token. They take
+   app/body, the nearer step, rather than a new size invented for them. */
+.reg-sep {
+  font: var(--app-body);
+  color: var(--border);
+}
+.reg-cvn .reg-sep {
+  color: var(--text-secondary);
 }
 
 /* ── landing ── */

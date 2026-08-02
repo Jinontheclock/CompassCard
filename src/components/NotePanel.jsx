@@ -1,13 +1,18 @@
 import infoIcon from "../assets/icon-info.svg";
+import checkIcon from "../assets/icon-check.svg";
 
-/* The grey information panel — never a warning, just a note about what
-   happens next. Carries an icon as well as its tone, so it never relies on
-   colour alone. The icon is the Figma export, so its compass-700 stroke is
-   baked in rather than inherited. */
-export default function NotePanel({ children }) {
+/* The grey panel that says what happens next. `tone` picks the glyph:
+   info    — a note, compass-700
+   success — a reassurance, success green
+   Both are Figma exports, so the colour is baked into the file rather than
+   inherited. The panel always carries an icon as well as its wording, so it
+   never leans on colour alone. */
+const ICONS = { info: infoIcon, success: checkIcon };
+
+export default function NotePanel({ tone = "info", children }) {
   return (
     <div className="note-panel">
-      <img src={infoIcon} alt="" width="20" height="20" />
+      <img className={"note-icon note-icon--" + tone} src={ICONS[tone]} alt="" width="20" height="20" />
       <p>{children}</p>
     </div>
   );
