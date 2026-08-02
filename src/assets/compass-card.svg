@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 172" width="274" height="172">
+  <defs>
+    <clipPath id="c"><rect width="274" height="172" rx="14"/></clipPath>
+    <g id="drop">
+      <path d="M9 0a9 9 0 0 0-9 9c0 6.5 9 15 9 15s9-8.5 9-15a9 9 0 0 0-9-9Zm0 12.5A3.5 3.5 0 1 1 9 5.5a3.5 3.5 0 0 1 0 7Z"/>
+    </g>
+  </defs>
+  <rect width="274" height="172" rx="14" fill="#009CDB"/>
+  <g clip-path="url(#c)" fill="#FFFFFF" opacity="0.14">
+    <use href="#drop" x="18" y="16"/><use href="#drop" x="78" y="10"/>
+    <use href="#drop" x="140" y="22"/><use href="#drop" x="204" y="12"/>
+    <use href="#drop" x="46" y="62"/><use href="#drop" x="110" y="70"/>
+    <use href="#drop" x="176" y="60"/><use href="#drop" x="238" y="70"/>
+    <use href="#drop" x="14" y="116"/><use href="#drop" x="80" y="124"/>
+    <use href="#drop" x="146" y="114"/><use href="#drop" x="212" y="126"/>
+  </g>
+  <text x="22" y="46" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="22" font-weight="700" letter-spacing="0.5">Compass</text>
+  <g transform="translate(206 128)" fill="#FFFFFF">
+    <text x="0" y="0" font-family="system-ui, sans-serif" font-size="9" font-weight="700" letter-spacing="1.2">TRANS</text>
+    <text x="0" y="11" font-family="system-ui, sans-serif" font-size="9" font-weight="700" letter-spacing="1.2">LINK</text>
+  </g>
+</svg>

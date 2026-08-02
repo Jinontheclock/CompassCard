@@ -1,6 +1,6 @@
-/* The phone screen itself: a fixed 402×874 canvas that fills whatever frame
-   it is given. The portfolio's iframe renders exactly this size, so the
-   layout is designed at it rather than for it. */
+/* The phone screen: a fixed 402×874 canvas that fills whatever frame it is
+   given. The portfolio's iframe renders exactly this size, so the layout is
+   designed at it rather than for it. */
 .screen {
   position: relative;
   width: 100%;
@@ -11,22 +11,257 @@
   background: var(--bg);
 }
 
-/* placeholder while the screens are being built */
-.scaffold-note {
+/* ── one screen ── */
+.scr {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 0;
-  padding: 0 var(--margin);
-  text-align: center;
-  font: var(--subhead);
+  background: var(--bg);
   color: var(--ink);
 }
-.scaffold-note span {
-  font: var(--caption);
+.scr--dark {
+  background: var(--compass-800);
+  color: #ffffff;
+}
+
+/* ── iOS chrome ── */
+.status-bar {
+  position: relative;
+  flex: 0 0 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px 0 30px;
+  color: var(--ink);
+}
+.status-bar--light {
+  color: #ffffff;
+}
+.status-time {
+  font: 700 15px / 20px var(--font);
+}
+.status-notch {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 116px;
+  height: 32px;
+  border-radius: 16px;
+  background: #000000;
+}
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.home-indicator {
+  flex: 0 0 34px;
+  position: relative;
+}
+.home-indicator::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 144px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--ink);
+}
+.home-indicator--light::after {
+  background: #ffffff;
+}
+
+/* ── nav row ── */
+.nav-header {
+  flex: 0 0 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+.nav-back,
+.nav-account {
+  all: unset;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.nav-back {
+  gap: 4px;
+  font: 400 17px / 24px var(--font);
+  color: var(--compass-600);
+}
+.nav-title {
+  font: var(--subhead);
+}
+.nav-account {
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: #efefef;
+  color: var(--ink);
+}
+
+/* ── body ── */
+.scr-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 16px;
+}
+.scr-title {
+  margin: 0;
+  font: var(--title);
+}
+.scr-sub {
+  margin: 2px 0 0;
+  font: var(--body);
   color: var(--ink-secondary);
+}
+.stack-24 {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.scr-footer {
+  flex: 0 0 auto;
+  padding: 0 16px;
+}
+.scr-footnote {
+  margin: 13px 0 0;
+  text-align: center;
+  font: var(--body);
+  color: var(--ink-secondary);
+}
+.linkish {
+  all: unset;
+  cursor: pointer;
+  color: var(--compass-600);
+}
+
+/* ── field ── */
+.field {
+  display: block;
+}
+.field-label {
+  display: block;
+  font: var(--body);
+  color: var(--ink-secondary);
+}
+.field-input {
+  margin-top: 4px;
+  width: 100%;
+  height: 50px;
+  padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--panel);
+  font: var(--body);
+  color: var(--ink);
+}
+.field-input::placeholder {
+  color: #9b9b9b;
+}
+.field-input:focus {
+  outline: 2px solid var(--compass-400);
+  outline-offset: -2px;
+}
+
+/* ── note panel ── */
+.note-panel {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #f0f0f0;
+  color: var(--ink-secondary);
+}
+.note-panel svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--compass-600);
+}
+.note-panel p {
+  margin: 0;
+  font: 400 15px / 21px var(--font);
+}
+
+/* ── buttons ── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: 700 17px / 24px var(--font);
+  cursor: pointer;
+}
+.btn--primary {
+  background: var(--compass-600);
+  color: #ffffff;
+}
+.btn--onDark {
+  background: var(--compass-100);
+  color: var(--compass-900);
+}
+.btn--outline {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+}
+
+/* ── landing ── */
+.landing-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+}
+.landing-mark {
+  margin-top: 62px;
+  width: 56px;
+  height: 56px;
+  color: var(--compass-300);
+}
+.landing-title {
+  margin: 24px 0 0;
+  font: var(--display);
+}
+.landing-sub {
+  margin: 26px 0 0;
+  /* the Figma text box is 317 wide, which is what breaks the line after
+     "pay," rather than a word earlier */
+  max-width: 317px;
+  text-align: center;
+  font: 700 20px / 26px var(--font);
+  color: var(--compass-200);
+}
+.landing-note {
+  margin: 14px 0 0;
+  font: var(--body);
+  color: var(--compass-300);
+}
+.landing-card {
+  margin-top: 52px;
+  width: 274px;
+  height: auto;
+}
+.landing-actions {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 20px 49px;
 }
