@@ -30,7 +30,7 @@
 
   /* ── Type. FF Meta: Book 400 body, Medium 500 labels and buttons,
      Bold 700 headings and amounts. ── */
-  --font: "ff-meta-web-pro", "FF Meta", system-ui, -apple-system, sans-serif;
+  --font: "ff-meta-web-pro", "ff-meta", "FF Meta", system-ui, -apple-system, sans-serif;
 
   --display: 700 34px / 40px var(--font);
   --title: 700 28px / 34px var(--font);

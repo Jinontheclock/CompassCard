@@ -2,12 +2,10 @@ import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import cardArt from "../assets/compass-card.svg";
 
-/* ⚠️ The two buttons on this frame are the only labels the Figma file leaves
-   at their component default ("Reload"). The flow they open is unambiguous —
-   sign up, or log in to an existing account — so they read that way here.
-   Change these two strings if the design settles on different wording. */
-const PRIMARY_LABEL = "Get started";
-const SECONDARY_LABEL = "Log in";
+/* The Figma frame leaves these two buttons at their component default, so
+   the wording is set here: log in on top, sign up beneath it. */
+const PRIMARY_LABEL = "Login";
+const SECONDARY_LABEL = "Sign Up";
 
 export default function Landing({ onSignUp, onLogin }) {
   return (
@@ -33,10 +31,10 @@ export default function Landing({ onSignUp, onLogin }) {
       </div>
 
       <div className="landing-actions">
-        <Button tone="onDark" onClick={onSignUp}>
+        <Button tone="onDark" onClick={onLogin}>
           {PRIMARY_LABEL}
         </Button>
-        <Button tone="outline" onClick={onLogin}>
+        <Button tone="outline" onClick={onSignUp}>
           {SECONDARY_LABEL}
         </Button>
       </div>
