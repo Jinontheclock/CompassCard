@@ -190,15 +190,17 @@
   margin-top: 20px;
   display: flex;
   gap: 12px;
-  padding: 15px 17px;
+  /* Figma insets the content 17 across and 15 down and draws its 1px stroke
+     inside that, so the panel measures 70 rather than 72. Take the border out
+     of the padding to land on both numbers. */
+  padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card-bg);
 }
-.note-panel svg {
+.note-panel img {
   flex: 0 0 auto;
   margin-top: 1px;
-  color: var(--compass-600);
 }
 .note-panel p {
   margin: 0;
@@ -242,11 +244,13 @@
   align-items: center;
   padding: 0 20px;
 }
+/* both marks below are Figma exports, so their colour is baked in: the
+   wordmark strokes carry compass-200 and the card art carries its own
+   rounded corners as transparency rather than a border-radius */
 .landing-mark {
   margin-top: 62px;
   width: 56px;
   height: 56px;
-  color: var(--compass-300);
 }
 .landing-title {
   margin: 24px 0 0;
@@ -256,10 +260,11 @@
 }
 .landing-sub {
   margin: 20px 0 0;
-  /* the Figma text box is 290 wide with 4.85 of inset either side, which is
-     what breaks the line after "pay," rather than a word earlier */
-  max-width: 290px;
-  padding: 0 4.85px;
+  /* The Figma text node is 317 wide and deliberately overhangs the 290 div it
+     sits in by 13.5 either side. That width is what breaks the line after
+     "pay," — measured at 314.8, the first line only just fits. Hold the div's
+     290 instead and the break moves a word earlier, after the dash. */
+  width: 317px;
   text-align: center;
   font: var(--app-subhead);
   color: var(--compass-200);
