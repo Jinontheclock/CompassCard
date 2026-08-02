@@ -1,0 +1,76 @@
+/* Design tokens — the single source for colour, type and spacing.
+   Nothing in the app hard-codes a hex or a font size; every screen reads
+   from here, so a change in the design lands in one place. */
+
+:root {
+  /* ── Compass blues ── */
+  --compass-100: #d9eefc;
+  --compass-200: #a3d3f2;
+  --compass-300: #68b8e7;
+  --compass-400: #009cdb;
+  --compass-500: #007cc2;
+  --compass-600: #005daa;
+  --compass-700: #004983;
+  --compass-800: #00355f;
+  --compass-900: #03223d;
+
+  /* ── Surfaces and ink ── */
+  --bg: #fafafa;
+  --panel: #ffffff;
+  --border: #e8e8e8;
+  --border-strong: #d4d4d4;
+  --ink: #1a1a1a;
+  --ink-secondary: #6b6b6b;
+
+  /* ── Status. Never carried by colour alone: every status shows a colour,
+     an icon and a word. ── */
+  --success: #0f7b4f;
+  --warning: #8a5a00;
+  --error: #c0362c;
+
+  /* ── Type. FF Meta: Book 400 body, Medium 500 labels and buttons,
+     Bold 700 headings and amounts. ── */
+  --font: "ff-meta-web-pro", "FF Meta", system-ui, -apple-system, sans-serif;
+
+  --display: 700 34px / 40px var(--font);
+  --title: 700 28px / 34px var(--font);
+  --heading: 700 24px / 30px var(--font);
+  --subhead: 500 20px / 26px var(--font);
+  --body: 400 17px / 24px var(--font);
+  --callout: 500 14px / 20px var(--font);
+  --caption: 400 12px / 16px var(--font);
+
+  /* ── Layout. 4px grid; the screen is a fixed 402×874. ── */
+  --margin: 20px;
+  --radius: 12px;
+  --radius-sheet: 20px;
+  --tap-min: 44px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: var(--body);
+  -webkit-font-smoothing: antialiased;
+  /* the demo is a phone screen in a frame — never a scrolling web page */
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* amounts read as a column, never as jittering glyph widths */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
