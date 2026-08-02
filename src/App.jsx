@@ -19,9 +19,12 @@ export default function App() {
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   const current = stack[stack.length - 1];
 
-  /* The onboarding group is built. The exits that would carry on into the
-     card list — registering a card, skipping it, logging in — come back
-     here until that group exists. */
+  /* Neither form validates — the demo takes whatever is typed, including
+     nothing, and moves on. Signing up and logging in both land on Card
+     Register: it is the next screen the frames give either route, and the
+     one it stands in for after logging in — the card list — is not built
+     yet. The exits past Card Register still come back here for the same
+     reason. */
   const screen = () => {
     switch (current) {
       case "signup":
@@ -29,7 +32,14 @@ export default function App() {
       case "cardregister":
         return <CardRegister onBack={back} onNext={back} onSkip={back} />;
       case "login":
-        return <Login onBack={back} onNext={back} onSignUp={() => push("signup")} onForgot={back} />;
+        return (
+          <Login
+            onBack={back}
+            onNext={() => push("cardregister")}
+            onSignUp={() => push("signup")}
+            onForgot={back}
+          />
+        );
       default:
         return <Landing onSignUp={() => push("signup")} onLogin={() => push("login")} />;
     }
