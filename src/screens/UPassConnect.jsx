@@ -1,14 +1,19 @@
+import { useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
+import Dropdown from "../components/Dropdown.jsx";
 import NavHeader from "../components/NavHeader.jsx";
+import { SCHOOLS } from "../data/seed.js";
 import chevron from "../assets/icon-chevron.svg";
 import checkIcon from "../assets/icon-check-sm.svg";
 
-/* Connecting the U-Pass for the first time. The school is picked and the
-   student number typed; the two lines under them are the point of the whole
-   screen, which is that neither a card number nor a monthly deadline comes
-   into it. */
+/* Connecting the U-Pass for the first time. The school is picked from the
+   participating institutions and the student number typed; the two lines
+   under them are the point of the whole screen, which is that neither a
+   card number nor a monthly deadline comes into it. */
 export default function UPassConnect({ card, upass, studentId, onStudentId, onSchool, onBack, onConnect }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="scr">
       <StatusBar />
@@ -22,13 +27,22 @@ export default function UPassConnect({ card, upass, studentId, onStudentId, onSc
         <div className="connect-stack">
           <div className="pick-group">
             <span className="pick-label">School</span>
-            {/* the participating schools, stepped through in place — the
-                frame's lying-down chevron is the mark of a list opening
-                downward, and this is that list one tap at a time */}
-            <button type="button" className="pick-box pick-box--tap" onClick={onSchool}>
-              <span className="pick-value">{upass.schoolName}</span>
-              <img className="pick-chevron" src={chevron} alt="" width="8" height="14" />
-            </button>
+            {/* the frame's lying-down chevron is the mark of a list opening
+                downward, and this is that list */}
+            <div className="menu-anchor">
+              <button type="button" className="pick-box pick-box--tap" onClick={() => setOpen(!open)}>
+                <span className="pick-value">{upass.schoolName}</span>
+                <img className="pick-chevron" src={chevron} alt="" width="8" height="14" />
+              </button>
+              <Dropdown
+                open={open}
+                wide
+                options={SCHOOLS.map((school) => ({ label: school.name, value: school }))}
+                value={SCHOOLS.find((school) => school.short === upass.school)}
+                onPick={onSchool}
+                onClose={() => setOpen(false)}
+              />
+            </div>
           </div>
 
           <div className="pick-group">

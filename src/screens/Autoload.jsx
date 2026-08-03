@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
+import Dropdown from "../components/Dropdown.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
 import SettingsRow from "../components/SettingsRow.jsx";
@@ -7,13 +9,13 @@ import { FARES, money } from "../data/seed.js";
 import appleLogo from "../assets/apple-logo.png";
 import chevron from "../assets/icon-chevron.svg";
 
-/* Standing instructions for the card: how low it may fall and what to put on
-   it when it does. Both rows carry a chevron in the frame, so both are set
-   here rather than stated — each steps through TransLink's own amounts and
-   comes back round to the first. The footer says whether any of it is
-   running, and the button is what starts it. */
+/* Standing instructions for the card: how low it may fall and what to put
+   on it when it does. Both rows open a menu of TransLink's own amounts —
+   the chevron says a row opens something, and this is the something. The
+   footer says whether any of it is running, and the button starts it. */
 export default function Autoload({ card, autoload, method, onBack, onSet, onToggle, onOpen }) {
-  const step = (list, value) => list[(list.indexOf(value) + 1) % list.length];
+  const [menu, setMenu] = useState(null);
+  const amounts = (list) => list.map((n) => ({ label: money(n), value: n }));
 
   return (
     <div className="scr">
@@ -25,20 +27,38 @@ export default function Autoload({ card, autoload, method, onBack, onSet, onTogg
         <p className="scr-sub">Reload automatically so your balance is always ready at the gate.</p>
 
         <div className="autoload-stack">
-          <div className="panel panel--flat">
-            <SettingsRow
-              label="When balance falls below"
-              value={money(autoload.threshold)}
-              strong
-              onClick={() => onSet?.("threshold", step(FARES.autoloadThresholds, autoload.threshold))}
-            />
+          <div className="panel panel--flat panel--pop">
+            <div className="menu-anchor">
+              <SettingsRow
+                label="When balance falls below"
+                value={money(autoload.threshold)}
+                strong
+                onClick={() => setMenu(menu === "threshold" ? null : "threshold")}
+              />
+              <Dropdown
+                open={menu === "threshold"}
+                options={amounts(FARES.autoloadThresholds)}
+                value={autoload.threshold}
+                onPick={(v) => onSet?.("threshold", v)}
+                onClose={() => setMenu(null)}
+              />
+            </div>
             <div className="panel-rule panel-rule--inset" />
-            <SettingsRow
-              label="Add"
-              value={money(autoload.amount)}
-              strong
-              onClick={() => onSet?.("amount", step(FARES.autoloadAmounts, autoload.amount))}
-            />
+            <div className="menu-anchor">
+              <SettingsRow
+                label="Add"
+                value={money(autoload.amount)}
+                strong
+                onClick={() => setMenu(menu === "amount" ? null : "amount")}
+              />
+              <Dropdown
+                open={menu === "amount"}
+                options={amounts(FARES.autoloadAmounts)}
+                value={autoload.amount}
+                onPick={(v) => onSet?.("amount", v)}
+                onClose={() => setMenu(null)}
+              />
+            </div>
           </div>
 
           <NotePanel>You will get a notification before each reload runs.</NotePanel>

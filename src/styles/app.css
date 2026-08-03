@@ -227,10 +227,10 @@
 }
 .scr-footer {
   flex: 0 0 auto;
-  padding: 0 var(--margin) 12px;
+  padding: 0 var(--margin) 13px;
 }
 .scr-footnote {
-  margin: 13px 0 0;
+  margin: 12px 0 0;
   text-align: center;
   font: var(--app-body);
   color: var(--text-secondary);
@@ -716,7 +716,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 .replace-group {
   display: flex;
@@ -763,7 +763,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 .lost-note {
   margin: 16px 0 0;
@@ -935,8 +935,8 @@
 .reload-stack {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-top: 13px;
+  gap: 16px;
+  margin-top: 16px;
 }
 .section--gap8 {
   gap: 8px;
@@ -1006,15 +1006,6 @@
   font: var(--app-heading);
   letter-spacing: var(--app-heading-tracking);
 }
-/* this footer sets its line 10 under the button rather than 13, and clears
-   15 beneath it rather than 12, which keeps the button on the same 741 */
-.scr-footer--tight {
-  padding-bottom: 15px;
-}
-.scr-footer--tight .scr-footnote {
-  margin-top: 10px;
-}
-
 /* ── card detail ── */
 .detail-stack {
   display: flex;
@@ -1366,6 +1357,7 @@
 
 /* ── the tab bar the app rests on ── */
 .tab-bar {
+  position: relative;
   flex: 0 0 49px;
   align-self: center;
   display: flex;
@@ -1385,6 +1377,8 @@
 .tab {
   all: unset;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1394,9 +1388,19 @@
   border-radius: 24px;
   cursor: pointer;
 }
-.tab--active {
+/* The grey box under the chosen tab is one element that travels, not a
+   background each tab paints — so changing tabs slides it across, on the
+   same curve the screens move on. */
+.tab-indicator {
+  position: absolute;
+  top: 4.5px;
+  left: 0;
+  width: 140px;
+  height: 40px;
+  border-radius: 24px;
   background: color-mix(in srgb, var(--text-muted) 10%, transparent);
   backdrop-filter: blur(2px);
+  transition: transform 260ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 .tab img {
   margin-bottom: -4px;
@@ -1711,6 +1715,8 @@
   color: var(--text-secondary);
 }
 .pick-box {
+  box-sizing: border-box;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1750,15 +1756,6 @@
   justify-content: flex-start;
   gap: 16px;
 }
-/* this screen clears 12 under the button rather than 13, and 13 beneath
-   its line — which keeps the button on the same 741 */
-.scr-footer--connect {
-  padding-bottom: 13px;
-}
-.scr-footer--connect .scr-footnote {
-  margin-top: 12px;
-}
-
 /* ── help: the assistant ── */
 .chat-who {
   margin: 0;
@@ -2165,6 +2162,81 @@
   font: var(--app-body);
   color: var(--compass-600);
   cursor: pointer;
+}
+
+/* ── the menu a control drops ──
+   The same surface the panels use, floated on the nav bar's shadow, with
+   the chosen row marked in the app's blue. It opens 8 under its anchor
+   with the quick settle every floating thing here has. */
+.menu-anchor {
+  position: relative;
+}
+.menu-backdrop {
+  all: unset;
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  cursor: default;
+}
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  min-width: 180px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transform-origin: top;
+  animation: menu-in 180ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.menu--wide {
+  left: 0;
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+.menu-item {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  font: var(--app-body);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+.menu-item:active {
+  background: var(--card-bg);
+}
+.menu-item--on {
+  color: var(--compass-700);
+}
+.menu-rule {
+  height: 1px;
+  margin: 0 16px;
+  background: var(--border);
+}
+/* A panel whose rows drop menus cannot clip them, so it lets go of its
+   overflow and hands the rounding to its end rows instead. */
+.panel--pop {
+  overflow: visible;
+}
+.panel--pop > .menu-anchor:first-child .settings-row {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.panel--pop > .menu-anchor:last-child .settings-row {
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 
 /* ── landing ── */

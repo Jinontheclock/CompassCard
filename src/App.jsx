@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { seedState, digitalCard, registeredCard, FARES, PASSES, SCHOOLS, passPrice } from "./data/seed.js";
+import { seedState, digitalCard, registeredCard, FARES, PASSES, passPrice } from "./data/seed.js";
 import { CHAT, reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
@@ -246,13 +246,11 @@ export default function App() {
             upass={model.upass}
             studentId={form.upass.studentId}
             onStudentId={(v) => change("upass")("studentId", v)}
-            /* one tap steps to the next participating school */
-            onSchool={() =>
-              setModel((m) => {
-                const at = SCHOOLS.findIndex((sc) => sc.short === m.upass.school);
-                const next = SCHOOLS[(at + 1) % SCHOOLS.length];
-                return { ...m, upass: { ...m.upass, school: next.short, schoolName: next.name } };
-              })
+            onSchool={(school) =>
+              setModel((m) => ({
+                ...m,
+                upass: { ...m.upass, school: school.short, schoolName: school.name },
+              }))
             }
             onBack={back}
             onConnect={() => { setUpassOn(true); swap("upass"); }}
