@@ -276,6 +276,13 @@
   font: var(--app-body);
   color: var(--compass-600);
 }
+/* the second choice on a light screen, outlined in the same blue the filled
+   one is filled with */
+.btn--secondary {
+  background: var(--surface);
+  border-color: var(--compass-600);
+  color: var(--compass-600);
+}
 /* the quiet one on a light screen, and the only button that carries a glyph */
 .btn--ghost {
   gap: 4px;
@@ -501,6 +508,69 @@
   left: 16px;
   top: 766px;
   width: 370px;
+}
+
+/* ── lost card ── */
+.lost-stack {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+.lost-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lost-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+.lost-note {
+  margin: 16px 0 0;
+  text-align: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+/* the card the screen is about, named and badged */
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+/* The badge is set in the kit's own face at 8px, a third step this scale has
+   no token for. It takes app/caption, the nearest, and keeps the frame's
+   wide tracking — 0.48px at 8 is 0.06em. */
+.card-chip {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--compass-400);
+  font: var(--app-caption);
+  letter-spacing: 0.06em;
+  color: var(--surface);
+}
+.card-row-what {
+  display: flex;
+  flex-direction: column;
+}
+.card-row-name {
+  font: var(--app-body);
+}
+.card-row-sub {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
 }
 
 /* ── history ── */
