@@ -29,6 +29,10 @@ export default function App() {
   const [stack, setStack] = useState(["landing"]);
   const [model] = useState(seedState);
   const [form, setForm] = useState(emptyForm);
+  /* Whether the account has a card yet. Carrying on past Card Register
+     without registering one is what leaves it false, and home draws its
+     other state accordingly. */
+  const [hasCard, setHasCard] = useState(true);
 
   const push = (id) => setStack((s) => [...s, id]);
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
@@ -67,8 +71,8 @@ export default function App() {
             values={form.card}
             onChange={change("card")}
             onBack={back}
-            onNext={home}
-            onSkip={home}
+            onNext={() => { setHasCard(true); home(); }}
+            onSkip={() => { setHasCard(false); home(); }}
           />
         );
       case "login":
@@ -85,9 +89,11 @@ export default function App() {
       case "home":
         return (
           <CardList
-            cards={model.cards}
+            cards={hasCard ? model.cards : []}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
+            onPurchase={() => push("purchase")}
+            onRegister={() => push("cardregister")}
           />
         );
       case "tickets":
@@ -106,7 +112,7 @@ export default function App() {
   };
 
   return (
-    <div className="screen" data-cards={model.cards.length}>
+    <div className="screen" data-cards={hasCard ? model.cards.length : 0}>
       {screen()}
     </div>
   );

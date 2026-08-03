@@ -237,6 +237,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   width: 100%;
   height: 50px;
   border: 1px solid transparent;
@@ -256,6 +257,14 @@
   background: transparent;
   border-color: var(--compass-100);
   color: var(--compass-100);
+}
+/* the second choice under a filled one: no surface at all, and set in body
+   rather than subhead */
+.btn--plain {
+  background: transparent;
+  border-color: transparent;
+  font: var(--app-body);
+  color: var(--compass-600);
 }
 /* the quiet one on a light screen, and the only button that carries a glyph */
 .btn--ghost {
@@ -528,6 +537,42 @@
   font: var(--app-callout);
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
+}
+
+/* ── home before there is a card ── */
+.empty-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* the panel's usual 20 of clearance is the stack's 8 here */
+.empty-stack .note-panel {
+  margin-top: 0;
+}
+.empty-card--tall {
+  height: 300px;
+  gap: 20px;
+}
+.empty-lead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+/* the card's own empty state states it quietly; the tickets one does not */
+.empty-title--quiet {
+  color: var(--text-secondary);
+}
+.empty-note--narrow {
+  width: 240px;
+}
+.empty-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.empty-actions .btn {
+  width: 320px;
 }
 
 /* ── the tab bar the app rests on ── */

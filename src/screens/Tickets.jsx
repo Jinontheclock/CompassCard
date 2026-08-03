@@ -3,7 +3,7 @@ import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import TabBar from "../components/TabBar.jsx";
 import accountIcon from "../assets/icon-account.svg";
 import onTimeIcon from "../assets/icon-ontime.svg";
-import emptyIcon from "../assets/icon-ticket-empty.svg";
+import emptyIcon from "../assets/icon-empty.svg";
 
 /* The other tab. The sailings are read from the seed; the tickets half is
    empty on purpose — the frame draws the state before anything is booked. */
