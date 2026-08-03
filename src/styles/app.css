@@ -503,6 +503,28 @@
   width: 370px;
 }
 
+/* ── history ── */
+.history-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+.section--gap4 {
+  gap: 4px;
+}
+/* A day's first entry is drawn from the row component, which wraps it in a
+   panel and costs it two pixels; the rest are plain bordered rows. The
+   frames build them both ways, so both are kept. */
+.history-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.history-card .history-row {
+  padding: 11px 15px;
+}
+
 /* ── payment method ── */
 .payment-stack {
   display: flex;

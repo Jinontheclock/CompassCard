@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import TabBar from "../components/TabBar.jsx";
-import { signed } from "../data/seed.js";
+import { signed, shortDate } from "../data/seed.js";
 import reloadIcon from "../assets/icon-reload.svg";
 import autoloadIcon from "../assets/icon-autoload.svg";
 import passesIcon from "../assets/icon-passes.svg";
@@ -72,13 +72,15 @@ export default function CardDetail({ card, onBack, onAccount, onOpen, onSelectTa
               </button>
             </h2>
             <div className="panel panel--flat">
-              {card.history.map((entry, i) => (
+              {card.history.slice(0, 2).map((entry, i) => (
                 <Fragment key={i}>
                   {i > 0 && <div className="panel-rule panel-rule--inset" />}
                   <div className="history-row">
                     <div className="history-what">
                       <span className="history-label">{entry.label}</span>
-                      <span className="history-sub">{entry.sub}</span>
+                      <span className="history-sub">
+                        {entry.sub} · {shortDate(entry.date)}
+                      </span>
                     </div>
                     <span className={"history-amount tnum" + (entry.amount > 0 ? " history-amount--credit" : "")}>
                       {signed(entry.amount)}

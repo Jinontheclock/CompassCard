@@ -20,8 +20,11 @@ export function seedState() {
         frozen: false,
         pass: { type: "Monthly · 2-Zone", expires: "Jul 31" },
         history: [
-          { label: "1-Zone trip", sub: "Stored value · Mar 1", amount: -2.85 },
-          { label: "Reload", sub: "Apple Pay · Mar 1", amount: 20.0 },
+          { label: "1-Zone trip", sub: "Stored value", amount: -2.85, date: "Mar-1-2026" },
+          { label: "Reload", sub: "Apple Pay", amount: 20.0, date: "Mar-1-2026" },
+          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -19.1, date: "Feb-25-2026" },
+          { label: "3-Zone trip", sub: "Stored value", amount: -5.4, date: "Feb-25-2026" },
+          { label: "Reload", sub: "Apple Pay", amount: 10.0, date: "Feb-25-2026" },
         ],
       },
       {
@@ -64,3 +67,22 @@ export const money = (n) =>
    true minus sign rather than a hyphen. */
 export const signed = (n) =>
   (n < 0 ? "−$" : "+$") + Math.abs(n).toFixed(2);
+
+/* History writes its date twice over: in full as the heading of a day's
+   entries, and shortened beside the entry itself where the card detail
+   shows only the last two. "Mar-1-2026" reads "Mar 1" there. */
+export const shortDate = (date) => {
+  const [month, day] = date.split("-");
+  return `${month} ${day}`;
+};
+
+/* the entries of one card, grouped into the days the History screen lists */
+export const byDate = (history) => {
+  const days = [];
+  for (const entry of history) {
+    const last = days[days.length - 1];
+    if (last && last.date === entry.date) last.entries.push(entry);
+    else days.push({ date: entry.date, entries: [entry] });
+  }
+  return days;
+};
