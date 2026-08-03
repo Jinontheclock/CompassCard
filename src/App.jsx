@@ -4,6 +4,7 @@ import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
 import CardRegister from "./screens/CardRegister.jsx";
 import Login from "./screens/Login.jsx";
+import CardList from "./screens/CardList.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -29,16 +30,20 @@ export default function App() {
 
   const push = (id) => setStack((s) => [...s, id]);
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
+  /* Home is where the onboarding ends, and it carries no back control, so it
+     replaces the stack instead of adding to it — there is nothing behind it
+     to return to. */
+  const home = () => setStack(["home"]);
   const current = stack[stack.length - 1];
 
   const change = (section) => (key, value) =>
     setForm((f) => ({ ...f, [section]: { ...f[section], [key]: value } }));
 
   /* No form validates — the demo takes whatever is typed, including nothing,
-     and moves on. Signing up and logging in both land on Card Register: it is
-     the next screen the frames give either route, and the one it stands in
-     for after logging in — the card list — is not built yet. The exits past
-     Card Register still come back here for the same reason. */
+     and moves on. Signing up leads through registering a card; logging in
+     goes straight to the cards, since a returning account already has them.
+     Both ways out of Card Register — registering one and carrying on without
+     one — end at the same place. */
   const screen = () => {
     switch (current) {
       case "signup":
@@ -57,8 +62,8 @@ export default function App() {
             values={form.card}
             onChange={change("card")}
             onBack={back}
-            onNext={back}
-            onSkip={back}
+            onNext={home}
+            onSkip={home}
           />
         );
       case "login":
@@ -67,11 +72,13 @@ export default function App() {
             values={form.login}
             onChange={change("login")}
             onBack={back}
-            onNext={() => push("cardregister")}
+            onNext={home}
             onSignUp={() => push("signup")}
             onForgot={back}
           />
         );
+      case "home":
+        return <CardList cards={model.cards} />;
       default:
         return <Landing onSignUp={() => push("signup")} onLogin={() => push("login")} />;
     }

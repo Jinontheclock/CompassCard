@@ -257,6 +257,165 @@
   border-color: var(--compass-100);
   color: var(--compass-100);
 }
+/* the quiet one on a light screen, and the only button that carries a glyph */
+.btn--ghost {
+  gap: 4px;
+  background: var(--bg);
+  border-color: var(--compass-700);
+  color: var(--compass-700);
+}
+
+/* ── home: the card list ── */
+.home-title {
+  margin: 0;
+  font: var(--app-title);
+  letter-spacing: var(--app-title-tracking);
+}
+.home-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 11px var(--margin) 0;
+}
+/* the frame fixes this column at 520 and lets the closing line take the
+   slack, so the line sits where it sits rather than riding up under the
+   button */
+.home-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 520px;
+}
+.home-cards,
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.home-note {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+
+/* ── a card in the list ──
+   14 rather than the 12 every other corner takes; the frame draws these
+   rounder than the controls. */
+.card-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 233px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--compass-400);
+}
+.card-tile--compact {
+  height: 150px;
+  background: var(--compass-500);
+}
+.card-tile-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.card-tile-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.card-tile-title {
+  font: var(--app-title);
+  letter-spacing: var(--app-title-tracking);
+  color: var(--bg);
+}
+.card-tile-twin {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--compass-100);
+}
+.card-tile-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.card-tile-value,
+.card-tile-pass {
+  display: flex;
+  flex-direction: column;
+}
+.card-tile-pass {
+  align-items: flex-end;
+  text-align: right;
+}
+.card-tile-label {
+  font: var(--app-caption);
+  letter-spacing: var(--app-caption-tracking);
+  color: var(--compass-100);
+}
+/* PASS is set in the kit's own face at 10px, a step this scale has no token
+   for. It takes app/caption, the nearest, and keeps the wide tracking the
+   frame gives it — 1px at 10 is 0.1em — since that is what makes it read as
+   a label rather than a word. */
+.card-tile-label--pass {
+  letter-spacing: 0.1em;
+}
+.card-tile-amount {
+  font: var(--app-display);
+  letter-spacing: var(--app-display-tracking);
+  color: var(--bg);
+}
+.card-tile-passname {
+  font: var(--app-body);
+  color: var(--bg);
+}
+
+/* ── the tab bar the app rests on ── */
+.tab-bar {
+  flex: 0 0 49px;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 304px;
+  padding: 0 4px;
+  border-radius: 24px;
+  /* the frame floats this over the screen: card-bg at 70% behind a blur.
+     The flat colour is the fallback where color-mix is not understood. */
+  background: var(--card-bg);
+  background: color-mix(in srgb, var(--card-bg) 70%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 40px;
+  border-radius: 24px;
+}
+.tab--active {
+  background: color-mix(in srgb, var(--text-muted) 10%, transparent);
+  backdrop-filter: blur(2px);
+}
+.tab img {
+  margin-bottom: -4px;
+}
+.tab-label {
+  font: var(--app-caption);
+  letter-spacing: var(--app-caption-tracking);
+  color: var(--text-muted);
+}
+.tab--active .tab-label {
+  color: var(--compass-600);
+}
 
 /* ── card register ── */
 .reg-group {
