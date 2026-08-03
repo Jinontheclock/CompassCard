@@ -33,6 +33,10 @@
      an icon and a word. ── */
   --success: #146b45;
   --warning: #7a4f00;
+  /* the filled mark that says a thing has happened. A shade off --success,
+     which Figma leaves as a raw fill rather than naming — it carries a white
+     glyph, so it sits a step lighter than the word beside it. */
+  --success-mark: #0f7b4f;
 
   /* U-Pass BC's own gold, which the frames use only for those initials */
   --upass-gold: #f5b314;

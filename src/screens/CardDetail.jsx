@@ -52,44 +52,53 @@ export default function CardDetail({ card, onBack, onAccount, onOpen, onSelectTa
               <span className="hero-unit">$</span>
               <span className="hero-figure">{card.balance.toFixed(2)}</span>
             </span>
+            {/* the rule and the pass line belong to a card that holds a pass;
+                a card without one closes on its balance */}
             <div className="hero-foot">
               {card.twin && <span className="hero-twin">{card.twin}</span>}
-              <div className="hero-rule" />
-              <div className="hero-pass">
-                <span className="hero-pass-label">Current pass</span>
-                <span className="hero-pass-value">
-                  {card.pass.type} · expires {card.pass.expires}
-                </span>
-              </div>
+              {card.pass && (
+                <>
+                  <div className="hero-rule" />
+                  <div className="hero-pass">
+                    <span className="hero-pass-label">Current pass</span>
+                    <span className="hero-pass-value">
+                      {card.pass.type} · expires {card.pass.expires}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          <section className="section">
-            <h2 className="section-label section-label--split">
-              HISTORY
-              <button type="button" className="linkish" onClick={() => onOpen?.("history")}>
-                See all
-              </button>
-            </h2>
-            <div className="panel panel--flat">
-              {card.history.slice(0, 2).map((entry, i) => (
-                <Fragment key={i}>
-                  {i > 0 && <div className="panel-rule panel-rule--inset" />}
-                  <div className="history-row">
-                    <div className="history-what">
-                      <span className="history-label">{entry.label}</span>
-                      <span className="history-sub">
-                        {entry.sub} · {shortDate(entry.date)}
+          {/* a card that has done nothing yet has nothing to preview */}
+          {card.history.length > 0 && (
+            <section className="section">
+              <h2 className="section-label section-label--split">
+                HISTORY
+                <button type="button" className="linkish" onClick={() => onOpen?.("history")}>
+                  See all
+                </button>
+              </h2>
+              <div className="panel panel--flat">
+                {card.history.slice(0, 2).map((entry, i) => (
+                  <Fragment key={i}>
+                    {i > 0 && <div className="panel-rule panel-rule--inset" />}
+                    <div className="history-row">
+                      <div className="history-what">
+                        <span className="history-label">{entry.label}</span>
+                        <span className="history-sub">
+                          {entry.sub} · {shortDate(entry.date)}
+                        </span>
+                      </div>
+                      <span className={"history-amount tnum" + (entry.amount > 0 ? " history-amount--credit" : "")}>
+                        {signed(entry.amount)}
                       </span>
                     </div>
-                    <span className={"history-amount tnum" + (entry.amount > 0 ? " history-amount--credit" : "")}>
-                      {signed(entry.amount)}
-                    </span>
-                  </div>
-                </Fragment>
-              ))}
-            </div>
-          </section>
+                  </Fragment>
+                ))}
+              </div>
+            </section>
+          )}
 
           <section className="section">
             <h2 className="section-label">MANAGE</h2>

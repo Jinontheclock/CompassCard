@@ -1391,6 +1391,147 @@
   letter-spacing: 0;
 }
 
+/* ── the switch a settings row carries ── */
+.toggle {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 64px;
+  height: 28px;
+  padding: 2px;
+  border-radius: 100px;
+  background: var(--border);
+  cursor: pointer;
+}
+.toggle--on {
+  justify-content: flex-end;
+  background: var(--compass-400);
+}
+.toggle-knob {
+  width: 38px;
+  height: 24px;
+  border-radius: 100px;
+  background: var(--bg);
+}
+
+/* ── U-Pass BC ── */
+.upass-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 440px;
+}
+/* the programme's own card: deeper than a Compass card and ten shorter */
+.card-tile--upass {
+  height: 223px;
+  background: var(--compass-800);
+  cursor: default;
+}
+.upass-status {
+  justify-content: flex-start;
+  gap: 8px;
+}
+.upass-mark {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--success-mark);
+}
+.upass-state {
+  font: var(--app-body);
+}
+.upass-renewed {
+  font: var(--app-subhead);
+  color: var(--success);
+}
+.upass-note {
+  margin: 0;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+
+/* ── connect U-Pass ── */
+.connect-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+/* a labelled control, set 8 under its label rather than the 4 a typed field
+   takes — these are picked and read as much as they are typed into */
+.pick-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pick-label {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.pick-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.pick-box:focus-within {
+  outline: 2px solid var(--compass-400);
+  outline-offset: -2px;
+}
+.pick-value {
+  font: var(--app-body);
+  color: var(--text-primary);
+}
+/* the chevron lies down where a row opens a list rather than a screen */
+.pick-chevron {
+  transform: rotate(90deg);
+}
+.pick-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  font: var(--app-body);
+  color: var(--text-primary);
+}
+.pick-input::placeholder {
+  color: var(--text-muted);
+}
+.connect-point {
+  justify-content: flex-start;
+  gap: 16px;
+}
+/* this screen sets its line in callout rather than body and clears 12 under
+   the button rather than 10, which keeps the button on 741 all the same */
+.scr-footer--connect {
+  padding-bottom: 17px;
+}
+.scr-footer--connect .scr-footnote {
+  margin-top: 12px;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+}
+
 /* ── landing ── */
 .landing-body {
   flex: 1 1 auto;

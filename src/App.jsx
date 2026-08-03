@@ -18,6 +18,8 @@ import Replace from "./screens/Replace.jsx";
 import Refund from "./screens/Refund.jsx";
 import PurchaseNewCard from "./screens/PurchaseNewCard.jsx";
 import PurchasePasses from "./screens/PurchasePasses.jsx";
+import UPass from "./screens/UPass.jsx";
+import UPassConnect from "./screens/UPassConnect.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -34,6 +36,7 @@ const emptyForm = () => ({
   signup: { email: "", password: "", confirm: "" },
   login: { email: "", password: "" },
   card: { number: ["", "", "", "", ""], cvn: "" },
+  upass: { studentId: "" },
 });
 
 export default function App() {
@@ -51,12 +54,22 @@ export default function App() {
      already carries */
   const [passId, setPassId] = useState(PASSES[0].id);
   const [passZone, setPassZone] = useState(2);
+  /* The U-Pass is not connected until it is: the tile opens the connect
+     screen first and the U-Pass itself afterwards, which is the order the
+     two frames are drawn in. Auto-renew is the one thing on that screen
+     that can be changed, so it is held apart from the seed. */
+  const [upassOn, setUpassOn] = useState(false);
+  const [autoRenew, setAutoRenew] = useState(model.upass.autoRenew);
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes"]);
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect"]);
   const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
+  /* one screen standing in for another it leads to, so what is behind them
+     both stays behind: connecting the U-Pass replaces the connect screen
+     rather than stacking the U-Pass on top of it */
+  const swap = (id) => setStack((s) => [...s.slice(0, -1), id]);
   /* Home is where the onboarding ends, and it carries no back control, so it
      replaces the stack instead of adding to it — there is nothing behind it
      to return to. */
@@ -132,8 +145,27 @@ export default function App() {
             card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
             onBack={back}
             onAccount={() => push("account")}
-            onOpen={push}
+            onOpen={(id) => push(id === "upass" && !upassOn ? "upassconnect" : id)}
             onSelectTab={selectTab}
+          />
+        );
+      case "upass":
+        return (
+          <UPass
+            upass={{ ...model.upass, autoRenew }}
+            onBack={back}
+            onAutoRenew={setAutoRenew}
+            onSelectTab={selectTab}
+          />
+        );
+      case "upassconnect":
+        return (
+          <UPassConnect
+            upass={model.upass}
+            studentId={form.upass.studentId}
+            onStudentId={(v) => change("upass")("studentId", v)}
+            onBack={back}
+            onConnect={() => { setUpassOn(true); swap("upass"); }}
           />
         );
       case "reload":

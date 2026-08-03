@@ -50,7 +50,14 @@ export function seedState() {
         history: [],
       },
     ],
-    upass: { school: "BCIT", month: "August", renewed: true, autoRenew: true },
+    /* the card writes the school short and the connect screen writes it out */
+    upass: {
+      school: "BCIT",
+      schoolName: "British Columbia Institute of Technology",
+      month: "August",
+      renewed: true,
+      autoRenew: true,
+    },
     autoload: { on: false, threshold: 5.0, amount: 10.0 },
     /* Written the way the Tickets frame writes them: the leg broken over two
        lines, the trailing dash included, and the sailing time spelled out in
