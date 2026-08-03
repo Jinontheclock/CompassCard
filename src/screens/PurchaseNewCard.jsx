@@ -74,7 +74,7 @@ export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee,
             <div className="settings-row settings-row--tall">
               <span className="settings-label">Card fee</span>
               <span className="settings-trail">
-                <span className="settings-value settings-value--ink tnum settings-money">
+                <span className="settings-value settings-value--strong tnum settings-money">
                   {"$ "}
                   <input
                     className="settings-input settings-input--amount"

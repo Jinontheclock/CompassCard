@@ -247,7 +247,10 @@
 }
 .field-label {
   display: block;
-  font: var(--app-body);
+  /* every label over an input speaks at callout size, so the value below
+     it is the louder of the two */
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
 }
 .field-input {
@@ -1237,8 +1240,9 @@
   align-items: center;
 }
 .settings-input--amount {
-  width: 64px;
+  width: 74px;
   text-align: left;
+  font: var(--app-subhead);
   font-variant-numeric: tabular-nums;
 }
 /* a row that neither opens nor types — it holds a switch */
@@ -1413,7 +1417,8 @@
   gap: 4px;
 }
 .reg-label {
-  font: var(--app-body);
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
 }
 .reg-hint {
@@ -1745,15 +1750,13 @@
   justify-content: flex-start;
   gap: 16px;
 }
-/* this screen sets its line in callout rather than body and clears 12 under
-   the button rather than 10, which keeps the button on 741 all the same */
+/* this screen clears 12 under the button rather than 13, and 13 beneath
+   its line — which keeps the button on the same 741 */
 .scr-footer--connect {
-  padding-bottom: 17px;
+  padding-bottom: 13px;
 }
 .scr-footer--connect .scr-footnote {
   margin-top: 12px;
-  font: var(--app-callout);
-  letter-spacing: var(--app-callout-tracking);
 }
 
 /* ── help: the assistant ── */
