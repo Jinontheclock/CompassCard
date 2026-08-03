@@ -8,7 +8,7 @@ import checkIcon from "../assets/icon-check-sm.svg";
    student number typed; the two lines under them are the point of the whole
    screen, which is that neither a card number nor a monthly deadline comes
    into it. */
-export default function UPassConnect({ card, upass, studentId, onStudentId, onBack, onConnect }) {
+export default function UPassConnect({ card, upass, studentId, onStudentId, onSchool, onBack, onConnect }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -22,12 +22,13 @@ export default function UPassConnect({ card, upass, studentId, onStudentId, onBa
         <div className="connect-stack">
           <div className="pick-group">
             <span className="pick-label">School</span>
-            {/* there is no school list in the frames, so the row states the
-                one the account is enrolled at rather than opening a picker */}
-            <div className="pick-box">
+            {/* the participating schools, stepped through in place — the
+                frame's lying-down chevron is the mark of a list opening
+                downward, and this is that list one tap at a time */}
+            <button type="button" className="pick-box pick-box--tap" onClick={onSchool}>
               <span className="pick-value">{upass.schoolName}</span>
               <img className="pick-chevron" src={chevron} alt="" width="8" height="14" />
-            </div>
+            </button>
           </div>
 
           <div className="pick-group">

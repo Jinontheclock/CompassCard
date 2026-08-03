@@ -9,7 +9,7 @@ import chevron from "../assets/icon-chevron.svg";
    is chosen carries the frame's filled treatment rather than a checkmark, so
    the choice reads at a glance. Nothing is charged — the payment row opens
    the method screen and the button moves the flow on. */
-export default function Reload({ card, amount, onAmount, onBack, onNext, onOpen }) {
+export default function Reload({ card, amount, method, onAmount, onBack, onNext, onOpen }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -50,10 +50,12 @@ export default function Reload({ card, amount, onAmount, onBack, onNext, onOpen 
             <h2 className="section-label">PAYMENT</h2>
             <button type="button" className="value-row value-row--tap" onClick={() => onOpen?.("payment")}>
               <span className="pay-method">
-                <span className="tile-apple">
-                  <img src={appleLogo} alt="" />
-                </span>
-                Apple Pay
+                {method === "Apple Pay" && (
+                  <span className="tile-apple">
+                    <img src={appleLogo} alt="" />
+                  </span>
+                )}
+                {method}
               </span>
               <img src={chevron} alt="" width="8" height="14" />
             </button>

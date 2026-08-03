@@ -12,7 +12,7 @@ import chevron from "../assets/icon-chevron.svg";
    here rather than stated — each steps through TransLink's own amounts and
    comes back round to the first. The footer says whether any of it is
    running, and the button is what starts it. */
-export default function Autoload({ card, autoload, onBack, onSet, onToggle, onOpen }) {
+export default function Autoload({ card, autoload, method, onBack, onSet, onToggle, onOpen }) {
   const step = (list, value) => list[(list.indexOf(value) + 1) % list.length];
 
   return (
@@ -47,10 +47,12 @@ export default function Autoload({ card, autoload, onBack, onSet, onToggle, onOp
             <h2 className="section-label">PAYMENT</h2>
             <button type="button" className="value-row value-row--tap" onClick={() => onOpen?.("payment")}>
               <span className="pay-method">
-                <span className="tile-apple">
-                  <img src={appleLogo} alt="" />
-                </span>
-                Apple Pay
+                {method === "Apple Pay" && (
+                  <span className="tile-apple">
+                    <img src={appleLogo} alt="" />
+                  </span>
+                )}
+                {method}
               </span>
               <img src={chevron} alt="" width="8" height="14" />
             </button>

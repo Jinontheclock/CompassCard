@@ -8,11 +8,11 @@ import { money } from "../data/seed.js";
 /* Giving the stored value back. The rows state the whole of it before the
    button — what is going back, where to, and when — and the panel says what
    the button costs, which is the card itself. */
-export default function Refund({ card, onBack, onRequest }) {
+export default function Refund({ card, method, onBack, onRequest }) {
   const rows = [
     { label: "Card", value: card.name },
     { label: "Balance to refund", value: money(card.balance) },
-    { label: "Refund to", value: "Apple Pay" },
+    { label: "Refund to", value: method },
     { label: "Processing", value: "in 3 days" },
   ];
 

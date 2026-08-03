@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { seedState, FARES, PASSES, passPrice } from "./data/seed.js";
+import { seedState, digitalCard, registeredCard, FARES, PASSES, SCHOOLS, passPrice } from "./data/seed.js";
 import { CHAT, reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
@@ -23,6 +23,8 @@ import UPass from "./screens/UPass.jsx";
 import UPassConnect from "./screens/UPassConnect.jsx";
 import Help from "./screens/Help.jsx";
 import TapResult from "./screens/TapResult.jsx";
+import AccountEdit from "./screens/AccountEdit.jsx";
+import Contact from "./screens/Contact.jsx";
 import Wallet from "./screens/Wallet.jsx";
 import WalletCard from "./screens/WalletCard.jsx";
 import "./styles/app.css";
@@ -42,17 +44,16 @@ const emptyForm = () => ({
   login: { email: "", password: "" },
   card: { number: ["", "", "", "", ""], cvn: "" },
   upass: { studentId: "" },
+  purchase: { name: "", fee: "" },
 });
 
 export default function App() {
   const [stack, setStack] = useState(["landing"]);
   const [model, setModel] = useState(seedState);
   const [form, setForm] = useState(emptyForm);
-  /* Whether the account has a card yet. Carrying on past Card Register
-     without registering one is what leaves it false, and home draws its
-     other state accordingly. */
-  const [hasCard, setHasCard] = useState(true);
   const [openCard, setOpenCard] = useState("c1");
+  /* which Account row the editor is open on */
+  const [editField, setEditField] = useState("name");
   /* the frame opens the reload screen with the middle preset chosen */
   const [reloadAmount, setReloadAmount] = useState(FARES.reloadPresets[1]);
   /* and the passes screen on the monthly, in two zones — the pass the card
@@ -72,8 +73,13 @@ export default function App() {
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard"]);
-  const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact"]);
+  /* the screens that are about one card, which an account with no cards
+     cannot open — the assistant offers some of them, and an empty account
+     may be sitting in that chat */
+  const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "wallet", "walletcard"]);
+  const push = (id) =>
+    setStack((s) => (BUILT.has(id) && !(NEEDS_CARD.has(id) && model.cards.length === 0) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   /* one screen standing in for another it leads to, so what is behind them
      both stays behind: connecting the U-Pass replaces the connect screen
@@ -100,6 +106,17 @@ export default function App() {
 
   const change = (section) => (key, value) =>
     setForm((f) => ({ ...f, [section]: { ...f[section], [key]: value } }));
+  const patchAccount = (patch) => setModel((m) => ({ ...m, account: { ...m.account, ...patch } }));
+  /* the one method everything charges to */
+  const method = model.payment.primary;
+  /* a new card's default name: the frame's, unless the account already
+     holds a card by that name, and numbered from there */
+  const defaultName = () => {
+    const taken = new Set(model.cards.map((c) => c.name));
+    let name = "My Compass Card";
+    for (let i = 2; taken.has(name); i++) name = `My Compass Card ${i}`;
+    return name;
+  };
 
   /* No form validates — the demo takes whatever is typed, including nothing,
      and moves on. Signing up leads through registering a card; logging in
@@ -114,7 +131,11 @@ export default function App() {
             values={form.signup}
             onChange={change("signup")}
             onBack={back}
-            onNext={() => push("cardregister")}
+            /* a new account starts with no cards at all */
+            onNext={() => {
+              setModel((m) => ({ ...m, cards: [] }));
+              push("cardregister");
+            }}
             onLogin={() => push("login")}
           />
         );
@@ -124,8 +145,15 @@ export default function App() {
             values={form.card}
             onChange={change("card")}
             onBack={back}
-            onNext={() => { setHasCard(true); home(); }}
-            onSkip={() => { setHasCard(false); home(); }}
+            /* registering the plastic brings the card's own past with it —
+               balance, pass and history arrive rather than starting over */
+            onNext={() => {
+              const imported = registeredCard();
+              setModel((m) => ({ ...m, cards: [...m.cards, imported] }));
+              setOpenCard(imported.id);
+              home();
+            }}
+            onSkip={home}
           />
         );
       case "login":
@@ -134,7 +162,11 @@ export default function App() {
             values={form.login}
             onChange={change("login")}
             onBack={back}
-            onNext={home}
+            /* a returning account has its cards already */
+            onNext={() => {
+              setModel((m) => ({ ...m, cards: seedState().cards }));
+              home();
+            }}
             onSignUp={() => push("signup")}
             onForgot={back}
           />
@@ -142,7 +174,7 @@ export default function App() {
       case "home":
         return (
           <CardList
-            cards={hasCard ? model.cards : []}
+            cards={model.cards}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
             onPurchase={() => push("purchase")}
@@ -185,6 +217,14 @@ export default function App() {
             upass={model.upass}
             studentId={form.upass.studentId}
             onStudentId={(v) => change("upass")("studentId", v)}
+            /* one tap steps to the next participating school */
+            onSchool={() =>
+              setModel((m) => {
+                const at = SCHOOLS.findIndex((sc) => sc.short === m.upass.school);
+                const next = SCHOOLS[(at + 1) % SCHOOLS.length];
+                return { ...m, upass: { ...m.upass, school: next.short, schoolName: next.name } };
+              })
+            }
             onBack={back}
             onConnect={() => { setUpassOn(true); swap("upass"); }}
           />
@@ -194,6 +234,7 @@ export default function App() {
           <Reload
             card={card}
             amount={reloadAmount}
+            method={method}
             onAmount={setReloadAmount}
             onBack={back}
             onNext={() => push("reloaddone")}
@@ -205,13 +246,14 @@ export default function App() {
           <ReloadDone
             card={card}
             amount={reloadAmount}
+            method={method}
             /* the reload is only real when it is done: the balance goes up
                and the ledger gains the line that says why */
             onDone={() => {
               patchCard({
                 balance: card.balance + reloadAmount,
                 history: [
-                  { label: "Reload", sub: "Apple Pay", amount: reloadAmount, date: "Aug-3-2026" },
+                  { label: "Reload", sub: method, amount: reloadAmount, date: "Aug-3-2026" },
                   ...card.history,
                 ],
               });
@@ -220,7 +262,19 @@ export default function App() {
           />
         );
       case "refund":
-        return <Refund card={card} onBack={back} onRequest={back} />;
+        return (
+          <Refund
+            card={card}
+            method={method}
+            onBack={back}
+            /* the warning is the behaviour: requesting the refund closes
+               the card, and home is what is left */
+            onRequest={() => {
+              setModel((m) => ({ ...m, cards: m.cards.filter((c) => c.id !== card.id) }));
+              home();
+            }}
+          />
+        );
       case "replace":
         return (
           <Replace
@@ -229,7 +283,7 @@ export default function App() {
                Program pass fee to replace */
             programPass={upassOn}
             onBack={back}
-            onOrder={back}
+            onOrder={() => patchCard({ replaced: true })}
           />
         );
       case "lost":
@@ -292,10 +346,21 @@ export default function App() {
       case "purchase":
         return (
           <PurchaseNewCard
+            defaultName={defaultName()}
+            name={form.purchase.name}
+            fee={form.purchase.fee}
+            onName={(v) => change("purchase")("name", v)}
+            onFee={(v) => change("purchase")("fee", v)}
             onBack={back}
-            /* buying one is the other way onto a card, so it ends where
-               registering one does */
-            onPurchase={() => { setHasCard(true); home(); }}
+            /* the card described above is the card that arrives: the typed
+               name, holding whatever was loaded at purchase */
+            onPurchase={(name, amount) => {
+              const bought = digitalCard(name, amount);
+              setModel((m) => ({ ...m, cards: [...m.cards, bought] }));
+              setOpenCard(bought.id);
+              setForm((f) => ({ ...f, purchase: { name: "", fee: "" } }));
+              home();
+            }}
           />
         );
       case "passes":
@@ -331,12 +396,27 @@ export default function App() {
           />
         );
       case "payment":
-        return <PaymentMethod onBack={back} />;
+        return (
+          <PaymentMethod
+            methods={model.payment.methods}
+            primary={method}
+            onSelect={(m) => setModel((mm) => ({ ...mm, payment: { ...mm.payment, primary: m } }))}
+            onAdd={() =>
+              setModel((mm) =>
+                mm.payment.methods.includes("Credit Card")
+                  ? mm
+                  : { ...mm, payment: { ...mm.payment, methods: [...mm.payment.methods, "Credit Card"] } }
+              )
+            }
+            onBack={back}
+          />
+        );
       case "autoload":
         return (
           <Autoload
             card={card}
             autoload={model.autoload}
+            method={method}
             onBack={back}
             onSet={(key, value) =>
               setModel((m) => ({ ...m, autoload: { ...m.autoload, [key]: value } }))
@@ -346,14 +426,34 @@ export default function App() {
           />
         );
       case "account":
-        return <Account onBack={back} onOpen={(id) => push(id)} onRefund={() => push("refund")} />;
+        return (
+          <Account
+            account={model.account}
+            onBack={back}
+            onOpen={(id) => push(id)}
+            onEdit={(field) => { setEditField(field); push("acctedit"); }}
+            onNotifications={(on) => patchAccount({ notifications: on })}
+            onRefund={() => push("refund")}
+          />
+        );
+      case "acctedit":
+        return (
+          <AccountEdit
+            field={editField}
+            value={model.account[editField] ?? ""}
+            onBack={back}
+            onSave={(text) => { patchAccount({ [editField]: text }); back(); }}
+          />
+        );
+      case "contact":
+        return <Contact onBack={back} />;
       default:
         return <Landing onSignUp={() => push("signup")} onLogin={() => push("login")} />;
     }
   };
 
   return (
-    <div className="screen" data-cards={hasCard ? model.cards.length : 0}>
+    <div className="screen" data-cards={model.cards.length}>
       {screen()}
     </div>
   );

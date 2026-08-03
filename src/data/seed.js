@@ -18,6 +18,8 @@ export const FARES = {
   /* replacing the plastic: a plain card, and one carrying a Program pass */
   cardFee: 6.0,
   programCardFee: 25.0,
+  /* a digital card is issued in the app for nothing */
+  digitalCardFee: 0,
   /* BC Ferries, Tsawwassen–Swartz Bay, adult foot passenger */
   ferryWalkOn: 19.1,
   /* what the reload screen offers, and what Autoload can be set to */
@@ -30,6 +32,34 @@ export const FARES = {
    expensive one, which is what the note beside it says. */
 export const replacementFee = (hasProgramPass) =>
   hasProgramPass ? FARES.programCardFee : FARES.cardFee;
+
+/* The schools in the U-Pass BC programme the connect screen can pick from —
+   the real participating institutions, written the way each writes itself.
+   `short` is what fits on the card. */
+export const SCHOOLS = [
+  { short: "BCIT", name: "British Columbia Institute of Technology" },
+  { short: "UBC", name: "University of British Columbia" },
+  { short: "SFU", name: "Simon Fraser University" },
+  { short: "Langara", name: "Langara College" },
+  { short: "Douglas", name: "Douglas College" },
+  { short: "KPU", name: "Kwantlen Polytechnic University" },
+  { short: "VCC", name: "Vancouver Community College" },
+];
+
+/* A card the account has just gained. Buying a digital card starts it empty
+   at whatever was loaded on purchase; registering the plastic brings the
+   card's own past with it, which for this demo is the seeded card — the one
+   the frames draw. */
+export const digitalCard = (name, balance = 0) => ({
+  id: "c" + Math.random().toString(36).slice(2, 8),
+  name,
+  balance,
+  twin: null,
+  frozen: false,
+  pass: null,
+  history: [],
+});
+export const registeredCard = () => seedState().cards[0];
 
 export function seedState() {
   return {
@@ -84,6 +114,12 @@ export function seedState() {
       autoRenew: true,
     },
     autoload: { on: false, threshold: 5.0, amount: 10.0 },
+    /* what pays: the methods on file, and the one everything charges to */
+    payment: { methods: ["Apple Pay"], primary: "Apple Pay" },
+    /* what the Account rows hold. Empty until typed — the frames draw the
+       rows without values, which is exactly an account nothing has been
+       written into yet. */
+    account: { name: "", address: "", phone: "", password: "", notifications: true },
     /* Written the way the Tickets frame writes them: the leg broken over two
        lines, the trailing dash included, and the sailing time spelled out in
        full rather than shortened. */

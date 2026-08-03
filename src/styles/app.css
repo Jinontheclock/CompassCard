@@ -264,6 +264,12 @@
   background: var(--compass-600);
   color: var(--bg);
 }
+/* a button whose work is done: still there, no longer asking */
+.btn:disabled {
+  background: var(--border);
+  color: var(--text-secondary);
+  cursor: default;
+}
 .btn--onDark {
   background: var(--compass-100);
   color: var(--compass-900);
@@ -732,6 +738,9 @@
   flex-direction: column;
   gap: 16px;
 }
+.payment-stack .note-panel {
+  margin-top: 0;
+}
 .settings-label--action {
   color: var(--compass-600);
 }
@@ -1040,6 +1049,37 @@
    so it reads level with its label instead of trailing off it */
 .settings-value--ink {
   color: var(--text-primary);
+}
+/* A row that is typed into rather than opened. The input takes the value
+   slot: right-aligned, the value's own type, and quiet until it holds
+   something — the placeholder is the default in the secondary ink, the way
+   the frames draw an unedited value. */
+.settings-input {
+  width: 170px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  text-align: right;
+  font: var(--app-body);
+  color: var(--text-primary);
+}
+.settings-input::placeholder {
+  color: var(--text-secondary);
+}
+/* the fee is a figure, so the $ stands outside and the digits align */
+.settings-money {
+  display: flex;
+  align-items: center;
+}
+.settings-input--amount {
+  width: 64px;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+/* a row that neither opens nor types — it holds a switch */
+.settings-row--still {
+  cursor: default;
 }
 
 /* ── account ── */
@@ -1509,7 +1549,12 @@
   font: var(--app-body);
   color: var(--text-primary);
 }
-/* the chevron lies down where a row opens a list rather than a screen */
+/* the chevron lies down where a row opens a list rather than a screen —
+   and here the row does exactly that, one school per tap */
+.pick-box--tap {
+  cursor: pointer;
+  text-align: inherit;
+}
 .pick-chevron {
   transform: rotate(90deg);
 }

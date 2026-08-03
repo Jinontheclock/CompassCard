@@ -1,28 +1,17 @@
-import { Fragment } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import SettingsRow from "../components/SettingsRow.jsx";
+import Toggle from "../components/Toggle.jsx";
 
-/* The account settings, three panels deep. The rows the frame draws with an
-   empty value slot are label-and-chevron only, so they are listed as names
-   rather than as data. */
-const PANELS = [
-  {
-    label: "ACCOUNT INFORMATION",
-    rows: [{ label: "Name" }, { label: "Mailing address" }, { label: "Phone" }, { label: "Password" }, { label: "Notification" }],
-  },
-  {
-    label: "PAYMENT METHOD",
-    rows: [{ label: "Primary payment method", to: "payment" }, { label: "Auto payment method", to: "payment" }],
-  },
-  {
-    label: "HELP",
-    rows: [{ label: "Chat with us", to: "help", tall: true }, { label: "Contact info", tall: true }],
-  },
-];
+/* The account settings, three panels deep. The frames draw the rows with
+   empty value slots — an account nothing has been written into — and each
+   row opens the editor for what it names, so a saved value comes back and
+   sits in the slot. Notification is the one row that is not an editor: it
+   is a switch, thrown where it lies. */
+export default function Account({ account, onBack, onOpen, onEdit, onNotifications, onRefund }) {
+  const dots = account.password ? "•".repeat(8) : undefined;
 
-export default function Account({ onBack, onOpen, onRefund }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -32,25 +21,44 @@ export default function Account({ onBack, onOpen, onRefund }) {
         <h1 className="scr-title scr-title--alone">Account</h1>
 
         <div className="account-stack">
-          {PANELS.map((panel) => (
-            <section className="section" key={panel.label}>
-              <h2 className="section-label">{panel.label}</h2>
-              <div className="panel">
-                {panel.rows.map((row, i) => (
-                  <Fragment key={row.label}>
-                    {i > 0 && <div className="panel-rule panel-rule--inset" />}
-                    <SettingsRow
-                      label={row.label}
-                      tall={row.tall}
-                      onClick={row.to ? () => onOpen?.(row.to) : undefined}
-                    />
-                  </Fragment>
-                ))}
-                {/* the last two panels close with a rule the first one has not */}
-                {panel.label !== "ACCOUNT INFORMATION" && <div className="panel-rule panel-rule--inset" />}
+          <section className="section">
+            <h2 className="section-label">ACCOUNT INFORMATION</h2>
+            <div className="panel">
+              <SettingsRow label="Name" value={account.name || undefined} onClick={() => onEdit?.("name")} />
+              <div className="panel-rule panel-rule--inset" />
+              <SettingsRow label="Mailing address" value={account.address || undefined} onClick={() => onEdit?.("address")} />
+              <div className="panel-rule panel-rule--inset" />
+              <SettingsRow label="Phone" value={account.phone || undefined} onClick={() => onEdit?.("phone")} />
+              <div className="panel-rule panel-rule--inset" />
+              <SettingsRow label="Password" value={dots} onClick={() => onEdit?.("password")} />
+              <div className="panel-rule panel-rule--inset" />
+              <div className="settings-row settings-row--still">
+                <span className="settings-label">Notification</span>
+                <Toggle on={account.notifications} label="Notification" onChange={onNotifications} />
               </div>
-            </section>
-          ))}
+            </div>
+          </section>
+
+          <section className="section">
+            <h2 className="section-label">PAYMENT METHOD</h2>
+            <div className="panel">
+              <SettingsRow label="Primary payment method" onClick={() => onOpen?.("payment")} />
+              <div className="panel-rule panel-rule--inset" />
+              <SettingsRow label="Auto payment method" onClick={() => onOpen?.("payment")} />
+              {/* the last two panels close with a rule the first one has not */}
+              <div className="panel-rule panel-rule--inset" />
+            </div>
+          </section>
+
+          <section className="section">
+            <h2 className="section-label">HELP</h2>
+            <div className="panel">
+              <SettingsRow label="Chat with us" tall onClick={() => onOpen?.("help")} />
+              <div className="panel-rule panel-rule--inset" />
+              <SettingsRow label="Contact info" tall onClick={() => onOpen?.("contact")} />
+              <div className="panel-rule panel-rule--inset" />
+            </div>
+          </section>
 
           <p className="account-note">You can always reach a person from the assistant.</p>
         </div>

@@ -6,7 +6,7 @@ import appleLogo from "../assets/apple-logo.png";
 
 /* The end of the reload. No back control — the flow is finished, and Done
    returns to the card rather than stepping back through it. */
-export default function ReloadDone({ card, amount, onDone }) {
+export default function ReloadDone({ card, amount, method, onDone }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -31,10 +31,12 @@ export default function ReloadDone({ card, amount, onDone }) {
         <div className="panel-row">
           <span className="settings-label">Payment</span>
           <span className="pay-method">
-            <span className="tile-apple">
-              <img src={appleLogo} alt="" />
-            </span>
-            Apple Pay
+            {method === "Apple Pay" && (
+              <span className="tile-apple">
+                <img src={appleLogo} alt="" />
+              </span>
+            )}
+            {method}
           </span>
         </div>
       </div>
