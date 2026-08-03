@@ -1,6 +1,9 @@
 /* The interactive layer: what typing, picking and buying now actually do. */
 const { chromium } = require("playwright");
 const { launchOptions, routeKit } = require("./env.cjs");
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const NOW = new Date();
+const TODAY_SHORT = `${MON[NOW.getMonth()]} ${NOW.getDate()}`;
 let fails = 0;
 const is = (label, got, want) => {
   const ok = String(got) === String(want);
@@ -56,7 +59,7 @@ const is = (label, got, want) => {
   await go(".tile-grid > *:nth-child(1)");                 // Reload
   is("reload charges it", await txt(".value-row--tap .pay-method"), "Credit Card");
   await go(".scr-footer .btn"); await go(".done-footer .btn");
-  is("the ledger names it", await txt(".history-row .history-sub"), "Credit Card · Aug 3");
+  is("the ledger names it", await txt(".history-row .history-sub"), `Credit Card · ${TODAY_SHORT}`);
   await go(".tile-grid > *:nth-child(7)");                 // Refund
   is("refund returns to it", await txt(".panel > div:nth-of-type(3) .settings-value"), "Credit Card");
   await go(".nav-back");

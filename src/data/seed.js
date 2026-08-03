@@ -3,13 +3,25 @@
    Every figure here is TransLink's own rather than a number picked to fill
    a frame, and every screen reads it from here rather than restating it. */
 
-/* The day the demo lives on. Every date a screen writes — the ledger line
-   a reload adds, the month a pass covers, the day it expires — derives from
-   this one place rather than being written where it is shown. */
+/* The day the demo lives on is the day it is opened. Every date a screen
+   writes — the ledger line a reload adds, the month a pass covers, the day
+   it expires, the sailings on the board — derives from this one clock
+   rather than being written where it is shown. */
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const now = new Date();
+const monthEndDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 export const TODAY = {
-  ledger: "Aug-3-2026",
-  month: "August",
-  monthEnd: "Aug 31",
+  /* the ledger writes its dates the way the seeded history does: Mar-1-2026 */
+  ledger: `${MONTHS[now.getMonth()]}-${now.getDate()}-${now.getFullYear()}`,
+  month: MONTH_NAMES[now.getMonth()],
+  monthEnd: `${MONTHS[now.getMonth()]} ${monthEndDay}`,
+};
+
+/* the sailings board writes its dates zero-padded: Aug-02-2026 */
+const sailingDate = (daysAhead) => {
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysAhead);
+  return `${MONTHS[d.getMonth()]}-${String(d.getDate()).padStart(2, "0")}-${d.getFullYear()}`;
 };
 
 /* TransLink's fares, effective July 1 2026. Adult rates carry the app;
@@ -87,8 +99,8 @@ export function seedState() {
         balance: 15.0,
         twin: "Plastic + Wallet pass · one balance",
         frozen: false,
-        /* the demo sits in August 2026, so the pass on the card is August's
-           — the purchase frame says a monthly bought now is valid Aug 31 */
+        /* the pass on the card is this month's — a monthly bought now is
+           valid to the month's end, whichever month the demo is opened in */
         pass: { type: "Monthly · 2-Zone", expires: TODAY.monthEnd },
         history: [
           /* the two entries the tap frames are the confirmation of: the
@@ -140,17 +152,18 @@ export function seedState() {
     /* Written the way the Tickets frame writes them: the leg broken over two
        lines, the trailing dash included, and the sailing time spelled out in
        full rather than shortened. */
+    /* out today, back in two days — the board follows the calendar */
     sailings: [
       {
         from: "Vancouver (Tsawwassen) -",
         to: "Victoria (Swartz Bay)",
-        time: "06:00 PM Aug-02-2026",
+        time: `06:00 PM ${sailingDate(0)}`,
         status: "On time",
       },
       {
         from: "Victoria (Swartz Bay) -",
         to: "Vancouver (Tsawwassen)",
-        time: "01:00 PM Aug-04-2026",
+        time: `01:00 PM ${sailingDate(2)}`,
         status: "On time",
       },
     ],

@@ -1,6 +1,9 @@
 /* What the screens now do, rather than where they go. */
 const { chromium } = require("playwright");
 const { launchOptions, routeKit } = require("./env.cjs");
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const NOW = new Date();
+const MONTH_END = `${MON[NOW.getMonth()]} ${new Date(NOW.getFullYear(), NOW.getMonth() + 1, 0).getDate()}`;
 let fails = 0;
 const is = (label, got, want) => {
   const ok = String(got) === String(want);
@@ -32,7 +35,7 @@ const is = (label, got, want) => {
      "Unlimited travel in all zones for one day");
   await go(".zone-row > *:nth-child(2)");
   await go(".scr-footer--fixed .btn");
-  is("the pass lands on the card", await txt(".hero-pass-value"), "Monthly · 2-Zone · expires Aug 31");
+  is("the pass lands on the card", await txt(".hero-pass-value"), `Monthly · 2-Zone · expires ${MONTH_END}`);
 
   console.log("autoload is set, not stated");
   await go(".tile-grid > *:nth-child(2)");

@@ -1,3 +1,4 @@
+import { useClock } from "../components/useClock.js";
 import { SHOTS } from "../data/seed.js";
 import tapArt from "../assets/tap-art.webp";
 import tapCheck from "../assets/icon-tap-check.svg";
@@ -20,13 +21,14 @@ import battery from "../assets/icon-tap-battery.svg";
    nothing the frame draws. */
 export default function TapResult({ shot, declined = false, onDismiss }) {
   const s = SHOTS[shot] ?? SHOTS.tap;
+  const time = useClock();
 
   return (
     <div className="tap-scr">
       <button type="button" className="tap-dismiss" aria-label="Back to Compass" onClick={onDismiss} />
 
       <div className="tap-status">
-        <span className="tap-time tnum">9:41</span>
+        <span className="tap-time tnum">{time}</span>
         <span className="tap-levels">
           <img src={signal} alt="" width="18" height="12" />
           <img src={wifi} alt="" width="17" height="12" />

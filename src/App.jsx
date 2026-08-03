@@ -440,7 +440,7 @@ export default function App() {
               patchCard({
                 pass: {
                   type: pass.zones ? `${pass.short} · ${passZone}-Zone` : pass.short,
-                  expires: "Aug 31",
+                  expires: TODAY.monthEnd,
                 },
                 history: [
                   {

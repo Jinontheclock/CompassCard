@@ -1,3 +1,5 @@
+import { useClock } from "./useClock.js";
+
 /* iOS chrome that every screen carries: the status bar at the top and the
    home indicator at the bottom. Both are drawn rather than imported so they
    pick up the screen's own foreground colour — the dark onboarding screens
@@ -8,9 +10,10 @@
    indicator sitting 8px off the bottom of a 34px band. */
 
 export function StatusBar({ light = false }) {
+  const time = useClock();
   return (
     <div className={"status-bar" + (light ? " status-bar--light" : "")}>
-      <span className="status-time tnum">9:41</span>
+      <span className="status-time tnum">{time}</span>
       <span className="status-island" />
       <span className="status-levels">
         {/* the iOS kit's own Levels frame — the Figma export with its fills
