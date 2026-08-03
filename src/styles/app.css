@@ -374,6 +374,162 @@
   color: var(--bg);
 }
 
+/* ── a labelled section, and the white panel a list sits in ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.section-label {
+  margin: 0;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.panel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  padding: 14px 16px;
+}
+.panel-rule {
+  height: 1px;
+  background: var(--border);
+}
+/* the rule between two rows stops short of the edge; the one closing the
+   list off runs the whole way */
+.panel-rule--inset {
+  margin: 0 19px;
+}
+.panel-foot {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+
+/* ── a settings row: label, optional value, chevron ── */
+.settings-row {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+.settings-row--tall {
+  height: 50px;
+}
+.settings-label {
+  font: var(--app-body);
+  color: var(--text-primary);
+}
+.settings-trail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.settings-value {
+  font: var(--app-body);
+  color: var(--text-secondary);
+}
+
+/* ── account ── */
+.account-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 584px;
+}
+/* the closing line takes what the panels leave, which the frame squeezes to
+   14 — the line rides out of its own box rather than moving the panels */
+.account-note {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.account-footer {
+  flex: 0 0 74px;
+  padding: 0 var(--margin);
+}
+
+/* ── tickets ── */
+.section--tickets {
+  margin-top: 21px;
+}
+.sailing {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sailing-leg {
+  font: var(--app-body);
+}
+.sailing-time {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+/* fixed at the width the frame gives it and packed to the right, which is
+   what leaves the glyph its 3px of slack */
+.status-ok {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 86px;
+  font: var(--app-body);
+  color: var(--success);
+}
+.empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 200px;
+  padding: 18px;
+  border: 1px dashed var(--text-muted);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.empty-title {
+  margin: 0;
+  font: var(--app-subhead);
+}
+.empty-note {
+  width: 256px;
+  margin: 0;
+  text-align: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+
 /* ── the tab bar the app rests on ── */
 .tab-bar {
   flex: 0 0 49px;
@@ -393,6 +549,8 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 .tab {
+  all: unset;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -400,6 +558,7 @@
   width: 140px;
   height: 40px;
   border-radius: 24px;
+  cursor: pointer;
 }
 .tab--active {
   background: color-mix(in srgb, var(--text-muted) 10%, transparent);

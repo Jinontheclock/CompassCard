@@ -5,6 +5,8 @@ import SignUp from "./screens/SignUp.jsx";
 import CardRegister from "./screens/CardRegister.jsx";
 import Login from "./screens/Login.jsx";
 import CardList from "./screens/CardList.jsx";
+import Tickets from "./screens/Tickets.jsx";
+import Account from "./screens/Account.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -34,6 +36,9 @@ export default function App() {
      replaces the stack instead of adding to it — there is nothing behind it
      to return to. */
   const home = () => setStack(["home"]);
+  /* the two tabs are roots, so switching replaces the stack rather than
+     burying one tab under the other */
+  const selectTab = (id) => setStack([id === "tickets" ? "tickets" : "home"]);
   const current = stack[stack.length - 1];
 
   const change = (section) => (key, value) =>
@@ -78,7 +83,23 @@ export default function App() {
           />
         );
       case "home":
-        return <CardList cards={model.cards} />;
+        return (
+          <CardList
+            cards={model.cards}
+            onSelectTab={selectTab}
+            onAccount={() => push("account")}
+          />
+        );
+      case "tickets":
+        return (
+          <Tickets
+            sailings={model.sailings}
+            onSelectTab={selectTab}
+            onAccount={() => push("account")}
+          />
+        );
+      case "account":
+        return <Account onBack={back} onOpen={(id) => push(id)} />;
       default:
         return <Landing onSignUp={() => push("signup")} onLogin={() => push("login")} />;
     }

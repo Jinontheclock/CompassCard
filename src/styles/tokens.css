@@ -20,6 +20,9 @@
   --bg: #fafafa;
   --card-bg: #f2f2f2;
   --border: #d4d4d4;
+  /* the list panels are filled white, a shade above the page. Figma leaves
+     this one as a raw fill rather than a named variable. */
+  --surface: #ffffff;
 
   /* ── Ink ── */
   --text-primary: #0f0f0f;

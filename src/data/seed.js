@@ -36,9 +36,22 @@ export function seedState() {
     ],
     upass: { school: "BCIT", month: "August", renewed: true, autoRenew: true },
     autoload: { on: false, threshold: 5.0, amount: 10.0 },
+    /* Written the way the Tickets frame writes them: the leg broken over two
+       lines, the trailing dash included, and the sailing time spelled out in
+       full rather than shortened. */
     sailings: [
-      { route: "Tsawwassen → Swartz Bay", time: "6:00 PM · Aug 2", status: "On time" },
-      { route: "Swartz Bay → Tsawwassen", time: "1:00 PM · Aug 4", status: "On time" },
+      {
+        from: "Vancouver (Tsawwassen) -",
+        to: "Victoria (Swartz Bay)",
+        time: "06:00 PM Aug-02-2026",
+        status: "On time",
+      },
+      {
+        from: "Victoria (Swartz Bay) -",
+        to: "Vancouver (Tsawwassen)",
+        time: "01:00 PM Aug-04-2026",
+        status: "On time",
+      },
     ],
   };
 }

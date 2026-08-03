@@ -8,7 +8,7 @@ import plusIcon from "../assets/icon-plus.svg";
 /* Home: the screen the app rests on once the onboarding is done. It carries
    no back control — there is nothing behind it — so the stack is reset when
    it is reached rather than pushed onto. */
-export default function CardList({ cards, onAccount, onPurchase }) {
+export default function CardList({ cards, onAccount, onPurchase, onSelectTab }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -39,7 +39,7 @@ export default function CardList({ cards, onAccount, onPurchase }) {
         </div>
       </div>
 
-      <TabBar active="card" />
+      <TabBar active="card" onSelect={onSelectTab} />
       <HomeIndicator />
     </div>
   );
