@@ -64,7 +64,7 @@ export default function CardRegister({ values, onChange, onBack, onNext, onSkip 
 
       <div className="scr-body">
         <h1 className="scr-title">Register Your Card</h1>
-        <p className="scr-sub">Only time only — after this, your card lives on your account.</p>
+        <p className="scr-sub">One time only — after this, your card lives on your account.</p>
 
         <div className="stack-fields">
           <label className="reg-group">

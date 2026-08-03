@@ -53,7 +53,7 @@ export default function Reload({ card, amount, onAmount, onBack, onNext, onOpen 
                 <span className="tile-apple">
                   <img src={appleLogo} alt="" />
                 </span>
-                Apply Pay
+                Apple Pay
               </span>
               <img src={chevron} alt="" width="8" height="14" />
             </button>

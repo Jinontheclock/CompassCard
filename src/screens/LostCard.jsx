@@ -5,7 +5,9 @@ import { money } from "../data/seed.js";
 
 /* Losing the plastic is not losing the money, which is the whole point of
    the screen: it names the card, states what is on the account behind it,
-   and offers to stop the card rather than to replace what it held. */
+   and offers to stop the card rather than to replace what it held. The
+   button does what it says — a frozen card can be let go again from the
+   same place, so it turns around rather than leaving. */
 export default function LostCard({ card, onBack, onFreeze, onMove }) {
   return (
     <div className="scr">
@@ -34,13 +36,19 @@ export default function LostCard({ card, onBack, onFreeze, onMove }) {
           </div>
 
           <div className="lost-actions">
-            <Button onClick={onFreeze}>Freeze Card</Button>
+            <Button onClick={() => onFreeze?.(!card.frozen)}>
+              {card.frozen ? "Unfreeze Card" : "Freeze Card"}
+            </Button>
             <Button tone="secondary" onClick={onMove}>
               Move Balance to New Card
             </Button>
           </div>
 
-          <p className="lost-note">A frozen card stops working at the gate right away.</p>
+          <p className="lost-note">
+            {card.frozen
+              ? "This card is frozen. It stops working at the gate right away."
+              : "A frozen card stops working at the gate right away."}
+          </p>
         </div>
       </div>
 

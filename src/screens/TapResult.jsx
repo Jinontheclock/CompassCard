@@ -14,12 +14,17 @@ import battery from "../assets/icon-tap-battery.svg";
    surface: the type maps to the nearest step the app has, and the two inks
    the frame uses raw take the nearest of the app's own.
 
-   The frames give the screen no way out, so the whole of it dismisses. */
+   The frames give the screen no way out. The whole of it dismisses, and
+   because that is not something you can see, it also carries the way out
+   written down — placed in the empty half of the frame, where it displaces
+   nothing the frame draws. */
 export default function TapResult({ shot, onDismiss }) {
   const s = SHOTS[shot] ?? SHOTS.tap;
 
   return (
-    <button type="button" className="tap-scr" onClick={onDismiss}>
+    <div className="tap-scr">
+      <button type="button" className="tap-dismiss" aria-label="Back to Compass" onClick={onDismiss} />
+
       <div className="tap-status">
         <span className="tap-time tnum">9:41</span>
         <span className="tap-levels">
@@ -40,7 +45,11 @@ export default function TapResult({ shot, onDismiss }) {
       <span className={"tap-amount tnum" + (s.centred ? " tap-amount--centred" : "")}>{s.amount}</span>
       <span className="tap-sub">{s.sub}</span>
 
+      <button type="button" className="escape" onClick={onDismiss}>
+        Back to Compass
+      </button>
+
       <span className="tap-home" />
-    </button>
+    </div>
   );
 }

@@ -3,12 +3,16 @@ import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
 import SettingsRow from "../components/SettingsRow.jsx";
-import { FARES, money } from "../data/seed.js";
+import { FARES, money, replacementFee } from "../data/seed.js";
 
 /* Ordering a new piece of plastic. Nothing about the account changes, which
    is what the rows say: the card is named, what travels with it is listed,
-   and the fee is stated before the button rather than after it. */
-export default function Replace({ card, onBack, onOrder }) {
+   and the fee is stated before the button rather than after it. The fee is
+   the one this card would actually be charged — a card carrying a Program
+   pass costs more to replace, which is what the line beneath explains. */
+export default function Replace({ card, programPass = false, onBack, onOrder }) {
+  const fee = replacementFee(programPass);
+
   return (
     <div className="scr">
       <StatusBar />
@@ -32,15 +36,10 @@ export default function Replace({ card, onBack, onOrder }) {
                 chevron={false}
               />
               <div className="panel-rule panel-rule--inset" />
-              <SettingsRow
-                label="Replacement fee"
-                value={money(FARES.replacementFee)}
-                strong
-                chevron={false}
-              />
+              <SettingsRow label="Replacement fee" value={money(fee)} strong chevron={false} />
             </div>
             <p className="replace-note">
-              {money(FARES.replacementFee)} applies to Program pass cards.
+              {money(FARES.programCardFee)} applies to Program pass cards.
             </p>
           </div>
 

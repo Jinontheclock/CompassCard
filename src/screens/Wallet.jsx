@@ -8,8 +8,10 @@ import walletCard from "../assets/wallet-card.png";
    Pro's 34, the two round controls are the frame's own export, and the
    cards themselves are renders.
 
-   The frames give Wallet no way back to the app, so the surface behind the
-   card dismisses. */
+   The frames give Wallet no way back to the app. The surface behind the
+   card dismisses, and since that is not something you can see, the way out
+   is written down as well — in the empty half of the frame, below where
+   anything is drawn. */
 export default function Wallet({ onOpenCard, onDismiss }) {
   return (
     <div className="wallet-scr">
@@ -26,6 +28,10 @@ export default function Wallet({ onOpenCard, onDismiss }) {
 
       <button type="button" className="wallet-card" onClick={onOpenCard}>
         <img src={walletCard} alt="Compass Card" width="370" height="232" />
+      </button>
+
+      <button type="button" className="escape" onClick={onDismiss}>
+        Back to Compass
       </button>
 
       <HomeIndicator />

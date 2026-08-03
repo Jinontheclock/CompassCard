@@ -8,11 +8,12 @@ import checkIcon from "../assets/icon-check-sm.svg";
    student number typed; the two lines under them are the point of the whole
    screen, which is that neither a card number nor a monthly deadline comes
    into it. */
-export default function UPassConnect({ upass, studentId, onStudentId, onBack, onConnect }) {
+export default function UPassConnect({ card, upass, studentId, onStudentId, onBack, onConnect }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Cards" />
+      {/* named for the card it is being connected to, as the rest are */}
+      <NavHeader onBack={onBack} backLabel={card.name} />
 
       <div className="scr-body">
         <h1 className="scr-title">Connect U-Pass BC</h1>

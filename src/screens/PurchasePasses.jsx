@@ -1,13 +1,14 @@
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
-import { PASSES } from "../data/seed.js";
+import { PASSES, passPrice } from "../data/seed.js";
 import radioTick from "../assets/icon-radio-tick.svg";
 
 /* The passes that can be put on a card. One is chosen at a time, and the
    button restates the choice rather than saying only "Purchase" — which is
    how the frame writes it: the product's short name, and the zone where the
-   product has zones. */
+   product has zones. Picking a zone reprices the monthly, since a monthly
+   is priced by zone; a DayPass covers them all and holds its price. */
 export default function PurchasePasses({ card, passId, zone, onPass, onZone, onBack, onPurchase }) {
   const chosen = PASSES.find((p) => p.id === passId) ?? PASSES[0];
   const label = "Purchase " + chosen.short + (chosen.zones ? ` · ${zone}-Zone` : "");
@@ -73,7 +74,7 @@ export default function PurchasePasses({ card, passId, zone, onPass, onZone, onB
                     <span className="product-valid">{pass.valid}</span>
                     <span className="product-price tnum">
                       <span className="product-price-unit">$</span>
-                      {pass.price.toFixed(2)}
+                      {passPrice(pass, zone).toFixed(2)}
                     </span>
                   </div>
                 </div>

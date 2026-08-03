@@ -1,14 +1,15 @@
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
-import { CHAT } from "../data/seed.js";
+import { CHAT } from "../data/assistant.js";
 import chevron from "../assets/icon-chevron.svg";
 import sendIcon from "../assets/icon-send.svg";
 
-/* The assistant. The conversation opens on the exchange the frame draws;
-   anything typed after it is added as another of your own bubbles — the
-   demo has no assistant behind it to answer, and inventing one would be
-   putting words in its mouth. */
+/* The assistant. The conversation opens on the exchange the frame draws and
+   goes on from there: what is typed is matched against the topics the
+   assistant knows and answered from the same fare table the rest of the app
+   reads, so it cannot quote a figure the app would contradict. Most answers
+   end on the row that opens the screen which does the thing. */
 function Bubble({ message, onAction }) {
   const mine = message.from === "user";
   return (

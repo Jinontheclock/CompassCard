@@ -195,16 +195,21 @@
   font: var(--app-body);
   color: var(--text-primary);
 }
+/* Every typed control takes the same ring, and the box takes it rather
+   than the input inside — the card number is five inputs in one box. */
+.field-input:focus,
+.reg-box:focus-within,
+.pick-box:focus-within,
+.chat-field:focus-within {
+  outline: 2px solid var(--compass-400);
+  outline-offset: -2px;
+}
 .field-input::placeholder {
   color: var(--text-muted);
 }
 /* the masked value is set wide in the frames — 3.4px at 17 is 0.2em */
 .field-input[type="password"]::placeholder {
   letter-spacing: 0.2em;
-}
-.field-input:focus {
-  outline: 2px solid var(--compass-400);
-  outline-offset: -2px;
 }
 
 /* ── note panel ── */
@@ -1255,11 +1260,6 @@
 .reg-cvn .reg-digits::placeholder {
   color: var(--text-secondary);
 }
-/* the whole box takes the focus ring, not the one group inside it */
-.reg-box:focus-within {
-  outline: 2px solid var(--compass-400);
-  outline-offset: -2px;
-}
 /* The separators are set in the kit's own face at 16px, which falls between
    two steps of this scale and has no token. They take app/body, the nearer
    step, rather than a new size invented for them. */
@@ -1505,10 +1505,6 @@
   border-radius: var(--radius);
   background: var(--surface);
 }
-.pick-box:focus-within {
-  outline: 2px solid var(--compass-400);
-  outline-offset: -2px;
-}
 .pick-value {
   font: var(--app-body);
   color: var(--text-primary);
@@ -1585,14 +1581,19 @@
   border-radius: 18px 18px 18px 4px;
   background: var(--card-bg);
 }
-/* The frame breaks these lines itself and holds them, so a line is a line
-   rather than something the bubble's width decides. */
+/* The frame breaks the assistant's lines itself and holds them, so a line
+   is a line rather than something the bubble's width decides — the harness
+   checks that none of them overruns. What you type is not written to fit,
+   so your own bubble wraps instead. */
 .chat-lines {
   margin: 0;
   display: flex;
   flex-direction: column;
   font: var(--app-body);
   white-space: nowrap;
+}
+.chat-bubble--mine .chat-lines {
+  white-space: normal;
 }
 /* the row the assistant offers: what it is talking about, and the way in */
 .chat-action {
@@ -1646,10 +1647,6 @@
   border-radius: 22px;
   background: var(--surface);
 }
-.chat-field:focus-within {
-  outline: 2px solid var(--compass-400);
-  outline-offset: -2px;
-}
 .chat-input {
   width: 100%;
   padding: 0;
@@ -1680,14 +1677,19 @@
    Not the app's chrome and not the app's scale: a 54 bar, a 140 home bar,
    and everything placed against the frame. */
 .tap-scr {
-  all: unset;
-  box-sizing: border-box;
   position: relative;
-  display: block;
   width: 100%;
   height: 100%;
   background: var(--bg);
-  cursor: pointer;
+}
+/* The same door Wallet has, drawn the same way: the surface itself
+   dismisses, behind everything the frame places. */
+.tap-dismiss,
+.wallet-dismiss {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  cursor: default;
 }
 .tap-status {
   position: absolute;
@@ -1791,14 +1793,6 @@
   height: 100%;
   background: var(--wallet-bg);
 }
-/* Wallet has no back control of its own, so the surface behind the card is
-   the way out */
-.wallet-dismiss {
-  all: unset;
-  position: absolute;
-  inset: 0;
-  cursor: default;
-}
 /* the phone's own chrome, which both apps carry. This screen places rather
    than stacks, so the two are placed too. */
 .wallet-scr > .status-bar {
@@ -1877,7 +1871,7 @@
   width: 100%;
   padding: 14px 16px;
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--surface);
 }
 .wallet-panel--balance {
   height: 90px;
@@ -1892,7 +1886,7 @@
   height: 52px;
   padding: 14px 16px;
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--surface);
   cursor: pointer;
 }
 .wallet-balance {
@@ -1911,7 +1905,10 @@
   color: var(--wallet-ink);
 }
 .wallet-pill {
+  all: unset;
+  box-sizing: border-box;
   display: flex;
+  cursor: pointer;
   align-items: center;
   justify-content: center;
   width: 120px;
@@ -1919,11 +1916,36 @@
   border-radius: 32px;
   background: var(--wallet-ink);
   font: 500 16px / 24px var(--font);
-  color: #ffffff;
+  color: var(--surface);
 }
 .wallet-open-label {
   font: 400 16.3px / 24px var(--font);
   color: var(--wallet-ink);
+}
+
+/* ── the way out of a screen that has none ──
+   Two frames — the gate's confirmation and Wallet — are drawn without a
+   back control, because in life you leave them by putting the phone away.
+   Here they need a door. It sits in the empty half of each frame, clear of
+   everything drawn, and 60 above the indicator on both so it is in the same
+   place whichever one you are on. */
+.escape {
+  all: unset;
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  bottom: 60px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  font: var(--app-body);
+  color: var(--compass-600);
+  cursor: pointer;
 }
 
 /* ── landing ── */

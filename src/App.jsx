@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { seedState, FARES, PASSES, CHAT } from "./data/seed.js";
+import { seedState, FARES, PASSES, passPrice } from "./data/seed.js";
+import { CHAT, reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
 import CardRegister from "./screens/CardRegister.jsx";
@@ -45,7 +46,7 @@ const emptyForm = () => ({
 
 export default function App() {
   const [stack, setStack] = useState(["landing"]);
-  const [model] = useState(seedState);
+  const [model, setModel] = useState(seedState);
   const [form, setForm] = useState(emptyForm);
   /* Whether the account has a card yet. Carrying on past Card Register
      without registering one is what leaves it false, and home draws its
@@ -86,6 +87,16 @@ export default function App() {
      burying one tab under the other */
   const selectTab = (id) => setStack([id === "tickets" ? "tickets" : "home"]);
   const current = stack[stack.length - 1];
+
+  /* Whichever card is open. Every screen under a card is handed this one
+     rather than looking it up again. */
+  const card = model.cards.find((c) => c.id === openCard) ?? model.cards[0];
+  /* what the acting screen changes about that card */
+  const patchCard = (patch) =>
+    setModel((m) => ({
+      ...m,
+      cards: m.cards.map((c) => (c.id === card.id ? { ...c, ...patch } : c)),
+    }));
 
   const change = (section) => (key, value) =>
     setForm((f) => ({ ...f, [section]: { ...f[section], [key]: value } }));
@@ -150,7 +161,7 @@ export default function App() {
       case "carddetail":
         return (
           <CardDetail
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             onBack={back}
             onAccount={() => push("account")}
             onOpen={(id) => push(id === "upass" && !upassOn ? "upassconnect" : id)}
@@ -160,6 +171,7 @@ export default function App() {
       case "upass":
         return (
           <UPass
+            card={card}
             upass={{ ...model.upass, autoRenew }}
             onBack={back}
             onAutoRenew={setAutoRenew}
@@ -169,6 +181,7 @@ export default function App() {
       case "upassconnect":
         return (
           <UPassConnect
+            card={card}
             upass={model.upass}
             studentId={form.upass.studentId}
             onStudentId={(v) => change("upass")("studentId", v)}
@@ -179,7 +192,7 @@ export default function App() {
       case "reload":
         return (
           <Reload
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             amount={reloadAmount}
             onAmount={setReloadAmount}
             onBack={back}
@@ -190,23 +203,31 @@ export default function App() {
       case "reloaddone":
         return (
           <ReloadDone
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             amount={reloadAmount}
-            onDone={() => setStack(["home", "carddetail"])}
+            /* the reload is only real when it is done: the balance goes up
+               and the ledger gains the line that says why */
+            onDone={() => {
+              patchCard({
+                balance: card.balance + reloadAmount,
+                history: [
+                  { label: "Reload", sub: "Apple Pay", amount: reloadAmount, date: "Aug-3-2026" },
+                  ...card.history,
+                ],
+              });
+              setStack(["home", "carddetail"]);
+            }}
           />
         );
       case "refund":
-        return (
-          <Refund
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
-            onBack={back}
-            onRequest={back}
-          />
-        );
+        return <Refund card={card} onBack={back} onRequest={back} />;
       case "replace":
         return (
           <Replace
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
+            /* a card carrying a U-Pass is a Program pass card, and costs the
+               Program pass fee to replace */
+            programPass={upassOn}
             onBack={back}
             onOrder={back}
           />
@@ -214,16 +235,16 @@ export default function App() {
       case "lost":
         return (
           <LostCard
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             onBack={back}
-            onFreeze={back}
+            onFreeze={(frozen) => patchCard({ frozen })}
             onMove={() => push("replace")}
           />
         );
       case "history":
         return (
           <History
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             onBack={back}
             onSelectTab={selectTab}
             onShot={(id) => { setShot(id); push("shot"); }}
@@ -235,16 +256,22 @@ export default function App() {
             messages={chat}
             draft={draft}
             onDraft={setDraft}
-            /* nothing answers, so a message only joins the ones above it */
             onSend={() => {
               const text = draft.trim();
               if (!text) return;
-              setChat((c) => [...c, { from: "user", lines: [text] }]);
+              setChat((c) => [...c, { from: "user", lines: [text] }, reply(text)]);
               setDraft("");
             }}
             onBack={back}
             onAction={push}
-            onPerson={back}
+            /* asking for a person does not leave the conversation — the
+               assistant says what happens next and stays where it is */
+            onPerson={() =>
+              setChat((c) => [
+                ...c,
+                { from: "bot", lines: ["Putting you through. An agent joins this", "chat in a few minutes."] },
+              ])
+            }
           />
         );
       case "shot":
@@ -254,9 +281,11 @@ export default function App() {
       case "walletcard":
         return (
           <WalletCard
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             onClose={back}
-            /* leaving Wallet the way it came, which is back into the app */
+            /* Wallet cannot take money itself, so both of these hand back to
+               the app — one to where it came from, one to the reload screen */
+            onAddMoney={() => setStack((s) => [...s.slice(0, -2), "reload"])}
             onOpenApp={() => setStack((s) => s.slice(0, -2))}
           />
         );
@@ -272,13 +301,33 @@ export default function App() {
       case "passes":
         return (
           <PurchasePasses
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             passId={passId}
             zone={passZone}
             onPass={setPassId}
             onZone={setPassZone}
             onBack={back}
-            onPurchase={back}
+            /* buying one puts it on the card, which is what the card's own
+               screen then says it holds */
+            onPurchase={() => {
+              const pass = PASSES.find((p) => p.id === passId) ?? PASSES[0];
+              patchCard({
+                pass: {
+                  type: pass.zones ? `${pass.short} · ${passZone}-Zone` : pass.short,
+                  expires: "Aug 31",
+                },
+                history: [
+                  {
+                    label: pass.name,
+                    sub: "Apple Pay",
+                    amount: -passPrice(pass, passZone),
+                    date: "Aug-3-2026",
+                  },
+                  ...card.history,
+                ],
+              });
+              back();
+            }}
           />
         );
       case "payment":
@@ -286,10 +335,13 @@ export default function App() {
       case "autoload":
         return (
           <Autoload
-            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            card={card}
             autoload={model.autoload}
             onBack={back}
-            onNext={back}
+            onSet={(key, value) =>
+              setModel((m) => ({ ...m, autoload: { ...m.autoload, [key]: value } }))
+            }
+            onToggle={(on) => setModel((m) => ({ ...m, autoload: { ...m.autoload, on } }))}
             onOpen={push}
           />
         );

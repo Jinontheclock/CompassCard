@@ -9,11 +9,14 @@ import radioTick from "../assets/icon-radio-tick.svg";
    deepest Compass blue, with the two initials in its gold — and everything
    under it is the state of this month: whether it has renewed, and whether
    it will keep renewing. */
-export default function UPass({ upass, onBack, onAutoRenew, onSelectTab }) {
+export default function UPass({ card, upass, onBack, onAutoRenew, onSelectTab }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Cards" />
+      {/* The frame labels this "Cards", but the screen is reached from a
+          card, not from the list — so it is named for the card it belongs
+          to, the way every other screen under a card is. */}
+      <NavHeader onBack={onBack} backLabel={card.name} />
 
       <div className="scr-body">
         <h1 className="scr-title scr-title--alone">U-Pass BC</h1>

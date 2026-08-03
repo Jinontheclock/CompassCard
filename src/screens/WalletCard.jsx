@@ -8,7 +8,7 @@ import chevron from "../assets/icon-chevron.svg";
    the way back into the app. Still Apple's screen, so the type is Wallet's
    rather than the app's — set at the sizes the frame gives them, since a
    scale built for the app has no place standing in for Apple's. */
-export default function WalletCard({ card, onClose, onOpenApp }) {
+export default function WalletCard({ card, onClose, onAddMoney, onOpenApp }) {
   return (
     <div className="wallet-scr">
       <StatusBar />
@@ -30,7 +30,11 @@ export default function WalletCard({ card, onClose, onOpenApp }) {
             <span className="wallet-balance-label">Balance</span>
             <span className="wallet-balance-amount tnum">CAD${card.balance.toFixed(2)}</span>
           </div>
-          <span className="wallet-pill">Add Money</span>
+          {/* Wallet has no way to take money itself — adding to the card is
+              the app's job, so the pill hands back to it */}
+          <button type="button" className="wallet-pill" onClick={onAddMoney}>
+            Add Money
+          </button>
         </div>
 
         <button type="button" className="wallet-panel wallet-panel--open" onClick={onOpenApp}>
