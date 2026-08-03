@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { seedState, FARES, PASSES } from "./data/seed.js";
+import { seedState, FARES, PASSES, CHAT } from "./data/seed.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
 import CardRegister from "./screens/CardRegister.jsx";
@@ -20,6 +20,8 @@ import PurchaseNewCard from "./screens/PurchaseNewCard.jsx";
 import PurchasePasses from "./screens/PurchasePasses.jsx";
 import UPass from "./screens/UPass.jsx";
 import UPassConnect from "./screens/UPassConnect.jsx";
+import Help from "./screens/Help.jsx";
+import TapResult from "./screens/TapResult.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -60,10 +62,14 @@ export default function App() {
      that can be changed, so it is held apart from the seed. */
   const [upassOn, setUpassOn] = useState(false);
   const [autoRenew, setAutoRenew] = useState(model.upass.autoRenew);
+  /* the assistant, and whichever of the two tap frames was opened */
+  const [chat, setChat] = useState(CHAT);
+  const [draft, setDraft] = useState("");
+  const [shot, setShot] = useState("tap");
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect"]);
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot"]);
   const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   /* one screen standing in for another it leads to, so what is behind them
@@ -218,8 +224,29 @@ export default function App() {
             card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
             onBack={back}
             onSelectTab={selectTab}
+            onShot={(id) => { setShot(id); push("shot"); }}
           />
         );
+      case "help":
+        return (
+          <Help
+            messages={chat}
+            draft={draft}
+            onDraft={setDraft}
+            /* nothing answers, so a message only joins the ones above it */
+            onSend={() => {
+              const text = draft.trim();
+              if (!text) return;
+              setChat((c) => [...c, { from: "user", lines: [text] }]);
+              setDraft("");
+            }}
+            onBack={back}
+            onAction={push}
+            onPerson={back}
+          />
+        );
+      case "shot":
+        return <TapResult shot={shot} onDismiss={back} />;
       case "purchase":
         return (
           <PurchaseNewCard

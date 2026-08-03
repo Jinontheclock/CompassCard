@@ -21,7 +21,7 @@ function Entry({ entry }) {
   );
 }
 
-export default function History({ card, onBack, onSelectTab }) {
+export default function History({ card, onBack, onSelectTab, onShot }) {
   /* An entry opens to show the taps behind it. Only a trip has any, so only
      a trip opens. The list arrives closed, as the History frame draws it,
      and opening one gives the frame drawn with details. */
@@ -47,9 +47,15 @@ export default function History({ card, onBack, onSelectTab }) {
                       component and the rest as plain rows, which leaves the
                       first two pixels taller */}
                   {i === 0 ? (
-                    <div className="panel">
+                    /* an entry a tap frame stands behind opens onto it */
+                    <button
+                      type="button"
+                      className="panel panel--tap"
+                      disabled={!entry.shot}
+                      onClick={() => onShot?.(entry.shot)}
+                    >
                       <Entry entry={entry} />
-                    </div>
+                    </button>
                   ) : entry.taps && open === keyOf(entry) ? (
                     <div className="history-card history-card--open">
                       <div className="history-open-head">

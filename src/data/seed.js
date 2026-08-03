@@ -21,9 +21,11 @@ export function seedState() {
         frozen: false,
         pass: { type: "Monthly · 2-Zone", expires: "Jul 31" },
         history: [
-          { label: "1-Zone trip", sub: "Stored value", amount: -2.85, date: "Mar-1-2026" },
+          /* the two entries the tap frames are the confirmation of: the
+             figures on those screens are these, read back */
+          { label: "1-Zone trip", sub: "Stored value", amount: -2.85, date: "Mar-1-2026", shot: "tap" },
           { label: "Reload", sub: "Apple Pay", amount: 20.0, date: "Mar-1-2026" },
-          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -19.1, date: "Feb-25-2026" },
+          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -19.1, date: "Feb-25-2026", shot: "ferry" },
           {
             label: "3-Zone trip",
             sub: "Stored value",
@@ -78,6 +80,34 @@ export function seedState() {
     ],
   };
 }
+
+/* The two shots of a tap going through — the gate's own screen rather than
+   the app's, which is why nothing on them is drawn from the app's chrome.
+   Both read back an entry the card already holds. */
+export const SHOTS = {
+  tap: {
+    amount: "$2.85 Deducted · $12.15 Remaining",
+    sub: "1-Zone · Stored value",
+    centred: false,
+  },
+  ferry: {
+    eyebrow: "BC FERRIES · WALK-ON",
+    amount: "$19.10 Deducted",
+    sub: "BC Ferries · Adult foot passenger",
+    centred: true,
+  },
+};
+
+/* The conversation the help frame opens on. The assistant's reply carries a
+   row that opens the entry it is about. */
+export const CHAT = [
+  { from: "user", lines: ["Why was I charged $4.20?"] },
+  {
+    from: "bot",
+    lines: ["That was a 2-Zone trip — the adult 2-Zone", "fare is $4.20."],
+    action: { label: "2-Zone trip · −$4.20", sub: "View in History", to: "history" },
+  },
+];
 
 /* The two passes the purchase frame offers, in the order it lists them.
    `short` is how the button names the product — "Monthly", not "Monthly
