@@ -5,9 +5,9 @@ import contactless from "../assets/icon-contactless.svg";
    full one carries the twin line and the pass it holds, the compact one is
    just a name and a balance. Which one a card gets follows from the card —
    only a card with a pass is drawn full. */
-export default function CardTile({ card, compact = false }) {
+export default function CardTile({ card, compact = false, onClick }) {
   return (
-    <div className={"card-tile" + (compact ? " card-tile--compact" : "")}>
+    <button type="button" className={"card-tile" + (compact ? " card-tile--compact" : "")} onClick={onClick}>
       <div className="card-tile-head">
         <div className="card-tile-name">
           <span className="card-tile-title">{card.name}</span>
@@ -28,6 +28,6 @@ export default function CardTile({ card, compact = false }) {
           </div>
         )}
       </div>
-    </div>
+    </button>
   );
 }

@@ -7,6 +7,7 @@ import Login from "./screens/Login.jsx";
 import CardList from "./screens/CardList.jsx";
 import Tickets from "./screens/Tickets.jsx";
 import Account from "./screens/Account.jsx";
+import CardDetail from "./screens/CardDetail.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -33,8 +34,12 @@ export default function App() {
      without registering one is what leaves it false, and home draws its
      other state accordingly. */
   const [hasCard, setHasCard] = useState(true);
+  const [openCard, setOpenCard] = useState("c1");
 
-  const push = (id) => setStack((s) => [...s, id]);
+  /* Screens that exist. A tile pointing at one still being built is a
+     no-op rather than a drop back to the Landing screen. */
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail"]);
+  const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   /* Home is where the onboarding ends, and it carries no back control, so it
      replaces the stack instead of adding to it — there is nothing behind it
@@ -94,6 +99,7 @@ export default function App() {
             onAccount={() => push("account")}
             onPurchase={() => push("purchase")}
             onRegister={() => push("cardregister")}
+            onCard={(id) => { setOpenCard(id); push("carddetail"); }}
           />
         );
       case "tickets":
@@ -102,6 +108,16 @@ export default function App() {
             sailings={model.sailings}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
+          />
+        );
+      case "carddetail":
+        return (
+          <CardDetail
+            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            onBack={back}
+            onAccount={() => push("account")}
+            onOpen={push}
+            onSelectTab={selectTab}
           />
         );
       case "account":

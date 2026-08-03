@@ -20,8 +20,8 @@ export function seedState() {
         frozen: false,
         pass: { type: "Monthly · 2-Zone", expires: "Jul 31" },
         history: [
-          { label: "1-Zone trip", sub: "Stored value · Jul 28", amount: -2.85 },
-          { label: "Reload", sub: "Apple Pay · Jul 26", amount: 20.0 },
+          { label: "1-Zone trip", sub: "Stored value · Mar 1", amount: -2.85 },
+          { label: "Reload", sub: "Apple Pay · Mar 1", amount: 20.0 },
         ],
       },
       {
@@ -59,3 +59,8 @@ export function seedState() {
 /* $2.85, never $2.9 — every amount on screen carries both decimals. */
 export const money = (n) =>
   (n < 0 ? "-$" : "$") + Math.abs(n).toFixed(2);
+
+/* History reads as a ledger, so a credit carries its plus and a debit the
+   true minus sign rather than a hyphen. */
+export const signed = (n) =>
+  (n < 0 ? "−$" : "+$") + Math.abs(n).toFixed(2);

@@ -34,6 +34,9 @@
   --success: #146b45;
   --warning: #7a4f00;
 
+  /* U-Pass BC's own gold, which the frames use only for those initials */
+  --upass-gold: #f5b314;
+
   /* ── iOS chrome, from the Apple UI kit the frames are built on ── */
   --labels-primary: #000000;
   --labels-primary-dark: #ffffff;
@@ -71,6 +74,12 @@
 
   --app-caption: 500 12px / 16px var(--font);
   --app-caption-tracking: 0.0002em;
+
+  /* The balance hero, the one place the frames go past app/display. It is
+     not in the seven named styles, but it is the app's own face at a size
+     the design clearly intends rather than a leftover from a kit. */
+  --app-balance: 700 56px / 40px var(--font);
+  --app-balance-tracking: -0.004em;
 
   /* ── Layout. 4px grid; the screen is a fixed 402×874 — the points an
      iPhone 17 gives you, and the size of the Figma frames. It is the one

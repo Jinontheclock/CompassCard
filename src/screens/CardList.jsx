@@ -15,7 +15,7 @@ import emptyIcon from "../assets/icon-empty.svg";
    Two states, both drawn: cardlist-01 once there is a card, cardlist-02
    before there is one. Carrying on past Card Register without registering
    is what lands you on the second. */
-export default function CardList({ cards, onAccount, onPurchase, onRegister, onSelectTab }) {
+export default function CardList({ cards, onAccount, onPurchase, onRegister, onCard, onSelectTab }) {
   const empty = cards.length === 0;
 
   return (
@@ -57,7 +57,12 @@ export default function CardList({ cards, onAccount, onPurchase, onRegister, onS
             <div className="home-cards">
               <div className="card-stack">
                 {cards.map((card) => (
-                  <CardTile key={card.id} card={card} compact={!card.pass} />
+                  <CardTile
+                    key={card.id}
+                    card={card}
+                    compact={!card.pass}
+                    onClick={() => onCard?.(card.id)}
+                  />
                 ))}
               </div>
               <Button tone="ghost" onClick={onPurchase}>

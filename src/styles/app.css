@@ -315,9 +315,13 @@
    14 rather than the 12 every other corner takes; the frame draws these
    rounder than the controls. */
 .card-tile {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
   height: 233px;
   padding: 18px;
   border-radius: 14px;
@@ -430,6 +434,164 @@
   font: var(--app-callout);
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
+}
+
+/* ── card detail ── */
+.detail-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.balance-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* 17 of inset with the stroke drawn inside it, as everywhere else */
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.hero-label,
+.hero-twin,
+.hero-pass-label {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+/* The figure is the one thing on the screen set larger than the scale goes;
+   the frame gives it 56 over a 40 line, with the currency mark beside it at
+   app/heading and the two sitting on a shared baseline. */
+.hero-amount {
+  display: flex;
+  align-items: baseline;
+  /* the row the frame gives them; the 56 overhangs its own 40 line */
+  height: 48px;
+}
+.hero-unit {
+  font: var(--app-heading);
+  letter-spacing: var(--app-heading-tracking);
+}
+.hero-figure {
+  font: var(--app-balance);
+  letter-spacing: var(--app-balance-tracking);
+}
+.hero-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hero-twin {
+  padding-top: 4px;
+}
+/* drawn above a box of no height, so the rule costs the stack nothing —
+   which is how the frame keeps the hero at 186 rather than 187 */
+.hero-rule {
+  position: relative;
+  width: 336px;
+  height: 0;
+}
+.hero-rule::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0 auto 0;
+  height: 1px;
+  background: var(--border);
+}
+.hero-pass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 337px;
+  padding-bottom: 12px;
+}
+.hero-pass-value {
+  font: var(--app-body);
+}
+
+/* the history preview and the full list share these rows */
+.section-label--split {
+  justify-content: space-between;
+}
+.panel--flat {
+  background: var(--bg);
+}
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+.history-what {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.history-label {
+  font: var(--app-body);
+}
+.history-sub {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.history-amount {
+  font: var(--app-subhead);
+}
+.history-amount--credit {
+  color: var(--success);
+}
+
+/* ── the manage tiles ── */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 177px);
+  gap: 8px 16px;
+}
+.tile {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  cursor: pointer;
+}
+.tile-label {
+  font: var(--app-caption);
+  letter-spacing: var(--app-caption-tracking);
+  color: var(--text-primary);
+}
+.tile-gold {
+  color: var(--upass-gold);
+}
+/* the Wallet tile is Apple's, so it takes Apple's black */
+.tile--apple {
+  padding: 0 13px;
+  border-color: transparent;
+  background: var(--text-primary);
+}
+.tile--apple .tile-label {
+  color: var(--bg);
+}
+/* the logo is a crop of a square mark, framed the way the frame frames it */
+.tile-apple {
+  position: relative;
+  flex: none;
+  width: 17px;
+  height: 12.952px;
+  overflow: hidden;
+}
+.tile-apple img {
+  position: absolute;
+  width: 132%;
+  height: 173.68%;
+  left: -16%;
+  top: -36.84%;
 }
 
 /* ── a settings row: label, optional value, chevron ── */
