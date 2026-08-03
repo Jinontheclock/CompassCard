@@ -1,0 +1,35 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".tab-bar .tab:nth-of-type(2)"],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".home-title",
+    "label1": ".section:nth-of-type(1) .section-label",
+    "panel": ".panel",
+    "row1": ".panel-row:nth-of-type(1)",
+    "sailing1": ".panel-row:nth-of-type(1) .sailing",
+    "status1": ".panel-row:nth-of-type(1) .status-ok",
+    "foot": ".panel-foot",
+    "label2": ".section--tickets .section-label",
+    "empty": ".empty-card",
+    "emptyNote": ".empty-note",
+    "tabbar": ".tab-bar",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": { "x": 0, "y": 62, "w": 402, "h": 46 },
+    "title": { "x": 16, "y": 68, "h": 34 },
+    "label1": { "x": 16, "y": 108, "w": 370, "h": 20 },
+    "panel": { "x": 16, "y": 132, "w": 370, "h": 236 },
+    "row1": { "x": 17, "y": 133, "w": 368, "h": 100 },
+    "sailing1": { "x": 33, "y": 147, "h": 72 },
+    "status1": { "y": 171, "w": 86, "h": 24 },
+    "foot": { "y": 335, "h": 32 },
+    "label2": { "x": 16, "y": 389, "w": 370, "h": 20 },
+    "empty": { "x": 16, "y": 413, "w": 370, "h": 200 },
+    "emptyNote": { "w": 256 },
+    "tabbar": { "x": 49, "y": 791, "w": 304, "h": 49 },
+    "home": { "y": 840, "h": 34 }
+  }
+}

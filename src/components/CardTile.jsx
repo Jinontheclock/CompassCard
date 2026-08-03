@@ -10,7 +10,10 @@ export default function CardTile({ card, compact = false, onClick }) {
     <button type="button" className={"card-tile" + (compact ? " card-tile--compact" : "")} onClick={onClick}>
       <div className="card-tile-head">
         <div className="card-tile-name">
-          <span className="card-tile-title">{card.name}</span>
+          <span className="card-tile-title">
+            {card.name}
+            {card.frozen && <span className="frozen-chip">FROZEN</span>}
+          </span>
           {card.twin && <span className="card-tile-twin">{card.twin}</span>}
         </div>
         <img src={contactless} alt="" width="22" height="22" />

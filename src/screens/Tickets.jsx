@@ -1,13 +1,18 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import TabBar from "../components/TabBar.jsx";
+import { FARES, money } from "../data/seed.js";
 import accountIcon from "../assets/icon-account.svg";
 import onTimeIcon from "../assets/icon-ontime.svg";
 import emptyIcon from "../assets/icon-empty.svg";
 
-/* The other tab. The sailings are read from the seed; the tickets half is
-   empty on purpose — the frame draws the state before anything is booked. */
+/* The other tab. The sailings are read from the seed, and each one opens
+   onto what a walk-on costs — the same fare the ledger already charged.
+   The tickets half is empty on purpose: the frame draws the state before
+   anything is booked. */
 export default function Tickets({ sailings, onAccount, onSelectTab }) {
+  const [open, setOpen] = useState(null);
+
   return (
     <div className="scr">
       <StatusBar />
@@ -26,17 +31,30 @@ export default function Tickets({ sailings, onAccount, onSelectTab }) {
             {sailings.map((sailing, i) => (
               <Fragment key={i}>
                 {i > 0 && <div className="panel-rule panel-rule--inset" />}
-                <div className="panel-row">
-                  <div className="sailing">
-                    <span className="sailing-leg">{sailing.from}</span>
-                    <span className="sailing-leg">{sailing.to}</span>
-                    <span className="sailing-time">{sailing.time}</span>
+                <button
+                  type="button"
+                  className="sailing-card"
+                  aria-expanded={open === i}
+                  onClick={() => setOpen(open === i ? null : i)}
+                >
+                  <div className="panel-row">
+                    <div className="sailing">
+                      <span className="sailing-leg">{sailing.from}</span>
+                      <span className="sailing-leg">{sailing.to}</span>
+                      <span className="sailing-time">{sailing.time}</span>
+                    </div>
+                    <span className="status-ok">
+                      <img src={onTimeIcon} alt="" width="17" height="17" />
+                      {sailing.status}
+                    </span>
                   </div>
-                  <span className="status-ok">
-                    <img src={onTimeIcon} alt="" width="17" height="17" />
-                    {sailing.status}
-                  </span>
-                </div>
+                  <div className="sailing-more-wrap" aria-hidden={open !== i}>
+                    <div className="sailing-more">
+                      <span>Adult walk-on · pays from stored value</span>
+                      <span className="tnum">{money(FARES.ferryWalkOn)}</span>
+                    </div>
+                  </div>
+                </button>
               </Fragment>
             ))}
             <div className="panel-rule" />

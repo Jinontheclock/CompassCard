@@ -56,35 +56,38 @@ export default function History({ card, onBack, onSelectTab, onShot }) {
                     >
                       <Entry entry={entry} />
                     </button>
-                  ) : entry.taps && open === keyOf(entry) ? (
-                    <div className="history-card history-card--open">
-                      <div className="history-open-head">
-                        <Entry entry={entry} />
-                      </div>
-                      <div className="history-taps">
-                        <div className="history-tap-list">
-                          {entry.taps.map((tap) => (
-                            <div className="history-tap" key={tap.time}>
-                              <span className="history-tap-when">
-                                <span className="history-tap-time">{tap.time}</span>
-                                <span>{tap.place}</span>
-                              </span>
-                              <span className="tnum">{tap.amount}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <span className="history-balance">
-                          <span>Balance</span>
-                          <span className="tnum">{money(entry.balanceAfter)}</span>
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
+                  ) : entry.taps ? (
+                    /* a trip opens and closes in place — the taps unfold
+                       beneath the row rather than swapping the card out */
                     <button
                       type="button"
-                      className="history-card"
-                      onClick={() => entry.taps && setOpen(open === keyOf(entry) ? null : keyOf(entry))}
+                      className={"history-card" + (open === keyOf(entry) ? " history-card--open" : "")}
+                      aria-expanded={open === keyOf(entry)}
+                      onClick={() => setOpen(open === keyOf(entry) ? null : keyOf(entry))}
                     >
+                      <Entry entry={entry} />
+                      <div className="history-taps-wrap" aria-hidden={open !== keyOf(entry)}>
+                        <div className="history-taps">
+                          <div className="history-tap-list">
+                            {entry.taps.map((tap) => (
+                              <div className="history-tap" key={tap.time}>
+                                <span className="history-tap-when">
+                                  <span className="history-tap-time">{tap.time}</span>
+                                  <span>{tap.place}</span>
+                                </span>
+                                <span className="tnum">{tap.amount}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <span className="history-balance">
+                            <span>Balance</span>
+                            <span className="tnum">{money(entry.balanceAfter)}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  ) : (
+                    <button type="button" className="history-card history-card--still">
                       <Entry entry={entry} />
                     </button>
                   )}

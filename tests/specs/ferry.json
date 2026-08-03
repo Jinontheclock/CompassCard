@@ -1,0 +1,25 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".card-stack > *:nth-child(1)", ".linkish", ".section:nth-of-type(2) .panel--tap"],
+  "selectors": {
+    "status": ".tap-status",
+    "eyebrow": ".tap-eyebrow",
+    "art": ".tap-art",
+    "mark": ".tap-mark",
+    "title": ".tap-title",
+    "amount": ".tap-amount",
+    "sub": ".tap-sub",
+    "bar": ".tap-home"
+  },
+  "expect": {
+    "status": { "x": 32, "y": 0, "w": 342, "h": 54 },
+    "eyebrow": { "y": 112, "h": 16 },
+    "art": { "x": 74, "y": 136, "w": 254, "h": 160 },
+    "mark": { "x": 165, "y": 360, "w": 72, "h": 72 },
+    "title": { "y": 452, "h": 30 },
+    "amount": { "x": 41.79, "y": 492, "w": 318.42, "h": 26 },
+    "sub": { "y": 526, "h": 20 },
+    "bar": { "x": 131, "y": 861, "w": 140, "h": 5 }
+  }
+}

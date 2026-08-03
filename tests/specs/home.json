@@ -1,0 +1,29 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn"],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".home-title",
+    "account": ".nav-account",
+    "card1": ".card-stack > *:nth-child(1)",
+    "card2": ".card-stack > *:nth-child(2)",
+    "purchase": ".btn--ghost",
+    "note": ".home-note",
+    "tabbar": ".tab-bar",
+    "tabActive": ".tab--active",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": { "x": 0, "y": 62, "w": 402, "h": 46 },
+    "title": { "x": 16, "y": 68, "h": 34 },
+    "account": { "x": 348, "y": 66, "w": 38, "h": 38 },
+    "card1": { "x": 16, "y": 119, "w": 370, "h": 233 },
+    "card2": { "x": 16, "y": 368, "w": 370, "h": 150 },
+    "purchase": { "x": 16, "y": 534, "w": 370, "h": 50 },
+    "note": { "x": 16, "y": 592, "w": 370, "h": 47 },
+    "tabbar": { "x": 49, "y": 791, "w": 304, "h": 49 },
+    "tabActive": { "w": 140, "h": 40 },
+    "home": { "y": 840, "h": 34 }
+  }
+}

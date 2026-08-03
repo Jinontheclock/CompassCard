@@ -1,7 +1,7 @@
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import walletActions from "../assets/wallet-actions.png";
-import walletStack from "../assets/wallet-stack.png";
-import walletCard from "../assets/wallet-card.png";
+import walletStack from "../assets/wallet-stack.webp";
+import walletCard from "../assets/wallet-card.webp";
 
 /* The card as Wallet holds it. This is Apple's screen, not the app's, so
    none of the app's chrome or type scale applies to it: the title is SF

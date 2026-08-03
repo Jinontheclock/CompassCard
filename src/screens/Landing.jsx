@@ -1,7 +1,7 @@
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import compassMark from "../assets/compass-mark.svg";
-import cardArt from "../assets/compass-card.png";
+import cardArt from "../assets/compass-card.webp";
 
 /* The Figma frame leaves these two buttons at their component default, so
    the wording is set here: log in on top, sign up beneath it. */

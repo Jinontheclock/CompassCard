@@ -1,0 +1,106 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [
+    ".landing-actions > *:nth-child(1)",
+    ".scr-footer .btn",
+    ".home-cards > .btn"
+  ],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "sub": ".scr-sub",
+    "card": ".card-tile--preview",
+    "cardName": ".card-tile-title",
+    "cardLabel": ".card-tile-label",
+    "cardAmount": ".card-tile-amount",
+    "panel": ".panel",
+    "row1": ".settings-row:nth-of-type(1)",
+    "row2": ".settings-row--value:nth-of-type(2)",
+    "row3": ".settings-row--tall",
+    "note": ".note-panel",
+    "btn": ".scr-footer--fixed .btn",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": {
+      "x": 0,
+      "y": 62,
+      "w": 402,
+      "h": 46
+    },
+    "title": {
+      "x": 16,
+      "y": 108,
+      "w": 370,
+      "h": 50
+    },
+    "sub": {
+      "x": 16,
+      "y": 150,
+      "w": 370,
+      "h": 48
+    },
+    "card": {
+      "x": 16,
+      "y": 214,
+      "w": 370,
+      "h": 150
+    },
+    "cardName": {
+      "x": 34,
+      "y": 232,
+      "h": 34
+    },
+    "cardLabel": {
+      "x": 34,
+      "y": 290,
+      "h": 16
+    },
+    "cardAmount": {
+      "x": 34,
+      "y": 306,
+      "h": 40
+    },
+    "panel": {
+      "x": 16,
+      "y": 380,
+      "w": 370,
+      "h": 158
+    },
+    "row1": {
+      "x": 17,
+      "y": 381,
+      "w": 368,
+      "h": 52
+    },
+    "row2": {
+      "x": 17,
+      "y": 434,
+      "w": 368,
+      "h": 52
+    },
+    "row3": {
+      "x": 17,
+      "y": 487,
+      "w": 368,
+      "h": 50
+    },
+    "note": {
+      "x": 16,
+      "y": 554,
+      "w": 370,
+      "h": 70
+    },
+    "btn": {
+      "x": 16,
+      "y": 766,
+      "w": 370,
+      "h": 50
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    }
+  }
+}

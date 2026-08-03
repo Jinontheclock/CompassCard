@@ -1,0 +1,76 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [
+    ".landing-actions > *:nth-child(1)",
+    ".scr-footer .btn",
+    ".card-stack > *:nth-child(1)",
+    ".tile-grid > *:nth-child(5)"
+  ],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "sub": ".scr-sub",
+    "cardRow": ".card-row",
+    "chip": ".card-chip",
+    "balance": ".value-row",
+    "btn1": ".lost-actions > *:nth-child(1)",
+    "btn2": ".lost-actions > *:nth-child(2)",
+    "note": ".lost-note",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": {
+      "x": 0,
+      "y": 62,
+      "w": 402,
+      "h": 46
+    },
+    "title": {
+      "y": 108,
+      "h": 50
+    },
+    "sub": {
+      "x": 16,
+      "y": 150,
+      "w": 370,
+      "h": 48
+    },
+    "cardRow": {
+      "x": 16,
+      "y": 214,
+      "w": 370,
+      "h": 70
+    },
+    "chip": {
+      "w": 44,
+      "h": 30
+    },
+    "balance": {
+      "x": 16,
+      "y": 292,
+      "w": 370,
+      "h": 50
+    },
+    "btn1": {
+      "x": 16,
+      "y": 358,
+      "w": 370,
+      "h": 50
+    },
+    "btn2": {
+      "x": 16,
+      "y": 416,
+      "w": 370,
+      "h": 50
+    },
+    "note": {
+      "y": 482,
+      "h": 20
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    }
+  }
+}

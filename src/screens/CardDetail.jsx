@@ -55,6 +55,9 @@ export default function CardDetail({ card, onBack, onAccount, onOpen, onSelectTa
             {/* the rule and the pass line belong to a card that holds a pass;
                 a card without one closes on its balance */}
             <div className="hero-foot">
+              {card.frozen && (
+                <span className="hero-frozen">Frozen — this card stops at the gate.</span>
+              )}
               {card.twin && <span className="hero-twin">{card.twin}</span>}
               {card.pass && (
                 <>

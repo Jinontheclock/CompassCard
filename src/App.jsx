@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { seedState, digitalCard, registeredCard, FARES, PASSES, passPrice } from "./data/seed.js";
+import { seedState, digitalCard, registeredCard, FARES, PASSES, TODAY, passPrice } from "./data/seed.js";
 import { CHAT, reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
 import CardRegister from "./screens/CardRegister.jsx";
 import Login from "./screens/Login.jsx";
+import Forgot from "./screens/Forgot.jsx";
 import CardList from "./screens/CardList.jsx";
 import Tickets from "./screens/Tickets.jsx";
 import Account from "./screens/Account.jsx";
@@ -27,6 +28,7 @@ import AccountEdit from "./screens/AccountEdit.jsx";
 import Contact from "./screens/Contact.jsx";
 import Wallet from "./screens/Wallet.jsx";
 import WalletCard from "./screens/WalletCard.jsx";
+import compassMark from "./assets/compass-mark.svg";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -49,6 +51,13 @@ const emptyForm = () => ({
 
 export default function App() {
   const [stack, setStack] = useState(["landing"]);
+  /* the launch: the mark on the onboarding blue, held for a breath and let
+     go — it swallows taps while it is up, as a launch screen does */
+  const [splash, setSplash] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setSplash(false), 1150);
+    return () => clearTimeout(t);
+  }, []);
   const [model, setModel] = useState(seedState);
   const [form, setForm] = useState(emptyForm);
   const [openCard, setOpenCard] = useState("c1");
@@ -64,7 +73,6 @@ export default function App() {
      screen first and the U-Pass itself afterwards, which is the order the
      two frames are drawn in. Auto-renew is the one thing on that screen
      that can be changed, so it is held apart from the seed. */
-  const [upassOn, setUpassOn] = useState(false);
   const [autoRenew, setAutoRenew] = useState(model.upass.autoRenew);
   /* the assistant, and whichever of the two tap frames was opened */
   const [chat, setChat] = useState(CHAT);
@@ -73,7 +81,7 @@ export default function App() {
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact"]);
+  const BUILT = new Set(["signup", "login", "forgot", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact"]);
   /* How one screen leaves and the next arrives. Going deeper slides in from
      the right, going back slides out to it, a tab change crosses over in
      place — the three moves a stack navigation has. The leaving screen is
@@ -177,7 +185,7 @@ export default function App() {
             /* registering the plastic brings the card's own past with it —
                balance, pass and history arrive rather than starting over */
             onNext={() => {
-              const imported = registeredCard();
+              const imported = registeredCard(form.card.number.join(""));
               setModel((m) => ({ ...m, cards: [...m.cards, imported] }));
               setOpenCard(imported.id);
               home();
@@ -197,7 +205,15 @@ export default function App() {
               home();
             }}
             onSignUp={() => push("signup")}
-            onForgot={back}
+            onForgot={() => push("forgot")}
+          />
+        );
+      case "forgot":
+        return (
+          <Forgot
+            email={form.login.email}
+            onBack={back}
+            onSent={back}
           />
         );
       case "home":
@@ -225,7 +241,7 @@ export default function App() {
             card={card}
             onBack={back}
             onAccount={() => push("account")}
-            onOpen={(id) => push(id === "upass" && !upassOn ? "upassconnect" : id)}
+            onOpen={(id) => push(id === "upass" && !card.upassOn ? "upassconnect" : id)}
             onSelectTab={selectTab}
           />
         );
@@ -253,7 +269,7 @@ export default function App() {
               }))
             }
             onBack={back}
-            onConnect={() => { setUpassOn(true); swap("upass"); }}
+            onConnect={() => { patchCard({ upassOn: true }); swap("upass"); }}
           />
         );
       case "reload":
@@ -280,7 +296,7 @@ export default function App() {
               patchCard({
                 balance: card.balance + reloadAmount,
                 history: [
-                  { label: "Reload", sub: method, amount: reloadAmount, date: "Aug-3-2026" },
+                  { label: "Reload", sub: method, amount: reloadAmount, date: TODAY.ledger },
                   ...card.history,
                 ],
               });
@@ -309,7 +325,7 @@ export default function App() {
             card={card}
             /* a card carrying a U-Pass is a Program pass card, and costs the
                Program pass fee to replace */
-            programPass={upassOn}
+            programPass={!!card.upassOn}
             onBack={back}
             onOrder={() => patchCard({ replaced: true })}
           />
@@ -341,23 +357,34 @@ export default function App() {
             onSend={() => {
               const text = draft.trim();
               if (!text) return;
-              setChat((c) => [...c, { from: "user", lines: [text] }, reply(text)]);
+              /* the assistant reads before it answers: the typing dots hold
+                 its place, and the reply takes it over a beat later */
+              setChat((c) => [...c, { from: "user", lines: [text] }, { from: "bot", typing: true }]);
               setDraft("");
+              setTimeout(() => setChat((c) => [...c.slice(0, -1), reply(text)]), 900);
             }}
             onBack={back}
             onAction={push}
             /* asking for a person does not leave the conversation — the
-               assistant says what happens next and stays where it is */
-            onPerson={() =>
+               assistant hands over, and the person arrives a beat later */
+            onPerson={() => {
               setChat((c) => [
                 ...c,
-                { from: "bot", lines: ["Putting you through. An agent joins this", "chat in a few minutes."] },
-              ])
-            }
+                { from: "bot", lines: ["Putting you through. An agent joins this", "chat in a moment."] },
+              ]);
+              setTimeout(
+                () =>
+                  setChat((c) => [
+                    ...c,
+                    { from: "bot", who: "Riley · Agent", lines: ["Hi, this is Riley. I can see your", "conversation — how can I help?"] },
+                  ]),
+                1600
+              );
+            }}
           />
         );
       case "shot":
-        return <TapResult shot={shot} onDismiss={back} />;
+        return <TapResult shot={shot} declined={card.frozen} onDismiss={back} />;
       case "wallet":
         return <Wallet onOpenCard={() => push("walletcard")} onDismiss={back} />;
       case "walletcard":
@@ -420,7 +447,7 @@ export default function App() {
                     label: pass.name,
                     sub: "Apple Pay",
                     amount: -passPrice(pass, passZone),
-                    date: "Aug-3-2026",
+                    date: TODAY.ledger,
                   },
                   ...card.history,
                 ],
@@ -496,6 +523,11 @@ export default function App() {
       <div key={anim ? `in-${anim.n}` : "steady"} className={"stage" + (anim ? ` stage--in-${anim.dir}` : "")}>
         {screen(current)}
       </div>
+      {splash && (
+        <div className="splash" aria-hidden="true">
+          <img src={compassMark} alt="" />
+        </div>
+      )}
     </div>
   );
 }

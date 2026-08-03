@@ -1,5 +1,5 @@
 import { SHOTS } from "../data/seed.js";
-import tapArt from "../assets/tap-art.png";
+import tapArt from "../assets/tap-art.webp";
 import tapCheck from "../assets/icon-tap-check.svg";
 import signal from "../assets/icon-tap-signal.svg";
 import wifi from "../assets/icon-tap-wifi.svg";
@@ -18,7 +18,7 @@ import battery from "../assets/icon-tap-battery.svg";
    because that is not something you can see, it also carries the way out
    written down — placed in the empty half of the frame, where it displaces
    nothing the frame draws. */
-export default function TapResult({ shot, onDismiss }) {
+export default function TapResult({ shot, declined = false, onDismiss }) {
   const s = SHOTS[shot] ?? SHOTS.tap;
 
   return (
@@ -37,13 +37,23 @@ export default function TapResult({ shot, onDismiss }) {
       {s.eyebrow && <span className="tap-eyebrow">{s.eyebrow}</span>}
       <img className="tap-art" src={tapArt} alt="" width="254" height="160" />
 
-      <span className="tap-mark">
-        <img src={tapCheck} alt="" width="38" height="38" />
+      {/* a frozen card is turned away: the mark goes over to the warning
+          colour and the screen says why, instead of replaying the trip */}
+      <span className={"tap-mark" + (declined ? " tap-mark--declined" : "")}>
+        {declined ? (
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+            <path d="M12 12L26 26M26 12L12 26" stroke="white" strokeWidth="4.75" strokeLinecap="round" />
+          </svg>
+        ) : (
+          <img src={tapCheck} alt="" width="38" height="38" />
+        )}
       </span>
 
-      <span className="tap-title">Accepted</span>
-      <span className={"tap-amount tnum" + (s.centred ? " tap-amount--centred" : "")}>{s.amount}</span>
-      <span className="tap-sub">{s.sub}</span>
+      <span className="tap-title">{declined ? "Declined" : "Accepted"}</span>
+      <span className={"tap-amount tnum" + (s.centred || declined ? " tap-amount--centred" : "")}>
+        {declined ? "Card frozen" : s.amount}
+      </span>
+      <span className="tap-sub">{declined ? "Unfreeze it in the Compass app" : s.sub}</span>
 
       <button type="button" className="escape" onClick={onDismiss}>
         Back to Compass

@@ -26,6 +26,24 @@ export const CHAT = [
    see the check in the harness, which fails if any of them overruns. */
 export const TOPICS = [
   {
+    id: "concession",
+    match: /concession|child|children|kid|senior|youth|discount/i,
+    lines: [
+      `Concession trips are ${money(FARES.concession.storedValue[1])}, ${money(FARES.concession.storedValue[2])} and`,
+      `${money(FARES.concession.storedValue[3])} by zone. A monthly is ${money(FARES.concession.monthly)}`,
+      `and a DayPass ${money(FARES.concession.dayPass)}, all zones.`,
+    ],
+  },
+  {
+    id: "offpeak",
+    match: /evening|weekend|after 6|night|holiday|off-?peak/i,
+    lines: [
+      "After 6:30 PM on weekdays — and all day",
+      "on weekends and holidays — every trip",
+      `charges the 1-Zone ${money(FARES.storedValue[1])}.`,
+    ],
+  },
+  {
     id: "fare",
     match: /\bfare|charge|charged|cost|price|zone|how much.*(trip|ride)/i,
     lines: [

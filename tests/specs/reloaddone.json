@@ -1,0 +1,23 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".card-stack > *:nth-child(1)", ".tile-grid > *:nth-child(1)", ".scr-footer .btn"],
+  "selectors": {
+    "badge": ".done-badge",
+    "title": ".done-title",
+    "lines": ".done-lines",
+    "panel": ".done-panel",
+    "row1": ".done-panel .panel-row:nth-of-type(1)",
+    "btn": ".done-footer .btn",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "badge": { "x": 165, "y": 187, "w": 72, "h": 72 },
+    "title": { "x": 16, "y": 267, "w": 370, "h": 50 },
+    "lines": { "x": 16, "y": 317, "w": 370, "h": 70 },
+    "panel": { "x": 16, "y": 413, "w": 370, "h": 107 },
+    "row1": { "y": 414, "h": 52 },
+    "btn": { "x": 16, "y": 766, "w": 370, "h": 50 },
+    "home": { "y": 840, "h": 34 }
+  }
+}

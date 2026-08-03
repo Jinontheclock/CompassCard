@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# the Adobe Fonts mirror the tests can use offline — licensed, never shipped
+tests/kit/

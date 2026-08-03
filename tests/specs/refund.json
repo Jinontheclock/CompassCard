@@ -1,0 +1,66 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [
+    ".landing-actions > *:nth-child(1)",
+    ".scr-footer .btn",
+    ".card-stack > *:nth-child(1)",
+    ".tile-grid > *:nth-child(7)"
+  ],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "sub": ".scr-sub",
+    "panel": ".panel",
+    "row1": ".settings-row:nth-of-type(1)",
+    "warn": ".note-panel",
+    "btn": ".scr-footer--fixed .btn",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": {
+      "x": 0,
+      "y": 62,
+      "w": 402,
+      "h": 46
+    },
+    "title": {
+      "y": 108,
+      "h": 50
+    },
+    "sub": {
+      "x": 16,
+      "y": 150,
+      "w": 370,
+      "h": 48
+    },
+    "panel": {
+      "x": 16,
+      "y": 214,
+      "w": 370,
+      "h": 221
+    },
+    "row1": {
+      "x": 17,
+      "y": 215,
+      "w": 368,
+      "h": 54
+    },
+    "warn": {
+      "x": 16,
+      "y": 451,
+      "w": 370,
+      "h": 70
+    },
+    "btn": {
+      "x": 16,
+      "y": 766,
+      "w": 370,
+      "h": 50
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    }
+  }
+}

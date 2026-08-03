@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import checkIcon from "../assets/icon-check-sm.svg";
 
 /* The list a control opens: a menu dropped under its anchor, on the same
@@ -10,12 +10,24 @@ import checkIcon from "../assets/icon-check-sm.svg";
    browser window because the scaled .screen is a transformed ancestor, and
    a transform makes fixed elements measure from it. */
 export default function Dropdown({ open, options, value, onPick, onClose, wide = false }) {
-  if (!open) return null;
+  /* stay mounted for the closing beat, so leaving can animate too */
+  const [shown, setShown] = useState(open);
+  useEffect(() => {
+    if (open) setShown(true);
+  }, [open]);
+  if (!open && !shown) return null;
+  const closing = !open && shown;
 
   return (
     <>
-      <button type="button" className="menu-backdrop" aria-label="Close menu" onClick={onClose} />
-      <div className={"menu" + (wide ? " menu--wide" : "")} role="listbox">
+      {open && (
+        <button type="button" className="menu-backdrop" aria-label="Close menu" onClick={onClose} />
+      )}
+      <div
+        className={"menu" + (wide ? " menu--wide" : "") + (closing ? " menu--closing" : "")}
+        role="listbox"
+        onAnimationEnd={() => closing && setShown(false)}
+      >
         {options.map((option, i) => {
           const on = option.value === value;
           return (

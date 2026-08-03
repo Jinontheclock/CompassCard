@@ -1,0 +1,31 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".card-stack > *:nth-child(1)", ".tile-grid > *:nth-child(8)", ".wallet-card"],
+  "selectors": {
+    "bar": ".wallet-bar",
+    "close": ".wallet-round:nth-of-type(1)",
+    "more": ".wallet-round:nth-of-type(2)",
+    "card": ".wallet-stack-open > img",
+    "panel1": ".wallet-panel--balance",
+    "label": ".wallet-balance-label",
+    "amount": ".wallet-balance-amount",
+    "pill": ".wallet-pill",
+    "panel2": ".wallet-panel--open",
+    "openLabel": ".wallet-open-label",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "bar": { "x": 16, "y": 62, "w": 370, "h": 34 },
+    "close": { "x": 16, "y": 62, "w": 34, "h": 34 },
+    "more": { "x": 352, "y": 62, "w": 34, "h": 34 },
+    "card": { "x": 16, "y": 127, "w": 370, "h": 232 },
+    "panel1": { "x": 16, "y": 383, "w": 370, "h": 90 },
+    "label": { "x": 32, "y": 404, "h": 24 },
+    "amount": { "x": 32, "y": 428, "h": 24 },
+    "pill": { "x": 250, "y": 412, "w": 120, "h": 32 },
+    "panel2": { "x": 16, "y": 497, "w": 370, "h": 52 },
+    "openLabel": { "x": 32, "y": 511, "h": 24 },
+    "home": { "y": 840, "h": 34 }
+  }
+}

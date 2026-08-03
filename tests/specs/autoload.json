@@ -1,0 +1,92 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [
+    ".landing-actions > *:nth-child(1)",
+    ".scr-footer .btn",
+    ".card-stack > *:nth-child(1)",
+    ".tile-grid > *:nth-child(2)"
+  ],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "sub": ".scr-sub",
+    "panel": ".autoload-stack > *:nth-child(1)",
+    "row1": ".settings-row:nth-of-type(1)",
+    "note1": ".autoload-stack > *:nth-child(2)",
+    "payLabel": ".section-label",
+    "payRow": ".value-row--tap",
+    "note2": ".autoload-stack > *:nth-child(4)",
+    "btn": ".scr-footer .btn",
+    "footnote": ".scr-footnote",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": {
+      "x": 0,
+      "y": 62,
+      "w": 402,
+      "h": 46
+    },
+    "title": {
+      "y": 108,
+      "h": 50
+    },
+    "sub": {
+      "x": 16,
+      "y": 150,
+      "w": 370,
+      "h": 48
+    },
+    "panel": {
+      "x": 16,
+      "y": 214,
+      "w": 370,
+      "h": 111
+    },
+    "row1": {
+      "x": 17,
+      "y": 215,
+      "w": 368,
+      "h": 54
+    },
+    "note1": {
+      "x": 16,
+      "y": 341,
+      "w": 370,
+      "h": 51
+    },
+    "payLabel": {
+      "x": 16,
+      "y": 408,
+      "w": 370,
+      "h": 20
+    },
+    "payRow": {
+      "x": 16,
+      "y": 436,
+      "w": 370,
+      "h": 50
+    },
+    "note2": {
+      "x": 16,
+      "y": 502,
+      "w": 370,
+      "h": 51
+    },
+    "btn": {
+      "x": 16,
+      "y": 741,
+      "w": 370,
+      "h": 50
+    },
+    "footnote": {
+      "y": 803,
+      "h": 24
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    }
+  }
+}

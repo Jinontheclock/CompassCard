@@ -1,0 +1,99 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [
+    ".landing-actions > *:nth-child(1)",
+    ".scr-footer .btn",
+    ".card-stack > *:nth-child(1)",
+    ".section-label--split .linkish",
+    ".section:nth-of-type(2) > *:nth-child(3)"
+  ],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "sub": ".scr-sub",
+    "g1label": ".section:nth-of-type(1) .section-label",
+    "g1e1": ".section:nth-of-type(1) > *:nth-child(2)",
+    "g1e2": ".section:nth-of-type(1) > *:nth-child(3)",
+    "g2label": ".section:nth-of-type(2) .section-label",
+    "g2e1": ".section:nth-of-type(2) > *:nth-child(2)",
+    "g2e2": ".section:nth-of-type(2) > *:nth-child(3)",
+    "g2e3": ".section:nth-of-type(2) > *:nth-child(4)",
+    "tabbar": ".tab-bar",
+    "home": ".home-indicator",
+    "taps": ".history-taps"
+  },
+  "expect": {
+    "navRow": {
+      "x": 0,
+      "y": 62,
+      "w": 402,
+      "h": 46
+    },
+    "title": {
+      "y": 108,
+      "h": 50
+    },
+    "sub": {
+      "x": 16,
+      "y": 150,
+      "w": 370,
+      "h": 24
+    },
+    "g1label": {
+      "x": 16,
+      "y": 190,
+      "w": 370,
+      "h": 20
+    },
+    "g1e1": {
+      "x": 16,
+      "y": 214,
+      "w": 370,
+      "h": 72
+    },
+    "g1e2": {
+      "x": 16,
+      "y": 290,
+      "w": 370,
+      "h": 70
+    },
+    "g2label": {
+      "x": 16,
+      "y": 376,
+      "w": 370,
+      "h": 20
+    },
+    "g2e1": {
+      "x": 16,
+      "y": 400,
+      "w": 370,
+      "h": 72
+    },
+    "g2e2": {
+      "x": 16,
+      "y": 476,
+      "w": 370,
+      "h": 140
+    },
+    "g2e3": {
+      "x": 16,
+      "y": 620,
+      "w": 370,
+      "h": 70
+    },
+    "tabbar": {
+      "x": 49,
+      "y": 791,
+      "w": 304,
+      "h": 49
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    },
+    "taps": {
+      "h": 68
+    }
+  }
+}

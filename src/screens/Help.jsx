@@ -12,8 +12,19 @@ import sendIcon from "../assets/icon-send.svg";
    end on the row that opens the screen which does the thing. */
 function Bubble({ message, onAction }) {
   const mine = message.from === "user";
+  /* the dots that hold the assistant's place while it reads */
+  if (message.typing) {
+    return (
+      <div className="chat-bubble chat-bubble--theirs chat-bubble--typing" aria-label="Assistant is typing">
+        <span className="chat-dot" />
+        <span className="chat-dot" />
+        <span className="chat-dot" />
+      </div>
+    );
+  }
   return (
     <div className={"chat-bubble " + (mine ? "chat-bubble--mine" : "chat-bubble--theirs")}>
+      {message.who && <span className="chat-name">{message.who}</span>}
       <p className="chat-lines">
         {message.lines.map((line, i) => (
           <span key={i}>{line}</span>

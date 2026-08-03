@@ -1,0 +1,119 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [
+    ".landing-actions > *:nth-child(1)",
+    ".scr-footer .btn",
+    ".card-stack > *:nth-child(1)",
+    ".tile-grid > *:nth-child(4)",
+    ".scr-footer--connect .btn"
+  ],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "card": ".card-tile--upass",
+    "cardName": ".card-tile-title",
+    "cardLabel": ".card-tile-label",
+    "cardMonth": ".card-tile-amount",
+    "school": ".card-tile-passname",
+    "panel": ".panel",
+    "row1": ".upass-status",
+    "mark": ".upass-mark",
+    "state": ".upass-state",
+    "row2": ".settings-row--tall",
+    "toggle": ".toggle",
+    "note": ".upass-note",
+    "tabbar": ".tab-bar",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": {
+      "x": 0,
+      "y": 62,
+      "w": 402,
+      "h": 46
+    },
+    "title": {
+      "x": 16,
+      "y": 108,
+      "w": 370,
+      "h": 50
+    },
+    "card": {
+      "x": 16,
+      "y": 158,
+      "w": 370,
+      "h": 223
+    },
+    "cardName": {
+      "x": 34,
+      "y": 176,
+      "h": 34
+    },
+    "cardLabel": {
+      "x": 34,
+      "y": 307,
+      "h": 16
+    },
+    "cardMonth": {
+      "x": 34,
+      "y": 323,
+      "h": 40
+    },
+    "school": {
+      "y": 339,
+      "h": 24
+    },
+    "panel": {
+      "x": 16,
+      "y": 397,
+      "w": 370,
+      "h": 107
+    },
+    "row1": {
+      "x": 17,
+      "y": 398,
+      "w": 368,
+      "h": 54
+    },
+    "mark": {
+      "x": 33,
+      "y": 414,
+      "w": 22,
+      "h": 22
+    },
+    "state": {
+      "x": 63,
+      "y": 412,
+      "h": 26
+    },
+    "row2": {
+      "x": 17,
+      "y": 453,
+      "w": 368,
+      "h": 50
+    },
+    "toggle": {
+      "x": 305,
+      "y": 464,
+      "w": 64,
+      "h": 28
+    },
+    "note": {
+      "x": 16,
+      "y": 520,
+      "w": 370,
+      "h": 40
+    },
+    "tabbar": {
+      "x": 49,
+      "y": 791,
+      "w": 304,
+      "h": 49
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    }
+  }
+}

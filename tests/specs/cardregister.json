@@ -1,0 +1,97 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [
+    ".landing-actions > *:nth-child(2)",
+    ".scr-footer .btn"
+  ],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "sub": ".scr-sub",
+    "lblCard": ".stack-fields > *:nth-child(1) .reg-label",
+    "boxCard": ".stack-fields > *:nth-child(1) .reg-box",
+    "hint": ".stack-fields > *:nth-child(1) .reg-hint",
+    "lblCvn": ".stack-fields > *:nth-child(2) .reg-label",
+    "boxCvn": ".stack-fields > *:nth-child(2) .reg-box",
+    "note": ".note-panel",
+    "noteIcon": ".note-panel img",
+    "btn": ".scr-footer .btn",
+    "footnote": ".scr-footnote",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": {
+      "x": 0,
+      "y": 62,
+      "w": 402,
+      "h": 46
+    },
+    "title": {
+      "y": 108,
+      "h": 50
+    },
+    "sub": {
+      "x": 16,
+      "y": 150,
+      "w": 370,
+      "h": 48
+    },
+    "lblCard": {
+      "x": 16,
+      "y": 214,
+      "w": 370,
+      "h": 20
+    },
+    "boxCard": {
+      "x": 16,
+      "y": 238,
+      "w": 370,
+      "h": 54
+    },
+    "hint": {
+      "x": 16,
+      "y": 296,
+      "w": 370,
+      "h": 16
+    },
+    "lblCvn": {
+      "x": 16,
+      "y": 328,
+      "w": 370,
+      "h": 20
+    },
+    "boxCvn": {
+      "x": 16,
+      "y": 352,
+      "w": 120,
+      "h": 54
+    },
+    "note": {
+      "x": 16,
+      "y": 426,
+      "w": 370,
+      "h": 70
+    },
+    "noteIcon": {
+      "x": 33,
+      "y": 441,
+      "w": 20,
+      "h": 20
+    },
+    "btn": {
+      "x": 16,
+      "y": 741,
+      "w": 370,
+      "h": 50
+    },
+    "footnote": {
+      "y": 803,
+      "h": 24
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    }
+  }
+}

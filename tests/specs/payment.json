@@ -1,0 +1,27 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".nav-account", ".section:nth-of-type(2) .settings-row:nth-of-type(1)"],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "label1": ".section:nth-of-type(1) .section-label",
+    "panel1": ".section:nth-of-type(1) .panel",
+    "row1": ".section:nth-of-type(1) .settings-row:nth-of-type(1)",
+    "label2": ".section:nth-of-type(2) .section-label",
+    "panel2": ".section:nth-of-type(2) .panel",
+    "note": ".payment-note",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": { "x": 0, "y": 62, "w": 402, "h": 46 },
+    "title": { "y": 108, "h": 50 },
+    "label1": { "x": 16, "y": 158, "w": 370, "h": 20 },
+    "panel1": { "x": 16, "y": 182, "w": 370, "h": 99 },
+    "row1": { "x": 17, "y": 183, "w": 368, "h": 48 },
+    "label2": { "x": 16, "y": 297, "w": 370, "h": 20 },
+    "panel2": { "x": 16, "y": 321, "w": 370, "h": 50 },
+    "note": { "x": 16, "y": 387, "w": 370, "h": 20 },
+    "home": { "y": 840, "h": 34 }
+  }
+}

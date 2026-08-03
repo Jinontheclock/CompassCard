@@ -3,8 +3,17 @@
    Every figure here is TransLink's own rather than a number picked to fill
    a frame, and every screen reads it from here rather than restating it. */
 
-/* TransLink's fares, effective July 1 2026. Adult rates: the app has no
-   concession anywhere, so the concession table is not carried. */
+/* The day the demo lives on. Every date a screen writes — the ledger line
+   a reload adds, the month a pass covers, the day it expires — derives from
+   this one place rather than being written where it is shown. */
+export const TODAY = {
+  ledger: "Aug-3-2026",
+  month: "August",
+  monthEnd: "Aug 31",
+};
+
+/* TransLink's fares, effective July 1 2026. Adult rates carry the app;
+   the concession table is here for what quotes it — the assistant. */
 export const FARES = {
   /* stored value, by zone */
   storedValue: { 1: 2.85, 2: 4.2, 3: 5.4 },
@@ -22,6 +31,8 @@ export const FARES = {
   digitalCardFee: 0,
   /* BC Ferries, Tsawwassen–Swartz Bay, adult foot passenger */
   ferryWalkOn: 19.1,
+  /* the concession rates: stored value by zone, one DayPass, one monthly */
+  concession: { storedValue: { 1: 2.3, 2: 3.4, 3: 4.6 }, dayPass: 9.75, monthly: 66.95 },
   /* what the reload screen offers, and what Autoload can be set to */
   reloadPresets: [10, 20, 50],
   autoloadAmounts: [5, 10, 20, 50, 100],
@@ -59,7 +70,13 @@ export const digitalCard = (name, balance = 0) => ({
   pass: null,
   history: [],
 });
-export const registeredCard = () => seedState().cards[0];
+/* A fresh id every time: registering, refunding and registering again must
+   never hand two cards the same one. */
+export const registeredCard = (digits = "") => ({
+  ...seedState().cards[0],
+  id: "c" + Math.random().toString(36).slice(2, 8),
+  twin: digits ? `Plastic ···· ${digits.slice(-4)} · one balance` : seedState().cards[0].twin,
+});
 
 export function seedState() {
   return {
@@ -72,7 +89,7 @@ export function seedState() {
         frozen: false,
         /* the demo sits in August 2026, so the pass on the card is August's
            — the purchase frame says a monthly bought now is valid Aug 31 */
-        pass: { type: "Monthly · 2-Zone", expires: "Aug 31" },
+        pass: { type: "Monthly · 2-Zone", expires: TODAY.monthEnd },
         history: [
           /* the two entries the tap frames are the confirmation of: the
              figures on those screens are these, read back */
@@ -109,7 +126,7 @@ export function seedState() {
     upass: {
       school: "BCIT",
       schoolName: "British Columbia Institute of Technology",
-      month: "August",
+      month: TODAY.month,
       renewed: true,
       autoRenew: true,
     },
@@ -176,7 +193,7 @@ export const PASSES = [
     desc: "Unlimited travel in your zones for a calendar month",
     zones: [1, 2, 3],
     prices: FARES.monthly,
-    valid: "August · valid Aug 31",
+    valid: `${TODAY.month} · valid ${TODAY.monthEnd}`,
   },
   {
     id: "daypass",

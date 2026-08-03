@@ -1,0 +1,13 @@
+{
+  "name": "Compass Card",
+  "short_name": "Compass",
+  "description": "A concept companion app for Metro Vancouver's Compass Card.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#00355f",
+  "theme_color": "#fafafa",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

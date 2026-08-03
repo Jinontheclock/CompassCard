@@ -1,0 +1,28 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(2)", ".scr-footer .btn", ".scr-footnote .linkish"],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".home-title",
+    "card": ".empty-card--tall",
+    "lead": ".empty-lead",
+    "note": ".empty-note--narrow",
+    "btn1": ".empty-actions > *:nth-child(1)",
+    "btn2": ".empty-actions > *:nth-child(2)",
+    "panel": ".note-panel",
+    "tabbar": ".tab-bar",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": { "x": 0, "y": 62, "w": 402, "h": 46 },
+    "title": { "x": 16, "y": 68, "h": 34 },
+    "card": { "x": 16, "y": 119, "w": 370, "h": 300 },
+    "note": { "w": 240 },
+    "btn1": { "w": 320, "h": 50 },
+    "btn2": { "w": 320, "h": 50 },
+    "panel": { "x": 16, "y": 427, "w": 370, "h": 70 },
+    "tabbar": { "x": 49, "y": 791, "w": 304, "h": 49 },
+    "home": { "y": 840, "h": 34 }
+  }
+}

@@ -1,5 +1,5 @@
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
-import walletCard from "../assets/wallet-card.png";
+import walletCard from "../assets/wallet-card.webp";
 import walletClose from "../assets/wallet-close.png";
 import walletMore from "../assets/wallet-more.png";
 import chevron from "../assets/icon-chevron.svg";

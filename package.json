@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "bash tests/verify.sh",
+    "test:flows": "node tests/behaviour.cjs && node tests/behaviour2.cjs && node tests/behaviour3.cjs",
+    "test:sweep": "node tests/sweep.cjs"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -18,6 +21,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "oxlint": "^1.75.0",
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "playwright": "^1.62.1"
   }
 }

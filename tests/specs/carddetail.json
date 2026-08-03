@@ -1,0 +1,33 @@
+{
+  "url": "http://localhost:4173/",
+  "tolerance": 0.5,
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".card-stack > *:nth-child(1)"],
+  "selectors": {
+    "navRow": ".nav-header",
+    "title": ".scr-title",
+    "hero": ".balance-hero",
+    "histLabel": ".section:nth-of-type(1) .section-label",
+    "histPanel": ".section:nth-of-type(1) .panel",
+    "manageLabel": ".section:nth-of-type(2) .section-label",
+    "grid": ".tile-grid",
+    "tile1": ".tile-grid > *:nth-child(1)",
+    "tile2": ".tile-grid > *:nth-child(2)",
+    "tile7": ".tile-grid > *:nth-child(7)",
+    "tabbar": ".tab-bar",
+    "home": ".home-indicator"
+  },
+  "expect": {
+    "navRow": { "x": 0, "y": 62, "w": 402, "h": 46 },
+    "title": { "y": 108, "h": 50 },
+    "hero": { "x": 16, "y": 158, "w": 370, "h": 186 },
+    "histLabel": { "x": 16, "y": 360, "w": 370, "h": 20 },
+    "histPanel": { "x": 16, "y": 384, "w": 370, "h": 143 },
+    "manageLabel": { "x": 16, "y": 543, "w": 370, "h": 20 },
+    "grid": { "x": 16, "y": 567, "w": 370, "h": 216 },
+    "tile1": { "x": 16, "y": 567, "w": 177, "h": 48 },
+    "tile2": { "x": 209, "y": 567, "w": 177, "h": 48 },
+    "tile7": { "x": 16, "y": 735, "w": 177, "h": 48 },
+    "tabbar": { "x": 49, "y": 791, "w": 304, "h": 49 },
+    "home": { "y": 840, "h": 34 }
+  }
+}
