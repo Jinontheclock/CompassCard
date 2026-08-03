@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { seedState } from "./data/seed.js";
+import { seedState, FARES } from "./data/seed.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
 import CardRegister from "./screens/CardRegister.jsx";
@@ -8,6 +8,8 @@ import CardList from "./screens/CardList.jsx";
 import Tickets from "./screens/Tickets.jsx";
 import Account from "./screens/Account.jsx";
 import CardDetail from "./screens/CardDetail.jsx";
+import Reload from "./screens/Reload.jsx";
+import Autoload from "./screens/Autoload.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -35,10 +37,12 @@ export default function App() {
      other state accordingly. */
   const [hasCard, setHasCard] = useState(true);
   const [openCard, setOpenCard] = useState("c1");
+  /* the frame opens the reload screen with the middle preset chosen */
+  const [reloadAmount, setReloadAmount] = useState(FARES.reloadPresets[1]);
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail"]);
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload"]);
   const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   /* Home is where the onboarding ends, and it carries no back control, so it
@@ -118,6 +122,27 @@ export default function App() {
             onAccount={() => push("account")}
             onOpen={push}
             onSelectTab={selectTab}
+          />
+        );
+      case "reload":
+        return (
+          <Reload
+            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            amount={reloadAmount}
+            onAmount={setReloadAmount}
+            onBack={back}
+            onNext={() => push("reloadreview")}
+            onOpen={push}
+          />
+        );
+      case "autoload":
+        return (
+          <Autoload
+            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            autoload={model.autoload}
+            onBack={back}
+            onNext={back}
+            onOpen={push}
           />
         );
       case "account":
