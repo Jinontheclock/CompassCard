@@ -521,8 +521,73 @@
   border-radius: var(--radius);
   background: var(--surface);
 }
+.history-card {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
 .history-card .history-row {
   padding: 11px 15px;
+}
+/* An open entry keeps its row and hangs the taps beneath it. The frame
+   fixes the whole card at 140 and gives the row's box 66 of that, four of
+   which it takes back, so the two blocks meet without a gap. */
+.history-card--open {
+  cursor: default;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 11px 15px;
+}
+.history-open-head {
+  height: 66px;
+  margin-bottom: -4px;
+}
+.history-open-head .history-row {
+  padding: 0;
+}
+.history-taps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.history-tap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+.history-tap,
+.history-balance {
+  display: flex;
+  align-items: center;
+  font: var(--app-caption);
+  letter-spacing: var(--app-caption-tracking);
+  color: var(--text-secondary);
+}
+.history-tap {
+  justify-content: space-between;
+}
+.history-tap-when {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* the times line up in a column of their own so the places start together —
+   the frame lets auto-layout push them three pixels out of line */
+.history-tap-time {
+  width: 113px;
+}
+.history-balance {
+  gap: 8px;
+  color: var(--text-primary);
 }
 
 /* ── payment method ── */

@@ -1,8 +1,8 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import TabBar from "../components/TabBar.jsx";
-import { byDate, signed } from "../data/seed.js";
+import { byDate, money, signed } from "../data/seed.js";
 
 /* Everything the card has done, gathered into days. The entry itself drops
    the date here — the heading above it carries that — which is the one
@@ -22,6 +22,12 @@ function Entry({ entry }) {
 }
 
 export default function History({ card, onBack, onSelectTab }) {
+  /* An entry opens to show the taps behind it. Only a trip has any, so only
+     a trip opens. The list arrives closed, as the History frame draws it,
+     and opening one gives the frame drawn with details. */
+  const [open, setOpen] = useState(null);
+  const keyOf = (entry) => `${entry.date}/${entry.label}`;
+
   return (
     <div className="scr">
       <StatusBar />
@@ -44,10 +50,37 @@ export default function History({ card, onBack, onSelectTab }) {
                     <div className="panel">
                       <Entry entry={entry} />
                     </div>
-                  ) : (
-                    <div className="history-card">
-                      <Entry entry={entry} />
+                  ) : entry.taps && open === keyOf(entry) ? (
+                    <div className="history-card history-card--open">
+                      <div className="history-open-head">
+                        <Entry entry={entry} />
+                      </div>
+                      <div className="history-taps">
+                        <div className="history-tap-list">
+                          {entry.taps.map((tap) => (
+                            <div className="history-tap" key={tap.time}>
+                              <span className="history-tap-when">
+                                <span className="history-tap-time">{tap.time}</span>
+                                <span>{tap.place}</span>
+                              </span>
+                              <span className="tnum">{tap.amount}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <span className="history-balance">
+                          <span>Balance</span>
+                          <span className="tnum">{money(entry.balanceAfter)}</span>
+                        </span>
+                      </div>
                     </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="history-card"
+                      onClick={() => entry.taps && setOpen(open === keyOf(entry) ? null : keyOf(entry))}
+                    >
+                      <Entry entry={entry} />
+                    </button>
                   )}
                 </Fragment>
               ))}

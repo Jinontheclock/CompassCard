@@ -23,7 +23,19 @@ export function seedState() {
           { label: "1-Zone trip", sub: "Stored value", amount: -2.85, date: "Mar-1-2026" },
           { label: "Reload", sub: "Apple Pay", amount: 20.0, date: "Mar-1-2026" },
           { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -19.1, date: "Feb-25-2026" },
-          { label: "3-Zone trip", sub: "Stored value", amount: -5.4, date: "Feb-25-2026" },
+          {
+            label: "3-Zone trip",
+            sub: "Stored value",
+            amount: -5.4,
+            date: "Feb-25-2026",
+            /* the only entry the frames open up: a trip is two taps, and the
+               fare is only known at the second */
+            taps: [
+              { time: "07:31 AM", place: "Tap in at Burrard Stn", amount: "$0.00" },
+              { time: "08:24 AM", place: "Tap out at Bridgeport Stn", amount: "-$5.40" },
+            ],
+            balanceAfter: 24.6,
+          },
           { label: "Reload", sub: "Apple Pay", amount: 10.0, date: "Feb-25-2026" },
         ],
       },
