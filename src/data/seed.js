@@ -72,6 +72,30 @@ export function seedState() {
   };
 }
 
+/* The two passes the purchase frame offers, in the order it lists them.
+   `short` is how the button names the product — "Monthly", not "Monthly
+   Pass". The Monthly is zone-priced in life, but the frame states one
+   figure and only one, so the price stands whichever zone is chosen. */
+export const PASSES = [
+  {
+    id: "monthly",
+    name: "Monthly Pass",
+    short: "Monthly",
+    desc: "Unlimited travel in your zones for a calendar month",
+    zones: [1, 2, 3],
+    valid: "August · valid Aug 31",
+    price: 156.7,
+  },
+  {
+    id: "daypass",
+    name: "Daypass",
+    short: "Daypass",
+    desc: "Unlimited travel in your zones for a calendar month",
+    valid: "August · valid Aug 31",
+    price: 12.55,
+  },
+];
+
 /* $2.85, never $2.9 — every amount on screen carries both decimals. */
 export const money = (n) =>
   (n < 0 ? "-$" : "$") + Math.abs(n).toFixed(2);

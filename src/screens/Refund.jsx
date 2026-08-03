@@ -44,7 +44,7 @@ export default function Refund({ card, onBack, onRequest }) {
         </div>
       </div>
 
-      <div className="replace-footer">
+      <div className="scr-footer scr-footer--fixed">
         <Button onClick={onRequest}>Request Refund</Button>
       </div>
 

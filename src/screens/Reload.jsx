@@ -35,8 +35,12 @@ export default function Reload({ card, amount, onAmount, onBack, onNext, onOpen 
                   aria-pressed={preset === amount}
                   onClick={() => onAmount?.(preset)}
                 >
-                  <span className="preset-unit">$</span>
-                  <span className="preset-figure tnum">{preset.toFixed(2)}</span>
+                  {/* one line of type, not two boxes, so the pair sits on a
+                      shared baseline and centres in the chip as a whole */}
+                  <span className="preset-text">
+                    <span className="preset-unit">$</span>
+                    <span className="preset-figure tnum">{preset.toFixed(2)}</span>
+                  </span>
                 </button>
               ))}
             </div>

@@ -317,8 +317,13 @@
   flex-direction: column;
   gap: 16px;
 }
+/* The closing line takes whatever the column has left, and takes it whether
+   or not it fits: on the passes screen that is 34 for two lines of 20, so
+   the line overhangs its box rather than pushing the list up. Without the
+   min-height it would refuse to shrink and push instead. */
 .home-note {
   flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -347,6 +352,12 @@
 .card-tile--compact {
   height: 150px;
   background: var(--compass-500);
+}
+/* the card the purchase screen shows: the same tile, but nothing to open —
+   it is a picture of what would arrive, not a card you have */
+.card-tile--preview {
+  height: 150px;
+  cursor: default;
 }
 .card-tile-head {
   display: flex;
@@ -539,9 +550,12 @@
 .note-lead {
   color: var(--warning);
 }
-.replace-footer {
+/* The screens that pin their button against the frame rather than letting it
+   sit under the body: 74 of footer above a 34 indicator puts the button on
+   766 wherever the body happens to end. */
+.scr-footer--fixed {
   flex: 0 0 74px;
-  padding: 0 var(--margin);
+  padding-bottom: 0;
 }
 
 /* ── lost card ── */
@@ -776,7 +790,7 @@
   all: unset;
   box-sizing: border-box;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
   width: 114px;
   height: 64px;
@@ -1002,6 +1016,11 @@
 }
 .settings-value--strong {
   font: var(--app-subhead);
+  color: var(--text-primary);
+}
+/* a value that is a fact rather than a setting — stated in the primary ink,
+   so it reads level with its label instead of trailing off it */
+.settings-value--ink {
   color: var(--text-primary);
 }
 
@@ -1234,6 +1253,142 @@
 .reg-sep {
   font: var(--app-body);
   color: var(--border);
+}
+
+/* ── purchase a new card ── */
+.purchase-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+.purchase-stack .note-panel {
+  margin-top: 0;
+}
+
+/* ── purchase passes ──
+   The frame fixes this column at 444 and lets the closing line take what is
+   left, which is 34 for two lines of 20 — so the line overhangs its box by
+   design rather than pushing the list up. */
+.passes-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 444px;
+}
+.passes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* A product is 18 in from the edge, 16 down from the top and 24 up from the
+   bottom, with the stroke drawn inside that inset — so the padding gives up
+   whatever the border takes, and the chosen one's heavier stroke gives up a
+   pixel more. The height is fixed rather than grown, which is what spaces
+   the three blocks inside it. */
+.product {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 140px;
+  padding: 15px 17px 23px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.product--zones {
+  height: 180px;
+}
+.product--on {
+  padding: 14px 16px 22px;
+  border: 2px solid var(--compass-700);
+}
+.product-top {
+  display: flex;
+  flex-direction: column;
+}
+.product-pick {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 26px;
+  cursor: pointer;
+}
+.product-name {
+  font: var(--app-subhead);
+}
+/* the ring is empty until it is chosen, when it fills and takes the mark */
+.product-radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+}
+.product-radio--on {
+  border-color: transparent;
+  background: var(--compass-700);
+}
+.product-desc {
+  margin: 0;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.zone-row {
+  display: flex;
+  justify-content: space-between;
+}
+.zone {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 104px;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.zone--on {
+  border: 2px solid var(--compass-700);
+  background: var(--compass-100);
+  color: var(--compass-700);
+}
+/* the figure and its unit are one line of type, not two boxes, so they sit
+   on a shared baseline the way the frame sets them */
+.zone-figure {
+  font: var(--app-subhead);
+}
+.zone-unit {
+  font: var(--app-body);
+}
+.product-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.product-valid {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.product-price {
+  font: var(--app-heading);
+  letter-spacing: var(--app-heading-tracking);
+}
+.product-price-unit {
+  font: var(--app-body);
+  letter-spacing: 0;
 }
 
 /* ── landing ── */

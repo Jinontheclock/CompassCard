@@ -51,7 +51,7 @@ export default function Replace({ card, onBack, onOrder }) {
         </div>
       </div>
 
-      <div className="replace-footer">
+      <div className="scr-footer scr-footer--fixed">
         <Button onClick={onOrder}>Order Replacement</Button>
       </div>
 
