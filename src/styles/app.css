@@ -503,6 +503,25 @@
   width: 370px;
 }
 
+/* ── payment method ── */
+.payment-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.settings-label--action {
+  color: var(--compass-600);
+}
+.payment-note {
+  margin: 0;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+
 /* ── autoload ── */
 .autoload-stack {
   display: flex;
