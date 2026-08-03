@@ -19,6 +19,72 @@
   transform-origin: top left;
 }
 
+/* ── how screens arrive and leave ──
+   The iOS navigation moves: deeper slides in from the right over the old
+   screen easing left beneath it, back slides out to the right uncovering
+   what was there, and a tab change crosses over in place. One curve for
+   all of it — the decelerating one navigation controllers use. */
+.stage {
+  position: absolute;
+  inset: 0;
+}
+.stage--out-push,
+.stage--out-pop,
+.stage--out-fade {
+  pointer-events: none;
+}
+.stage--in-push {
+  z-index: 2;
+  animation: slide-in-right 280ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  box-shadow: -12px 0 28px rgba(0, 0, 0, 0.12);
+}
+.stage--out-push {
+  z-index: 1;
+  animation: ease-left 280ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.stage--in-pop {
+  z-index: 1;
+  animation: ease-back 280ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.stage--out-pop {
+  z-index: 2;
+  animation: slide-out-right 280ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  box-shadow: -12px 0 28px rgba(0, 0, 0, 0.12);
+}
+.stage--in-fade {
+  z-index: 2;
+  animation: cross-in 180ms ease both;
+}
+.stage--out-fade {
+  z-index: 1;
+}
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+}
+@keyframes slide-out-right {
+  to { transform: translateX(100%); }
+}
+@keyframes ease-left {
+  to { transform: translateX(-28%); }
+}
+@keyframes ease-back {
+  from { transform: translateX(-28%); }
+}
+@keyframes cross-in {
+  from { opacity: 0; }
+}
+/* the small arrivals inside a screen: a bubble joining the chat, the taps
+   a history entry opens onto */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage, .stage * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ── one screen ── */
 .scr {
   position: absolute;
@@ -245,6 +311,103 @@
   font: var(--app-callout);
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-primary);
+}
+
+/* ── press feedback ──
+   Everything tappable answers the finger the iOS way: a quick compress or
+   tint on the way down, an eased return on the way up. The transition is
+   what plays the release; the :active states below are the press. */
+.btn,
+.tile,
+.card-tile,
+.settings-row,
+.value-row--tap,
+.preset,
+.zone,
+.product,
+.product-radio,
+.nav-back,
+.nav-account,
+.linkish,
+.tab,
+.tab-label,
+.chat-send,
+.chat-action,
+.escape,
+.pick-box--tap,
+.history-card,
+.panel--tap,
+.wallet-round,
+.wallet-pill,
+.wallet-panel--open,
+.reg-box,
+.pick-box,
+.chat-field,
+.field-input {
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+.btn:active:not(:disabled),
+.card-tile:active:not(.card-tile--preview):not(.card-tile--upass) {
+  transform: scale(0.97);
+}
+.btn--primary:active:not(:disabled) {
+  background: var(--compass-700);
+}
+.btn--secondary:active,
+.btn--ghost:active,
+.escape:active {
+  background: var(--compass-100);
+}
+.btn--onDark:active {
+  background: var(--compass-200);
+}
+.btn--outline:active {
+  background: rgba(217, 238, 252, 0.12);
+}
+.btn--plain:active,
+.linkish:active,
+.nav-back:active,
+.settings-label--action:active {
+  opacity: 0.45;
+}
+/* a row or tile under the finger takes the iOS cell highlight */
+.settings-row:active:not(.settings-row--still),
+.value-row--tap:active,
+.tile:active:not(.tile--apple),
+.history-card:active,
+.panel--tap:active:not(:disabled),
+.chat-action:active,
+.pick-box--tap:active,
+.wallet-panel--open:active {
+  background: var(--card-bg);
+}
+.tile--apple:active {
+  opacity: 0.75;
+}
+.preset:active,
+.zone:active,
+.product-pick:active .product-name {
+  transform: scale(0.96);
+}
+.nav-account:active {
+  transform: scale(0.92);
+}
+.tab:active {
+  transform: scale(0.9);
+}
+.chat-send:active {
+  transform: scale(0.92);
+  background: var(--compass-700);
+}
+.wallet-round:active,
+.wallet-pill:active {
+  transform: scale(0.94);
+  opacity: 0.85;
 }
 
 /* ── buttons ── */
@@ -695,6 +858,7 @@
   padding: 0;
 }
 .history-taps {
+  animation: rise-in 200ms ease both;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -1448,25 +1612,31 @@
 .toggle {
   all: unset;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  position: relative;
   width: 64px;
   height: 28px;
-  padding: 2px;
   border-radius: 100px;
   background: var(--border);
   cursor: pointer;
+  transition: background-color 220ms ease;
 }
 .toggle--on {
-  justify-content: flex-end;
   background: var(--compass-400);
 }
+/* the knob crosses rather than teleports — the 22 it travels is the track
+   minus itself and the 2px inset either side */
 .toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
   width: 38px;
   height: 24px;
   border-radius: 100px;
   background: var(--bg);
+  transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toggle--on .toggle-knob {
+  transform: translateX(22px);
 }
 
 /* ── U-Pass BC ── */
@@ -1608,6 +1778,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  animation: rise-in 240ms ease both;
 }
 .chat-bubble--mine {
   align-self: flex-end;

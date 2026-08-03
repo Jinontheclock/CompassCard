@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { seedState, digitalCard, registeredCard, FARES, PASSES, SCHOOLS, passPrice } from "./data/seed.js";
 import { CHAT, reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
@@ -74,24 +74,53 @@ export default function App() {
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
   const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact"]);
+  /* How one screen leaves and the next arrives. Going deeper slides in from
+     the right, going back slides out to it, a tab change crosses over in
+     place — the three moves a stack navigation has. The leaving screen is
+     kept just long enough to play its half, then dropped. */
+  const [anim, setAnim] = useState(null);
+  const animCount = useRef(0);
+  const animate = (dir) => setAnim({ from: current, dir, n: ++animCount.current });
+  useEffect(() => {
+    if (!anim) return undefined;
+    const t = setTimeout(() => setAnim(null), anim.dir === "fade" ? 200 : 300);
+    return () => clearTimeout(t);
+  }, [anim]);
   /* the screens that are about one card, which an account with no cards
      cannot open — the assistant offers some of them, and an empty account
      may be sitting in that chat */
   const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "wallet", "walletcard"]);
-  const push = (id) =>
-    setStack((s) => (BUILT.has(id) && !(NEEDS_CARD.has(id) && model.cards.length === 0) ? [...s, id] : s));
-  const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
+  const push = (id) => {
+    if (!BUILT.has(id) || (NEEDS_CARD.has(id) && model.cards.length === 0)) return;
+    animate("push");
+    setStack((s) => [...s, id]);
+  };
+  const back = () => {
+    animate("pop");
+    setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
+  };
   /* one screen standing in for another it leads to, so what is behind them
      both stays behind: connecting the U-Pass replaces the connect screen
      rather than stacking the U-Pass on top of it */
-  const swap = (id) => setStack((s) => [...s.slice(0, -1), id]);
+  const swap = (id) => {
+    animate("push");
+    setStack((s) => [...s.slice(0, -1), id]);
+  };
   /* Home is where the onboarding ends, and it carries no back control, so it
      replaces the stack instead of adding to it — there is nothing behind it
      to return to. */
-  const home = () => setStack(["home"]);
+  const home = () => {
+    animate("push");
+    setStack(["home"]);
+  };
   /* the two tabs are roots, so switching replaces the stack rather than
      burying one tab under the other */
-  const selectTab = (id) => setStack([id === "tickets" ? "tickets" : "home"]);
+  const selectTab = (id) => {
+    const root = id === "tickets" ? "tickets" : "home";
+    if (root === current) return;
+    animate("fade");
+    setStack([root]);
+  };
   const current = stack[stack.length - 1];
 
   /* Whichever card is open. Every screen under a card is handed this one
@@ -123,8 +152,8 @@ export default function App() {
      goes straight to the cards, since a returning account already has them.
      Both ways out of Card Register — registering one and carrying on without
      one — end at the same place. */
-  const screen = () => {
-    switch (current) {
+  const screen = (id) => {
+    switch (id) {
       case "signup":
         return (
           <SignUp
@@ -257,6 +286,7 @@ export default function App() {
                   ...card.history,
                 ],
               });
+              animate("pop");
               setStack(["home", "carddetail"]);
             }}
           />
@@ -339,8 +369,14 @@ export default function App() {
             onClose={back}
             /* Wallet cannot take money itself, so both of these hand back to
                the app — one to where it came from, one to the reload screen */
-            onAddMoney={() => setStack((s) => [...s.slice(0, -2), "reload"])}
-            onOpenApp={() => setStack((s) => s.slice(0, -2))}
+            onAddMoney={() => {
+              animate("push");
+              setStack((s) => [...s.slice(0, -2), "reload"]);
+            }}
+            onOpenApp={() => {
+              animate("pop");
+              setStack((s) => s.slice(0, -2));
+            }}
           />
         );
       case "purchase":
@@ -454,7 +490,14 @@ export default function App() {
 
   return (
     <div className="screen" data-cards={model.cards.length}>
-      {screen()}
+      {anim && (
+        <div key={`out-${anim.n}`} className={`stage stage--out-${anim.dir}`} aria-hidden="true">
+          {screen(anim.from)}
+        </div>
+      )}
+      <div key={anim ? `in-${anim.n}` : "steady"} className={"stage" + (anim ? ` stage--in-${anim.dir}` : "")}>
+        {screen(current)}
+      </div>
     </div>
   );
 }
