@@ -1,13 +1,15 @@
 import infoIcon from "../assets/icon-info.svg";
 import checkIcon from "../assets/icon-check.svg";
+import warningIcon from "../assets/icon-warning.svg";
 
 /* The grey panel that says what happens next. `tone` picks the glyph:
    info    — a note, compass-700
    success — a reassurance, success green
+   warning — something that happens the moment you act, in warning brown
    Both are Figma exports, so the colour is baked into the file rather than
    inherited. The panel always carries an icon as well as its wording, so it
    never leans on colour alone. */
-const ICONS = { info: infoIcon, success: checkIcon };
+const ICONS = { info: infoIcon, success: checkIcon, warning: warningIcon };
 
 export default function NotePanel({ tone = "info", children }) {
   return (

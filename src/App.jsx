@@ -14,6 +14,8 @@ import ReloadDone from "./screens/ReloadDone.jsx";
 import PaymentMethod from "./screens/PaymentMethod.jsx";
 import History from "./screens/History.jsx";
 import LostCard from "./screens/LostCard.jsx";
+import Replace from "./screens/Replace.jsx";
+import Refund from "./screens/Refund.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -46,7 +48,7 @@ export default function App() {
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost"]);
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund"]);
   const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   /* Home is where the onboarding ends, and it carries no back control, so it
@@ -147,6 +149,22 @@ export default function App() {
             onDone={() => setStack(["home", "carddetail"])}
           />
         );
+      case "refund":
+        return (
+          <Refund
+            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            onBack={back}
+            onRequest={back}
+          />
+        );
+      case "replace":
+        return (
+          <Replace
+            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            onBack={back}
+            onOrder={back}
+          />
+        );
       case "lost":
         return (
           <LostCard
@@ -177,7 +195,7 @@ export default function App() {
           />
         );
       case "account":
-        return <Account onBack={back} onOpen={(id) => push(id)} />;
+        return <Account onBack={back} onOpen={(id) => push(id)} onRefund={() => push("refund")} />;
       default:
         return <Landing onSignUp={() => push("signup")} onLogin={() => push("login")} />;
     }

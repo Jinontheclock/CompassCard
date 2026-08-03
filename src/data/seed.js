@@ -7,6 +7,7 @@ export const FARES = {
   oneZone: 2.85,
   ferryWalkOn: 19.1,
   reloadPresets: [10, 20, 50],
+  replacementFee: 25.0,
 };
 
 export function seedState() {

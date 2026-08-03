@@ -510,6 +510,40 @@
   width: 370px;
 }
 
+/* ── replace card ── */
+.replace-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+.replace-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+/* the frame gives this line a 34 box for its single 20 of type */
+.replace-note {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.replace-stack .note-panel {
+  margin-top: 0;
+}
+/* what the panel is warning about, said in the warning colour */
+.note-lead {
+  color: var(--warning);
+}
+.replace-footer {
+  flex: 0 0 74px;
+  padding: 0 var(--margin);
+}
+
 /* ── lost card ── */
 .lost-stack {
   display: flex;
