@@ -10,6 +10,7 @@ import Account from "./screens/Account.jsx";
 import CardDetail from "./screens/CardDetail.jsx";
 import Reload from "./screens/Reload.jsx";
 import Autoload from "./screens/Autoload.jsx";
+import ReloadDone from "./screens/ReloadDone.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -42,7 +43,7 @@ export default function App() {
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload"]);
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone"]);
   const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   /* Home is where the onboarding ends, and it carries no back control, so it
@@ -131,8 +132,16 @@ export default function App() {
             amount={reloadAmount}
             onAmount={setReloadAmount}
             onBack={back}
-            onNext={() => push("reloadreview")}
+            onNext={() => push("reloaddone")}
             onOpen={push}
+          />
+        );
+      case "reloaddone":
+        return (
+          <ReloadDone
+            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            amount={reloadAmount}
+            onDone={() => setStack(["home", "carddetail"])}
           />
         );
       case "autoload":
