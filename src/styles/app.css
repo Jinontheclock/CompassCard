@@ -282,28 +282,44 @@
 .reg-cvn {
   width: 120px;
 }
+/* These are typed into, so the groups are a fixed width and tabular: with
+   the proportional figures the row would reflow under the caret on every
+   keystroke, since a 1 is narrower than a 0. */
 .reg-digits {
+  width: 4ch;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
   font: var(--app-subhead);
-}
-/* how far the entry has got: keyed in, being typed, still waiting */
-.reg-digits--entered {
+  font-variant-numeric: tabular-nums;
   color: var(--text-primary);
+  text-align: center;
 }
-.reg-digits--active {
-  color: var(--text-secondary);
-}
-.reg-digits--waiting {
+.reg-digits::placeholder {
   color: var(--text-muted);
 }
-/* The group separators and the masked CVN are set in the kit's own face at
-   16px, which is between two steps of this scale and has no token. They take
-   app/body, the nearer step, rather than a new size invented for them. */
+/* the group the entry has reached carries the mid tone the frame gives it */
+.reg-digits--reached::placeholder {
+  color: var(--text-secondary);
+}
+.reg-cvn .reg-digits {
+  width: 100%;
+}
+.reg-cvn .reg-digits::placeholder {
+  color: var(--text-secondary);
+}
+/* the whole box takes the focus ring, not the one group inside it */
+.reg-box:focus-within {
+  outline: 2px solid var(--compass-400);
+  outline-offset: -2px;
+}
+/* The separators are set in the kit's own face at 16px, which falls between
+   two steps of this scale and has no token. They take app/body, the nearer
+   step, rather than a new size invented for them. */
 .reg-sep {
   font: var(--app-body);
   color: var(--border);
-}
-.reg-cvn .reg-sep {
-  color: var(--text-secondary);
 }
 
 /* ── landing ── */

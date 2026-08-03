@@ -1,15 +1,10 @@
-import { useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import Field from "../components/Field.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
 
-export default function SignUp({ onBack, onNext, onLogin }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-
+export default function SignUp({ values, onChange, onBack, onNext, onLogin }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -20,14 +15,26 @@ export default function SignUp({ onBack, onNext, onLogin }) {
         <p className="scr-sub">One account for your cards, passes and history.</p>
 
         <div className="stack-fields">
-          <Field label="Email" type="email" placeholder="name@email.com" value={email} onChange={setEmail} />
-          <Field label="Password" type="password" placeholder="••••••••" value={password} onChange={setPassword} />
+          <Field
+            label="Email"
+            type="email"
+            placeholder="name@email.com"
+            value={values.email}
+            onChange={(v) => onChange("email", v)}
+          />
+          <Field
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            value={values.password}
+            onChange={(v) => onChange("password", v)}
+          />
           <Field
             label="Confirm password"
             type="password"
             placeholder="••••••••"
-            value={confirm}
-            onChange={setConfirm}
+            value={values.confirm}
+            onChange={(v) => onChange("confirm", v)}
           />
         </div>
 

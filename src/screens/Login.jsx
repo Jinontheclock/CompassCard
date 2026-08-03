@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import Field from "../components/Field.jsx";
@@ -7,10 +6,7 @@ import NavHeader from "../components/NavHeader.jsx";
 /* The one screen in the group without an account button in the nav — there
    is no account to reach yet — and the only one whose title carries no
    subtitle under it. */
-export default function Login({ onBack, onNext, onSignUp, onForgot }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+export default function Login({ values, onChange, onBack, onNext, onSignUp, onForgot }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -20,8 +16,20 @@ export default function Login({ onBack, onNext, onSignUp, onForgot }) {
         <h1 className="scr-title scr-title--alone">Login</h1>
 
         <div className="stack-fields">
-          <Field label="Email" type="email" placeholder="name@email.com" value={email} onChange={setEmail} />
-          <Field label="Password" type="password" placeholder="••••••••" value={password} onChange={setPassword} />
+          <Field
+            label="Email"
+            type="email"
+            placeholder="name@email.com"
+            value={values.email}
+            onChange={(v) => onChange("email", v)}
+          />
+          <Field
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            value={values.password}
+            onChange={(v) => onChange("password", v)}
+          />
         </div>
 
         <p className="forgot">
