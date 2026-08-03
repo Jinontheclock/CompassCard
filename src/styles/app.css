@@ -1781,6 +1781,151 @@
   background: var(--text-primary);
 }
 
+/* ── Apple Wallet ──
+   Everything here is placed against the frame, on Wallet's grey rather than
+   the app's. The one thing the app's own chrome keeps is the status bar and
+   the home indicator, which belong to the phone rather than to either app. */
+.wallet-scr {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--wallet-bg);
+}
+/* Wallet has no back control of its own, so the surface behind the card is
+   the way out */
+.wallet-dismiss {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  cursor: default;
+}
+/* the phone's own chrome, which both apps carry. This screen places rather
+   than stacks, so the two are placed too. */
+.wallet-scr > .status-bar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 62px;
+}
+.wallet-scr > .home-indicator {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 34px;
+  margin-top: 0;
+}
+.wallet-title {
+  position: absolute;
+  left: 16px;
+  top: 62px;
+  width: 370px;
+  height: 41px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* SF Pro's large title. It takes the app's face at the frame's size, line
+   and tracking — 0.4 at 34 is 0.012em — rather than a token of its own. */
+.wallet-name {
+  font: 700 34px / 41px var(--font);
+  letter-spacing: 0.012em;
+  color: var(--labels-primary);
+}
+.wallet-stack {
+  position: absolute;
+  left: 16px;
+  top: 127px;
+}
+.wallet-card {
+  all: unset;
+  position: absolute;
+  left: 16px;
+  top: 279px;
+  width: 370px;
+  height: 232px;
+  cursor: pointer;
+}
+.wallet-bar {
+  position: absolute;
+  left: 16px;
+  top: 62px;
+  width: 370px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.wallet-round {
+  all: unset;
+  display: flex;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+.wallet-stack-open {
+  position: absolute;
+  left: 16px;
+  top: 127px;
+  width: 370px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.wallet-panel {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #ffffff;
+}
+.wallet-panel--balance {
+  height: 90px;
+}
+.wallet-panel--open {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 52px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #ffffff;
+  cursor: pointer;
+}
+.wallet-balance {
+  display: flex;
+  flex-direction: column;
+}
+/* Wallet sets these in its own face at its own sizes; they take the app's
+   face at the frame's numbers rather than being pushed onto the app's
+   scale, which was not drawn for this surface. */
+.wallet-balance-label {
+  font: 400 14px / 24px var(--font);
+  color: var(--wallet-ink);
+}
+.wallet-balance-amount {
+  font: 700 24px / 24px var(--font);
+  color: var(--wallet-ink);
+}
+.wallet-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 32px;
+  border-radius: 32px;
+  background: var(--wallet-ink);
+  font: 500 16px / 24px var(--font);
+  color: #ffffff;
+}
+.wallet-open-label {
+  font: 400 16.3px / 24px var(--font);
+  color: var(--wallet-ink);
+}
+
 /* ── landing ── */
 .landing-body {
   flex: 1 1 auto;

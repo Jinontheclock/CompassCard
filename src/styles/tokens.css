@@ -46,6 +46,10 @@
   --labels-primary-dark: #ffffff;
   --home-indicator-width: 144px;
   --home-indicator-height: 5px;
+  /* Apple Wallet's own surface and label, for the two frames that show the
+     card sitting in Wallet rather than in this app */
+  --wallet-bg: #f5f5f7;
+  --wallet-ink: #1c1c1e;
 
   /* ── Type ──
      FF Meta in three cuts. The Figma styles name the desktop faces —

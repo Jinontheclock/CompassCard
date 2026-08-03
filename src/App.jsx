@@ -22,6 +22,8 @@ import UPass from "./screens/UPass.jsx";
 import UPassConnect from "./screens/UPassConnect.jsx";
 import Help from "./screens/Help.jsx";
 import TapResult from "./screens/TapResult.jsx";
+import Wallet from "./screens/Wallet.jsx";
+import WalletCard from "./screens/WalletCard.jsx";
 import "./styles/app.css";
 
 /* The demo is one fixed 402×874 screen — the size the portfolio's phone
@@ -69,7 +71,7 @@ export default function App() {
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot"]);
+  const BUILT = new Set(["signup", "login", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard"]);
   const push = (id) => setStack((s) => (BUILT.has(id) ? [...s, id] : s));
   const back = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   /* one screen standing in for another it leads to, so what is behind them
@@ -247,6 +249,17 @@ export default function App() {
         );
       case "shot":
         return <TapResult shot={shot} onDismiss={back} />;
+      case "wallet":
+        return <Wallet onOpenCard={() => push("walletcard")} onDismiss={back} />;
+      case "walletcard":
+        return (
+          <WalletCard
+            card={model.cards.find((c) => c.id === openCard) ?? model.cards[0]}
+            onClose={back}
+            /* leaving Wallet the way it came, which is back into the app */
+            onOpenApp={() => setStack((s) => s.slice(0, -2))}
+          />
+        );
       case "purchase":
         return (
           <PurchaseNewCard
