@@ -81,6 +81,15 @@ export const bookingRef = () => String(Math.floor(10000000 + Math.random() * 900
 /* Tsawwassen–Swartz Bay, dock to dock — BC Ferries' own figure */
 export const CROSSING = "1 h 35 min";
 
+/* The route's departures, written the schedule's way, and the two legs the
+   reserve screen offers: out today, back in two days — the same trip the
+   status board watches. */
+export const SAILING_TIMES = ["07:00 AM", "09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "06:00 PM"];
+export const ROUTE = {
+  out: { from: "Vancouver (Tsawwassen) -", to: "Victoria (Swartz Bay)", date: sailingDate(0) },
+  back: { from: "Victoria (Swartz Bay) -", to: "Vancouver (Tsawwassen)", date: sailingDate(2) },
+};
+
 /* The schools in the U-Pass BC programme the connect screen can pick from —
    the real participating institutions, written the way each writes itself.
    `short` is what fits on the card. */

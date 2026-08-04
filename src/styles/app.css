@@ -217,6 +217,15 @@
 }
 
 /* ── body ── */
+/* a phone draws no scrollbar rail — the app's scrollers keep theirs hidden */
+.scr-body,
+.home-body {
+  scrollbar-width: none;
+}
+.scr-body::-webkit-scrollbar,
+.home-body::-webkit-scrollbar {
+  display: none;
+}
 .scr-body {
   flex: 1 1 auto;
   min-height: 0;
@@ -1470,6 +1479,44 @@
   font: var(--app-callout);
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
+}
+/* the two doors under the collection, stacked the way the card list stacks
+   its purchase button, with room to scroll clear of the tab bar */
+.tickets-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding-bottom: 96px;
+}
+
+/* ── reserve ferries ── */
+.reserve-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 96px;
+}
+/* six departures in the presets' own boxes, three to a row */
+.ferry-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 14px;
+  justify-content: space-between;
+}
+.ferry-times .preset {
+  font-variant-numeric: tabular-nums;
+}
+/* the footnote turned warning when the balance falls short */
+.reserve-warn {
+  color: var(--warning);
+}
+/* a route row holds a three-line leg, so it takes its height from it */
+.settings-row--route {
+  height: auto;
+  min-height: 0;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 /* ── a ticket, opened: the boarding screen ── */

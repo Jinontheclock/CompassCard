@@ -25,6 +25,8 @@ import UPassConnect from "./screens/UPassConnect.jsx";
 import Help from "./screens/Help.jsx";
 import TapResult from "./screens/TapResult.jsx";
 import TicketDetail from "./screens/TicketDetail.jsx";
+import ReserveFerries from "./screens/ReserveFerries.jsx";
+import PurchaseTickets from "./screens/PurchaseTickets.jsx";
 import AccountEdit from "./screens/AccountEdit.jsx";
 import Contact from "./screens/Contact.jsx";
 import Wallet from "./screens/Wallet.jsx";
@@ -91,7 +93,7 @@ export default function App() {
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "forgot", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact", "ticket"]);
+  const BUILT = new Set(["signup", "login", "forgot", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact", "ticket", "ferryreserve", "buytickets"]);
   /* How one screen leaves and the next arrives. Going deeper slides in from
      the right, going back slides out to it, a tab change crosses over in
      place — the three moves a stack navigation has. The leaving screen is
@@ -107,7 +109,7 @@ export default function App() {
   /* the screens that are about one card, which an account with no cards
      cannot open — the assistant offers some of them, and an empty account
      may be sitting in that chat */
-  const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "wallet", "walletcard"]);
+  const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "wallet", "walletcard", "ferryreserve"]);
   const push = (id) => {
     if (!BUILT.has(id) || (NEEDS_CARD.has(id) && model.cards.length === 0)) return;
     animate("push");
@@ -264,17 +266,26 @@ export default function App() {
         return (
           <Tickets
             sailings={model.sailings}
-            /* the tickets tab acts on the primary card — the first one */
-            card={model.cards[0]}
             tickets={model.tickets}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
+            onOpen={push}
+            onOpenTicket={(t) => { setOpenTicket(t); push("ticket"); }}
+          />
+        );
+      case "ferryreserve":
+        return (
+          <ReserveFerries
+            /* reserving acts on the primary card — the first one */
+            card={model.cards[0]}
+            onBack={back}
             /* a walk-on pays from stored value, so reserving is a deduction
                and a ledger line, not a charge — the same shape the seeded
                ferry entries have. The reservation becomes a ticket with a
-               booking reference of its own. */
-            onReserve={(i) => {
-              const s = model.sailings[i];
+               booking reference of its own, and if it is one of the board's
+               sailings, the board says so. */
+            onReserve={(route, time) => {
+              const when = `${time} ${route.date}`;
               setModel((m) => ({
                 ...m,
                 cards: m.cards.map((c, idx) =>
@@ -289,13 +300,21 @@ export default function App() {
                       }
                     : c
                 ),
-                sailings: m.sailings.map((x, idx) => (idx === i ? { ...x, reserved: true } : x)),
+                sailings: m.sailings.map((s) => (s.time === when ? { ...s, reserved: true } : s)),
                 tickets: [
                   ...m.tickets,
-                  { ref: bookingRef(), kind: "ferry", from: s.from, to: s.to, time: s.time, fare: FARES.ferryWalkOn, paidVia: "Stored value" },
+                  { ref: bookingRef(), kind: "ferry", from: route.from, to: route.to, time: when, fare: FARES.ferryWalkOn, paidVia: "Stored value" },
                 ],
               }));
+              back();
             }}
+          />
+        );
+      case "buytickets":
+        return (
+          <PurchaseTickets
+            tickets={model.tickets}
+            onBack={back}
             /* an event pass charges the payment method like any purchase —
                Apple Pay presents its sheet on the way through */
             onBuyEvent={(ev) =>
@@ -309,7 +328,6 @@ export default function App() {
                 }))
               )
             }
-            onOpenTicket={(t) => { setOpenTicket(t); push("ticket"); }}
           />
         );
       case "ticket":
