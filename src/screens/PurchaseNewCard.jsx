@@ -75,13 +75,12 @@ export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee,
               <span className="settings-label">Card fee</span>
               <span className="settings-trail">
                 <span className="settings-value settings-value--strong tnum settings-money">
-                  {"$ "}
                   <input
                     className="settings-input settings-input--amount"
                     type="text"
                     inputMode="decimal"
-                    placeholder="0.00"
-                    value={fee}
+                    placeholder="$0.00"
+                    value={fee ? "$" + fee : ""}
                     onChange={(e) => typeFee(e.target.value)}
                   />
                 </span>

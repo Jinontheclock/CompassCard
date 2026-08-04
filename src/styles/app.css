@@ -1286,14 +1286,15 @@
 .settings-input::placeholder {
   color: var(--text-secondary);
 }
-/* the fee is a figure, so the $ stands outside and the digits align */
+/* the fee is a figure: the $ rides inside the box with the digits, and the
+   whole of it keeps to the right edge the other rows' values keep to */
 .settings-money {
   display: flex;
   align-items: center;
 }
 .settings-input--amount {
-  width: 74px;
-  text-align: left;
+  width: 96px;
+  text-align: right;
   font: var(--app-subhead);
   font-variant-numeric: tabular-nums;
 }
