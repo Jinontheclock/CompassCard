@@ -152,12 +152,13 @@
 .status-levels {
   padding-right: 1px;
 }
+/* the island's footprint only — the pill itself belongs to the hardware,
+   so this spacer keeps the clock and the levels in their halves and
+   paints nothing */
 .status-island {
   flex: 0 0 auto;
   width: 125px;
   height: 37px;
-  border-radius: 100px;
-  background: #000000;
 }
 
 .home-indicator {

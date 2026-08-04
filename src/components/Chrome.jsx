@@ -14,7 +14,10 @@ export function StatusBar({ light = false }) {
   return (
     <div className={"status-bar" + (light ? " status-bar--light" : "")}>
       <span className="status-time tnum">{time}</span>
-      <span className="status-island" />
+      {/* the Dynamic Island's footprint, kept empty: the island itself is
+          the hardware's — the mockup frame in the case study, the real
+          cutout on a phone — so the app draws nothing there */}
+      <span className="status-island" aria-hidden="true" />
       <span className="status-levels">
         {/* the iOS kit's own Levels frame — the Figma export with its fills
             turned to currentColor, so the dark screens light it up */}
