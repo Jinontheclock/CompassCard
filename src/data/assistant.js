@@ -1,20 +1,4 @@
-import { FARES, money, signed } from "./seed.js";
-
-/* The conversation the help frame opens on, broken over lines exactly where
-   the frame breaks them. Both figures are the 2-Zone fare, read from the
-   table rather than written into the sentence. */
-export const CHAT = [
-  { from: "user", lines: [`Why was I charged ${money(FARES.storedValue[2])}?`] },
-  {
-    from: "bot",
-    lines: ["That was a 2-Zone trip — the adult 2-Zone", `fare is ${money(FARES.storedValue[2])}.`],
-    action: {
-      label: `2-Zone trip · ${signed(-FARES.storedValue[2])}`,
-      sub: "View in History",
-      to: "history",
-    },
-  },
-];
+import { FARES, money } from "./seed.js";
 
 /* What the assistant knows. It is a lookup, not a model: a message is
    matched against the topics below and the first one that matches answers.

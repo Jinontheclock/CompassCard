@@ -4,6 +4,7 @@ const { launchOptions, routeKit } = require("./env.cjs");
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const NOW = new Date();
 const TODAY_SHORT = `${MON[NOW.getMonth()]} ${NOW.getDate()}`;
+const MONTH_END = `${MON[NOW.getMonth()]} ${new Date(NOW.getFullYear(), NOW.getMonth() + 1, 0).getDate()}`;
 let fails = 0;
 const is = (label, got, want) => {
   const ok = String(got) === String(want);
@@ -114,10 +115,11 @@ const is = (label, got, want) => {
   await go(".scr-footer--connect .btn");                   // Connect
   is("the card writes it short", await txt(".card-tile-passname"), "UBC");
   await go(".nav-back");
+  is("the pass slot shows the U-Pass", await txt(".hero-pass-value"), `U-Pass BC · expires ${MONTH_END}`);
 
   console.log("ordering a replacement is done once");
   await go(".tile-grid > *:nth-child(6)");
-  is("the row carries the pass and balance", await txt(".settings-row--value:nth-of-type(2) .settings-value"), "$35.00 · Monthly · 2-Zone");
+  is("the row carries the pass and balance", await txt(".settings-row--value:nth-of-type(2) .settings-value"), "$35.00 · U-Pass BC");
   await go(".scr-footer--fixed .btn");                     // Order
   is("the button stays pressed", await txt(".scr-footer--fixed .btn"), "Replacement Ordered");
   is("and is inert", await p.locator(".scr-footer--fixed .btn").isDisabled(), "true");

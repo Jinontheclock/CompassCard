@@ -62,7 +62,9 @@ const { launchOptions, routeKit } = require("./env.cjs");
   await step("Cards tab", ".tab-bar .tab:nth-of-type(1)");
   await step("Account", ".nav-account");
   await step("  Chat with us", ".section:nth-of-type(3) .settings-row:nth-of-type(1)");
-  await p.fill(".chat-input", "Does the ferry fare change?");
+  // the chat opens empty now, so the action row must come from the reply —
+  // the history topic answers with one
+  await p.fill(".chat-input", "Where can I see my trip history?");
   await go(".chat-send");
   console.log("  sent a message".padEnd(30), "bubbles:", await p.locator(".chat-bubble").count());
   await step("  assistant row -> History", ".chat-action");

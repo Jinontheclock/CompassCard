@@ -290,9 +290,10 @@
   color: var(--text-primary);
 }
 /* Every typed control takes the same ring, and the box takes it rather
-   than the input inside — the card number is five inputs in one box. */
+   than the input inside. The register boxes are the exception: typing a
+   number is the whole page, and the caret in the segment says where you
+   are — the ring said it again, louder. */
 .field-input:focus,
-.reg-box:focus-within,
 .pick-box:focus-within,
 .chat-field:focus-within {
   outline: 2px solid var(--compass-400);
@@ -2616,4 +2617,10 @@
 *:focus-visible {
   outline: 2px solid var(--compass-400);
   outline-offset: 2px;
+}
+/* a text box already shows where it is — the caret — and draws its own
+   border; the ring is for what has nothing else to show focus with */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
 }

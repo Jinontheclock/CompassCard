@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
-import { CHAT } from "../data/assistant.js";
 import chevron from "../assets/icon-chevron.svg";
 import sendIcon from "../assets/icon-send.svg";
 
@@ -44,7 +43,7 @@ function Bubble({ message, onAction }) {
   );
 }
 
-export default function Help({ messages = CHAT, draft, onDraft, onSend, onBack, onAction, onPerson }) {
+export default function Help({ messages = [], draft, onDraft, onSend, onBack, onAction, onPerson }) {
   /* the newest bubble is the one being read: the conversation keeps itself
      scrolled to its own end — landing there at once when the screen opens,
      and easing down as each new bubble arrives */

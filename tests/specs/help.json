@@ -11,9 +11,6 @@
     "navRow": ".nav-header",
     "title": ".scr-title",
     "who": ".chat-who",
-    "mine": ".chat-bubble--mine",
-    "theirs": ".chat-bubble--theirs",
-    "action": ".chat-action",
     "person": ".chat-footer .btn",
     "bar": ".chat-bar",
     "field": ".chat-field",
@@ -38,21 +35,6 @@
       "y": 150,
       "w": 370,
       "h": 20
-    },
-    "mine": {
-      "y": 198,
-      "h": 44
-    },
-    "theirs": {
-      "x": 16,
-      "y": 267,
-      "w": 330,
-      "h": 151
-    },
-    "action": {
-      "x": 31,
-      "y": 344,
-      "h": 61
     },
     "person": {
       "x": 16,

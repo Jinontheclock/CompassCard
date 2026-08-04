@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { seedState, digitalCard, registeredCard, FARES, PASSES, TODAY, passPrice } from "./data/seed.js";
-import { CHAT, reply } from "./data/assistant.js";
+import { reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
 import CardRegister from "./screens/CardRegister.jsx";
@@ -76,8 +76,9 @@ export default function App() {
      two frames are drawn in. Auto-renew is the one thing on that screen
      that can be changed, so it is held apart from the seed. */
   const [autoRenew, setAutoRenew] = useState(model.upass.autoRenew);
-  /* the assistant, and whichever of the two tap frames was opened */
-  const [chat, setChat] = useState(CHAT);
+  /* the assistant — the conversation starts empty and the first word is the
+     rider's — and whichever of the two tap frames was opened */
+  const [chat, setChat] = useState([]);
   const [draft, setDraft] = useState("");
   const [shot, setShot] = useState("tap");
   /* the Apple Pay sheet standing between asking and having: what it is
@@ -297,7 +298,12 @@ export default function App() {
               }))
             }
             onBack={back}
-            onConnect={() => { patchCard({ upassOn: true }); swap("upass"); }}
+            /* connecting writes the U-Pass into the card's pass slot, so the
+               tile and the card's own screen both say the card carries it */
+            onConnect={() => {
+              patchCard({ upassOn: true, pass: { type: "U-Pass BC", expires: TODAY.monthEnd } });
+              swap("upass");
+            }}
           />
         );
       case "reload":
