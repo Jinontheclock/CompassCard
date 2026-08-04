@@ -45,8 +45,6 @@ export default function Account({ account, onBack, onOpen, onEdit, onNotificatio
               <SettingsRow label="Primary payment method" onClick={() => onOpen?.("payment")} />
               <div className="panel-rule panel-rule--inset" />
               <SettingsRow label="Auto payment method" onClick={() => onOpen?.("payment")} />
-              {/* the last two panels close with a rule the first one has not */}
-              <div className="panel-rule panel-rule--inset" />
             </div>
           </section>
 
@@ -56,7 +54,6 @@ export default function Account({ account, onBack, onOpen, onEdit, onNotificatio
               <SettingsRow label="Chat with us" tall onClick={() => onOpen?.("help")} />
               <div className="panel-rule panel-rule--inset" />
               <SettingsRow label="Contact info" tall onClick={() => onOpen?.("contact")} />
-              <div className="panel-rule panel-rule--inset" />
             </div>
           </section>
 
