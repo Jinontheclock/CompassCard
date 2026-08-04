@@ -28,6 +28,7 @@ import AccountEdit from "./screens/AccountEdit.jsx";
 import Contact from "./screens/Contact.jsx";
 import Wallet from "./screens/Wallet.jsx";
 import WalletCard from "./screens/WalletCard.jsx";
+import { StatusBar } from "./components/Chrome.jsx";
 import compassMark from "./assets/compass-mark.svg";
 import "./styles/app.css";
 
@@ -522,6 +523,16 @@ export default function App() {
       )}
       <div key={anim ? `in-${anim.n}` : "steady"} className={"stage" + (anim ? ` stage--in-${anim.dir}` : "")}>
         {screen(current)}
+      </div>
+      {/* The status bar is the phone's, not the app's: one fixed bar rides
+          above the sliding stages, going light on the dark landing and
+          stepping aside for the gate screen, which draws its own. The bars
+          inside each screen stay as invisible spacers so nothing reflows. */}
+      <div
+        className={"status-fixed" + (current === "shot" ? " status-fixed--off" : "")}
+        aria-hidden="true"
+      >
+        <StatusBar light={current === "landing" && !splash} />
       </div>
       {splash && (
         <div className="splash" aria-hidden="true">

@@ -85,6 +85,30 @@
   }
 }
 
+/* ── the phone's own status bar ──
+   One fixed bar above the sliding stages — iOS chrome does not travel with
+   an app's screens. The copies inside each screen keep their 62px of layout
+   but never paint; this one paints, crossfading its ink as the screen under
+   it goes dark or light, and stepping aside for the gate screen. */
+.status-fixed {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 5;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+.status-fixed .status-bar {
+  height: 62px;
+  box-sizing: border-box;
+  transition: color 280ms ease;
+}
+.status-fixed--off {
+  opacity: 0;
+}
+.stage .status-bar {
+  visibility: hidden;
+}
+
 /* ── one screen ── */
 .scr {
   position: absolute;
