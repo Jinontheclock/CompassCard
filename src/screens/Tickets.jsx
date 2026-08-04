@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import TabBar from "../components/TabBar.jsx";
+import WalletPass from "../components/WalletPass.jsx";
 import { FARES, money } from "../data/seed.js";
 import accountIcon from "../assets/icon-account.svg";
 import onTimeIcon from "../assets/icon-ontime.svg";
@@ -13,8 +14,11 @@ import emptyIcon from "../assets/icon-empty.svg";
    boarding screen. The frame draws the ticket half empty because nothing
    has been booked yet; beneath it, the two doors that do the booking, the
    way the card list keeps its purchase button under the cards. */
-export default function Tickets({ sailings, tickets, onOpenTicket, onOpen, onAccount, onSelectTab }) {
+export default function Tickets({ sailings, tickets, passenger, onCancel, onOpen, onAccount, onSelectTab }) {
   const [open, setOpen] = useState(null);
+  /* which ticket stands unfolded, and which have taken the Wallet press */
+  const [openTicket, setOpenTicket] = useState(null);
+  const [walleted, setWalleted] = useState([]);
 
   return (
     <div className="scr">
@@ -76,26 +80,56 @@ export default function Tickets({ sailings, tickets, onOpenTicket, onOpen, onAcc
               {tickets.map((t, i) => (
                 <Fragment key={t.ref}>
                   {i > 0 && <div className="panel-rule panel-rule--inset" />}
-                  <button type="button" className="ticket-card" onClick={() => onOpenTicket?.(t)}>
-                    <div className="sailing">
-                      {t.kind === "ferry" ? (
-                        <>
-                          <span className="sailing-leg">{t.from}</span>
-                          <span className="sailing-leg">{t.to}</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="sailing-leg">{t.name}</span>
-                          <span className="sailing-time">{t.venue}</span>
-                        </>
-                      )}
-                      <span className="sailing-time">{t.time}</span>
+                  {/* folded, the essentials; unfolded, the pass itself at
+                      full size, with Wallet and the way out beneath it */}
+                  <div className={"sailing-card" + (openTicket === t.ref ? " sailing-card--open" : "")}>
+                    <button
+                      type="button"
+                      className="sailing-head ticket-card"
+                      aria-expanded={openTicket === t.ref}
+                      onClick={() => setOpenTicket(openTicket === t.ref ? null : t.ref)}
+                    >
+                      <div className="sailing">
+                        {t.kind === "ferry" ? (
+                          <>
+                            <span className="sailing-leg">{t.from}</span>
+                            <span className="sailing-leg">{t.to}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="sailing-leg">{t.name}</span>
+                            <span className="sailing-time">{t.venue}</span>
+                          </>
+                        )}
+                        <span className="sailing-time">{t.time}</span>
+                      </div>
+                      <div className="ticket-side">
+                        <span className="ticket-chip">{t.kind === "ferry" ? "RESERVED" : "PURCHASED"}</span>
+                        <span className="ticket-fare tnum">{money(t.fare)}</span>
+                      </div>
+                    </button>
+                    <div className="sailing-more-wrap" aria-hidden={openTicket !== t.ref}>
+                      <div className="sailing-inner">
+                        <div className="ticket-full">
+                          <WalletPass ticket={t} passenger={passenger} />
+                          <p className="ticket-paidline">
+                            {money(t.fare)} · {t.paidVia}
+                          </p>
+                          <button
+                            type="button"
+                            className="tikd-wallet"
+                            disabled={walleted.includes(t.ref)}
+                            onClick={() => setWalleted([...walleted, t.ref])}
+                          >
+                            {walleted.includes(t.ref) ? "Added to Apple Wallet" : "Add to Apple Wallet"}
+                          </button>
+                          <Button tone="secondary" onClick={() => onCancel?.(t)}>
+                            {t.kind === "ferry" ? `Cancel Reservation · refund ${money(t.fare)}` : "Refund Ticket"}
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="ticket-side">
-                      <span className="ticket-chip">{t.kind === "ferry" ? "RESERVED" : "PURCHASED"}</span>
-                      <span className="ticket-fare tnum">{money(t.fare)}</span>
-                    </div>
-                  </button>
+                  </div>
                 </Fragment>
               ))}
             </div>

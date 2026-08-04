@@ -1521,6 +1521,129 @@
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
 }
+/* a ticket unfolded: the pass at full size, Wallet and the way out under it */
+.ticket-full {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 16px 16px;
+}
+.ticket-paidline {
+  margin: 0;
+  text-align: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+
+/* ── the pass, drawn Wallet's way (from the Hi-Fi board's templates) ── */
+.wpass {
+  border-radius: 14px;
+  padding: 16px 16px 18px;
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+}
+.wpass--ferry {
+  background: #4a90d0;
+}
+.wpass-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.wpass-brand {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.wpass-toprow {
+  display: flex;
+  gap: 14px;
+}
+.wpass-kv {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.wpass-kv--right {
+  align-items: flex-end;
+}
+.wpass-k {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  opacity: 0.85;
+}
+.wpass-v {
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wpass-route {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0 2px;
+}
+.wpass-end {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.wpass-end--right {
+  align-items: flex-end;
+}
+.wpass-city {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  opacity: 0.85;
+}
+.wpass-code {
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+.wpass-vessel {
+  opacity: 0.95;
+}
+.wpass-fields {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+.wpass-fields--one {
+  justify-content: flex-start;
+}
+.wpass-code-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin: 16px auto 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff;
+}
+.wpass-qr,
+.wpass-bars {
+  display: block;
+  border-radius: 4px;
+}
+.wpass-ref {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: #3a3a3c;
+}
+.wpass--event .wpass-brand {
+  letter-spacing: 0.12em;
+}
 /* The two doors under the collection, stacked the way the card list stacks
    its purchase button. The tab-bar clearance is added only once tickets
    have made the page long enough to scroll — a fitting page stays put. */

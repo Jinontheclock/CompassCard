@@ -104,16 +104,17 @@ const is = (label, got, want) => {
   is("paid from stored value", await txt(".hero-figure"), "5.90");
   is("and written down", await txt(".history-row .history-label"), "BC Ferries · Walk-on");
 
-  console.log("a ticket opens onto its boarding pass");
+  console.log("a ticket unfolds into its wallet pass");
   await go(".tab-bar .tab:nth-of-type(2)");
   await go(".ticket-card");
-  is("the pass opens", await txt(".scr-title"), "Boarding Pass");
-  is("with its eight-digit reference", /^\d{8}$/.test(await txt(".tikd-ref")), "true");
-  is("and a code to scan", await p.locator(".tikd-qr").count(), 1);
-  is("the crossing is BC Ferries' own", await txt(".tikd-pass .settings-row:last-of-type .settings-value"), "1 h 35 min");
+  is("the ferry pass unfolds", await p.locator(".wpass--ferry").count(), 1);
+  is("terminal codes fly the route", (await txt(".wpass-route")).includes("TSA"), "true");
+  is("with its eight-digit reference", /^\d{8}$/.test(await txt(".wpass-ref")), "true");
+  is("and a code to scan", await p.locator(".wpass-qr").count(), 1);
+  is("the crossing is BC Ferries' own", (await txt(".wpass")).includes("1 h 35 min"), "true");
   await go(".tikd-wallet");
   is("wallet takes the press", await txt(".tikd-wallet"), "Added to Apple Wallet");
-  await go(".scr-footer .btn");                            // cancel the reservation
+  await go(".ticket-full .btn");                           // cancel the reservation
   is("cancelling frees the sailing", await txt(".sailing-card:nth-of-type(1) .status-ok"), "On time");
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
@@ -133,10 +134,11 @@ const is = (label, got, want) => {
   await pay();
   is("and the ticket lands", (await txt(".ticket-card")).includes("Whitecaps FC Match"), "true");
   await go(".ticket-card");
-  is("an event ticket opens", await txt(".scr-title"), "Event Ticket");
-  is("paid the way it chose", (await txt(".tikd-pass")).includes("Apple Pay"), "true");
-  is("valid where it says", await txt(".tikd-pass .settings-row:last-of-type .settings-value"), "All zones · event day");
-  await go(".scr-footer .btn");                            // refund the pass
+  is("the event wears its venue", await p.locator(".wpass--event").count(), 1);
+  is("a barcode at its foot", await p.locator(".wpass-bars").count(), 1);
+  is("valid where it says", (await txt(".wpass--event")).includes("All zones"), "true");
+  is("paid the way it chose", (await txt(".ticket-paidline")).includes("Apple Pay"), "true");
+  await go(".ticket-full .btn");                           // refund the pass
   is("refunding removes it", await p.locator(".ticket-card").count(), 0);
 
   console.log("the forgot flow");
