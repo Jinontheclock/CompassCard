@@ -27,6 +27,7 @@ import TapResult from "./screens/TapResult.jsx";
 import TicketDetail from "./screens/TicketDetail.jsx";
 import ReserveFerries from "./screens/ReserveFerries.jsx";
 import PurchaseTickets from "./screens/PurchaseTickets.jsx";
+import Checkout from "./screens/Checkout.jsx";
 import AccountEdit from "./screens/AccountEdit.jsx";
 import Contact from "./screens/Contact.jsx";
 import Wallet from "./screens/Wallet.jsx";
@@ -87,13 +88,16 @@ export default function App() {
   /* the ticket standing open — held as the object itself, so the leaving
      screen can still draw it while a cancellation slides away */
   const [openTicket, setOpenTicket] = useState(null);
+  /* what the Tickets tab is in the middle of buying: a sailing or an event
+     pass, waiting on the payment step */
+  const [order, setOrder] = useState(null);
   /* the Apple Pay sheet standing between asking and having: what it is
      for, how much, and what happens once it is paid */
   const [paySheet, setPaySheet] = useState(null);
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "forgot", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact", "ticket", "ferryreserve", "buytickets"]);
+  const BUILT = new Set(["signup", "login", "forgot", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact", "ticket", "ferryreserve", "buytickets", "checkout"]);
   /* How one screen leaves and the next arrives. Going deeper slides in from
      the right, going back slides out to it, a tab change crosses over in
      place — the three moves a stack navigation has. The leaving screen is
@@ -109,7 +113,7 @@ export default function App() {
   /* the screens that are about one card, which an account with no cards
      cannot open — the assistant offers some of them, and an empty account
      may be sitting in that chat */
-  const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "wallet", "walletcard", "ferryreserve"]);
+  const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "wallet", "walletcard"]);
   const push = (id) => {
     if (!BUILT.has(id) || (NEEDS_CARD.has(id) && model.cards.length === 0)) return;
     animate("push");
@@ -276,38 +280,11 @@ export default function App() {
       case "ferryreserve":
         return (
           <ReserveFerries
-            /* reserving acts on the primary card — the first one */
-            card={model.cards[0]}
             onBack={back}
-            /* a walk-on pays from stored value, so reserving is a deduction
-               and a ledger line, not a charge — the same shape the seeded
-               ferry entries have. The reservation becomes a ticket with a
-               booking reference of its own, and if it is one of the board's
-               sailings, the board says so. */
-            onReserve={({ from, to, when, crossing }) => {
-              setModel((m) => ({
-                ...m,
-                cards: m.cards.map((c, idx) =>
-                  idx === 0
-                    ? {
-                        ...c,
-                        balance: c.balance - FARES.ferryWalkOn,
-                        history: [
-                          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, date: TODAY.ledger },
-                          ...c.history,
-                        ],
-                      }
-                    : c
-                ),
-                sailings: m.sailings.map((s) =>
-                  s.time === when && s.from === `${from} -` ? { ...s, reserved: true } : s
-                ),
-                tickets: [
-                  ...m.tickets,
-                  { ref: bookingRef(), kind: "ferry", from: `${from} -`, to, time: when, crossing, fare: FARES.ferryWalkOn, paidVia: "Stored value" },
-                ],
-              }));
-              back();
+            /* choosing is this screen's whole job — paying is the next one's */
+            onNext={(sail) => {
+              setOrder({ kind: "ferry", ...sail, fare: FARES.ferryWalkOn });
+              push("checkout");
             }}
           />
         );
@@ -316,20 +293,72 @@ export default function App() {
           <PurchaseTickets
             tickets={model.tickets}
             onBack={back}
-            /* an event pass charges the payment method like any purchase —
-               Apple Pay presents its sheet on the way through */
-            onBuyEvent={(ev) =>
-              charge(ev.name, FARES.dayPass, () =>
-                setModel((m) => ({
-                  ...m,
-                  tickets: [
-                    ...m.tickets,
-                    { ref: bookingRef(), kind: "event", eventId: ev.id, name: ev.name, venue: ev.venue, time: ev.time, fare: FARES.dayPass, paidVia: method },
-                  ],
-                }))
-              )
-            }
+            onBuyEvent={(ev) => {
+              setOrder({ kind: "event", ev, fare: FARES.dayPass });
+              push("checkout");
+            }}
           />
+        );
+      case "checkout":
+        return (
+          order && (
+            <Checkout
+              order={order}
+              card={model.cards[0]}
+              onBack={back}
+              /* Paying settles the order: stored value deducts and writes
+                 its ledger line, a card method just pays — and Apple Pay
+                 presents its sheet first, the way a reload does. Either
+                 way the ticket is issued and the tab is where it lands. */
+              onPay={(payWith) => {
+                const settle = () => {
+                  const o = order;
+                  const viaSV = payWith === "Compass Card";
+                  const paidVia = viaSV ? "Stored value" : payWith;
+                  setModel((m) => ({
+                    ...m,
+                    cards: viaSV
+                      ? m.cards.map((c, idx) =>
+                          idx === 0
+                            ? {
+                                ...c,
+                                balance: c.balance - o.fare,
+                                history: [
+                                  o.kind === "ferry"
+                                    ? { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -o.fare, date: TODAY.ledger }
+                                    : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
+                                  ...c.history,
+                                ],
+                              }
+                            : c
+                        )
+                      : m.cards,
+                    sailings:
+                      o.kind === "ferry"
+                        ? m.sailings.map((s) =>
+                            s.time === o.when && s.from === `${o.from} -` ? { ...s, reserved: true } : s
+                          )
+                        : m.sailings,
+                    tickets: [
+                      ...m.tickets,
+                      o.kind === "ferry"
+                        ? { ref: bookingRef(), kind: "ferry", from: `${o.from} -`, to: o.to, time: o.when, crossing: o.crossing, fare: o.fare, paidVia }
+                        : { ref: bookingRef(), kind: "event", eventId: o.ev.id, name: o.ev.name, venue: o.ev.venue, time: o.ev.time, fare: o.fare, paidVia },
+                    ],
+                  }));
+                  animate("pop");
+                  setStack(["tickets"]);
+                };
+                if (payWith === "Apple Pay")
+                  setPaySheet({
+                    label: order.kind === "ferry" ? "BC Ferries · Walk-on" : order.ev.name,
+                    amount: order.fare,
+                    then: settle,
+                  });
+                else settle();
+              }}
+            />
+          )
         );
       case "ticket":
         return (
@@ -343,15 +372,22 @@ export default function App() {
               onCancel={(t) => {
                 setModel((m) => ({
                   ...m,
+                  /* only stored value has a balance to hand back — a card
+                     method is refunded on its own side of the counter */
                   cards:
-                    t.kind === "ferry"
+                    t.paidVia === "Stored value"
                       ? m.cards.map((c, idx) =>
                           idx === 0
                             ? {
                                 ...c,
                                 balance: c.balance + t.fare,
                                 history: [
-                                  { label: "BC Ferries · Refund", sub: "Stored value", amount: t.fare, date: TODAY.ledger },
+                                  {
+                                    label: t.kind === "ferry" ? "BC Ferries · Refund" : `${t.name} · Refund`,
+                                    sub: "Stored value",
+                                    amount: t.fare,
+                                    date: TODAY.ledger,
+                                  },
                                   ...c.history,
                                 ],
                               }

@@ -217,10 +217,13 @@
 }
 
 /* ── body ── */
-/* a phone draws no scrollbar rail — the app's scrollers keep theirs hidden */
+/* A phone draws no scrollbar rail — the app's scrollers keep theirs hidden.
+   And a page that fits does not rubber-band: overscroll stays off, so only
+   a page with more than a screenful actually moves. */
 .scr-body,
 .home-body {
   scrollbar-width: none;
+  overscroll-behavior: none;
 }
 .scr-body::-webkit-scrollbar,
 .home-body::-webkit-scrollbar {
@@ -1480,13 +1483,16 @@
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
 }
-/* the two doors under the collection, stacked the way the card list stacks
-   its purchase button, with room to scroll clear of the tab bar */
+/* The two doors under the collection, stacked the way the card list stacks
+   its purchase button. The tab-bar clearance is added only once tickets
+   have made the page long enough to scroll — a fitting page stays put. */
 .tickets-actions {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 16px;
+}
+.tickets-actions--clear {
   padding-bottom: 96px;
 }
 

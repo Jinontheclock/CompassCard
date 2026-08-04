@@ -50,6 +50,9 @@ const is = (label, got, want) => {
 
   console.log("the board reports, the reserve page books");
   await go(".tab-bar .tab:nth-of-type(2)");
+  is("a fitting page does not scroll", await p.evaluate(() => {
+    const el = document.querySelector(".scr-body"); return el.scrollHeight - el.clientHeight;
+  }), 0);
   await go(".sailing-card:nth-of-type(1)");
   is("the fare unfolds", await txt(".sailing-card:nth-of-type(1) .sailing-more"),
      "Adult walk-on · pays from stored value$19.10");
@@ -60,13 +63,17 @@ const is = (label, got, want) => {
   is("five terminals to leave from", await p.locator(".menu-item").count(), 5);
   await go(".menu-item:nth-of-type(2)");                   // West Vancouver (Horseshoe Bay)
   is("the partner follows the route", await txt(".pick-group:nth-of-type(2) .pick-value"), "Nanaimo (Departure Bay)");
-  is("and the schedule follows the run", (await txt(".ferry-times")).includes("06:15 AM"), "true");
+  is("and the schedule follows the run", await txt(".pick-group:nth-of-type(4) .pick-value"), "06:15 AM");
   await go(".pick-group:nth-of-type(1) .pick-box--tap");
   await go(".menu-item:nth-of-type(1)");                   // back to Tsawwassen
-  await go(".ferry-times > *:nth-child(6)");               // 06:00 PM — the board's sailing
-  await go(".scr-footer--fixed .btn");                     // balance 15.00 < 19.10
+  await go(".pick-group:nth-of-type(4) .pick-box--tap");   // Departure menu
+  await go(".menu-item:nth-of-type(6)");                   // 06:00 PM — the board's sailing
+  await go(".scr-footer--fixed .btn");                     // Next
+  is("paying is its own step", await txt(".scr-title"), "Payment");
+  is("three ways to pay", await p.locator(".section .settings-row").count(), 3);
+  await go(".scr-footer--fixed .btn");                     // Compass Card, 15.00 < 19.10
   is("short balance is refused", (await txt(".reserve-warn")).startsWith("Not enough stored value"), "true");
-  await go(".nav-back");
+  await go(".nav-back"); await go(".nav-back");
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
   await go(".tile-grid > *:nth-child(1)");
@@ -76,8 +83,10 @@ const is = (label, got, want) => {
   await go(".done-footer .btn");
   await go(".tab-bar .tab:nth-of-type(2)");
   await go(".tickets-actions .btn:nth-of-type(1)");
-  await go(".ferry-times > *:nth-child(6)");
-  await go(".scr-footer--fixed .btn");
+  await go(".pick-group:nth-of-type(4) .pick-box--tap");
+  await go(".menu-item:nth-of-type(6)");                   // 06:00 PM
+  await go(".scr-footer--fixed .btn");                     // Next
+  await go(".scr-footer--fixed .btn");                     // Pay with Compass Card
   is("reserving marks the sailing", await txt(".sailing-card:nth-of-type(1) .status-ok"), "Reserved");
   is("and issues the ticket", (await txt(".ticket-card")).includes("Victoria (Swartz Bay)"), "true");
   await go(".tab-bar .tab:nth-of-type(1)");
@@ -101,19 +110,21 @@ const is = (label, got, want) => {
   is("the fare comes home", await txt(".hero-figure"), "25.00");
   is("as a refund line", await txt(".history-row .history-label"), "BC Ferries · Refund");
 
-  console.log("an event sells its pass on its own page");
+  console.log("an event sells its pass through the same till");
   await go(".tab-bar .tab:nth-of-type(2)");
   await go(".tickets-actions .btn:nth-of-type(2)");        // Purchase Tickets
   is("the shop opens", await txt(".scr-title"), "Purchase Tickets");
   await go(".sailing-card:nth-of-type(1) .sailing-head");
   is("the pass names its price", (await txt(".sailing-more")).includes("$12.55"), "true");
-  await go(".event-buy");
-  await pay();                                             // Apple Pay is the method
-  is("the event is ticketed", await txt(".status-ok"), "Ticketed");
-  await go(".nav-back");
+  await go(".event-buy");                                  // -> Payment
+  is("events pay the same way", await txt(".scr-title"), "Payment");
+  await go(".section .settings-row:nth-of-type(2)");       // Apple Pay
+  await go(".scr-footer--fixed .btn");                     // Pay -> the sheet
+  await pay();
   is("and the ticket lands", (await txt(".ticket-card")).includes("Whitecaps FC Match"), "true");
   await go(".ticket-card");
   is("an event ticket opens", await txt(".scr-title"), "Event Ticket");
+  is("paid the way it chose", (await txt(".tikd-pass")).includes("Apple Pay"), "true");
   is("valid where it says", await txt(".tikd-pass .settings-row:last-of-type .settings-value"), "All zones · event day");
   await go(".scr-footer .btn");                            // refund the pass
   is("refunding removes it", await p.locator(".ticket-card").count(), 0);

@@ -125,7 +125,7 @@ export default function TicketDetail({ ticket, onBack, onCancel }) {
           {ferry ? `Cancel Reservation · refund ${money(ticket.fare)}` : "Refund Ticket"}
         </Button>
         <p className="scr-footnote">
-          {ferry ? "The fare returns to your stored value." : `Refunded to ${ticket.paidVia}.`}
+          Refunded to {ticket.paidVia === "Stored value" ? "your stored value" : ticket.paidVia}.
         </p>
       </div>
 

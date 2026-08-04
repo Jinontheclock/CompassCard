@@ -109,8 +109,10 @@ export default function Tickets({ sailings, tickets, onOpenTicket, onOpen, onAcc
             </div>
           )}
           {/* the two doors that do the booking, kept under the collection
-              the way the card list keeps its purchase button */}
-          <div className="tickets-actions">
+              the way the card list keeps its purchase button. The clearance
+              below them exists only once tickets have made the page long
+              enough to scroll — a page that fits should not. */}
+          <div className={"tickets-actions" + (tickets.length ? " tickets-actions--clear" : "")}>
             <Button tone="ghost" onClick={() => onOpen?.("ferryreserve")}>
               Reserve Ferries
             </Button>
