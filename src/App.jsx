@@ -185,10 +185,13 @@ export default function App() {
     back();
   };
 
-  /* a new card's default name: the frame's, unless the account already
-     holds a card by that name, and numbered from there */
+  /* a new card's default name: the next ordinal after the cards you hold —
+     the second card is simply "Second Card" — and numbered past the list */
   const defaultName = () => {
     const taken = new Set(model.cards.map((c) => c.name));
+    const ordinals = ["Second Card", "Third Card", "Fourth Card", "Fifth Card", "Sixth Card"];
+    const free = ordinals.find((n) => !taken.has(n));
+    if (free) return free;
     let name = "My Compass Card";
     for (let i = 2; taken.has(name); i++) name = `My Compass Card ${i}`;
     return name;
@@ -325,7 +328,7 @@ export default function App() {
                                 balance: c.balance - o.fare,
                                 history: [
                                   o.kind === "ferry"
-                                    ? { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -o.fare, date: TODAY.ledger }
+                                    ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, date: TODAY.ledger }
                                     : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
                                   ...c.history,
                                 ],

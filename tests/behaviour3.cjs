@@ -59,14 +59,24 @@ const is = (label, got, want) => {
   is("the board only reports", await p.locator(".sailing-reserve").count(), 0);
   await go(".tickets-actions .btn:nth-of-type(1)");        // Reserve Ferries
   is("the reserve page opens", await txt(".scr-title"), "Reserve Ferries");
+  await go(".pick-group:nth-of-type(1) .pick-box--tap");   // Fare
+  is("two fares to pick from", await p.locator(".menu-item").count(), 2);
+  await go(".menu-item:nth-of-type(2)");                   // Child (5-11)
+  is("the child fare follows", (await txt(".scr-footer--fixed .btn")).includes("$9.55"), "true");
   await go(".pick-group:nth-of-type(1) .pick-box--tap");
+  await go(".menu-item:nth-of-type(1)");                   // Adult again
+  await go(".pick-group:nth-of-type(2) .pick-box--tap");   // From
   is("five terminals to leave from", await p.locator(".menu-item").count(), 5);
   await go(".menu-item:nth-of-type(2)");                   // West Vancouver (Horseshoe Bay)
-  is("the partner follows the route", await txt(".pick-group:nth-of-type(2) .pick-value"), "Nanaimo (Departure Bay)");
-  is("and the schedule follows the run", await txt(".pick-group:nth-of-type(4) .pick-value"), "06:15 AM");
-  await go(".pick-group:nth-of-type(1) .pick-box--tap");
+  is("the partner follows the route", await txt(".pick-group:nth-of-type(3) .pick-value"), "Nanaimo (Departure Bay)");
+  is("and the schedule follows the run", await txt(".reserve-row .pick-group:nth-of-type(2) .pick-value"), "06:15 AM");
+  await go(".pick-group:nth-of-type(2) .pick-box--tap");
   await go(".menu-item:nth-of-type(1)");                   // back to Tsawwassen
-  await go(".pick-group:nth-of-type(4) .pick-box--tap");   // Departure menu
+  await go(".reserve-row .pick-group:nth-of-type(1) .pick-box--tap"); // Date
+  is("a calendar opens", await p.locator(".cal").count(), 1);
+  await go(".cal-day--on");                                // today, re-picked
+  is("and closes on the day", await p.locator(".cal").count(), 0);
+  await go(".reserve-row .pick-group:nth-of-type(2) .pick-box--tap"); // Departure
   await go(".menu-item:nth-of-type(6)");                   // 06:00 PM — the board's sailing
   await go(".scr-footer--fixed .btn");                     // Next
   is("paying is its own step", await txt(".scr-title"), "Payment");
@@ -83,7 +93,7 @@ const is = (label, got, want) => {
   await go(".done-footer .btn");
   await go(".tab-bar .tab:nth-of-type(2)");
   await go(".tickets-actions .btn:nth-of-type(1)");
-  await go(".pick-group:nth-of-type(4) .pick-box--tap");
+  await go(".reserve-row .pick-group:nth-of-type(2) .pick-box--tap");
   await go(".menu-item:nth-of-type(6)");                   // 06:00 PM
   await go(".scr-footer--fixed .btn");                     // Next
   await go(".scr-footer--fixed .btn");                     // Pay with Compass Card

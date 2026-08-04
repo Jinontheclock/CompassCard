@@ -4,7 +4,6 @@ import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
 import SettingsRow from "../components/SettingsRow.jsx";
 import contactless from "../assets/icon-contactless.svg";
-import chevron from "../assets/icon-chevron.svg";
 
 /* Buying a card rather than registering one. Two of the three rows are
    yours to fill: the name the card will carry, and what to load onto it as
@@ -67,7 +66,6 @@ export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee,
                   value={name}
                   onChange={(e) => onName?.(e.target.value)}
                 />
-                <img src={chevron} alt="" width="8" height="14" />
               </span>
             </div>
             <div className="panel-rule panel-rule--inset" />

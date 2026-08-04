@@ -22,14 +22,14 @@ export default function CardList({ cards, onAccount, onPurchase, onRegister, onC
     <div className="scr">
       <StatusBar />
 
-      <div className="nav-header">
+      <div className="nav-header nav-header--float">
         <h1 className="home-title">Compass Card</h1>
         <button type="button" className="nav-account" onClick={onAccount} aria-label="Account">
           <img src={accountIcon} alt="" width="18" height="18" />
         </button>
       </div>
 
-      <div className="home-body">
+      <div className="home-body home-body--undernav">
         {empty ? (
           <div className="empty-stack">
             <div className="empty-card empty-card--tall">

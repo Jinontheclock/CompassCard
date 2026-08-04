@@ -39,7 +39,7 @@ const is = (label, got, want) => {
 
   console.log("purchase describes the card it creates");
   await go(".home-cards > .btn");
-  is("preview starts on the default", await txt(".card-tile-title"), "My Compass Card 2");
+  is("preview starts on the default", await txt(".card-tile-title"), "Second Card");
   await p.fill(".settings-input:not(.settings-input--amount)", "Work Card");
   is("the name lands on the preview", await txt(".card-tile-title"), "Work Card");
   await p.fill(".settings-input--amount", "20");

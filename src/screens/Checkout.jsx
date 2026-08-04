@@ -54,7 +54,7 @@ export default function Checkout({ order, card, onBack, onPay }) {
             </div>
             <div className="panel-rule panel-rule--inset" />
             <div className="settings-row settings-row--value">
-              <span className="settings-label">{ferry ? "Adult walk-on" : "Event pass"}</span>
+              <span className="settings-label">{ferry ? order.fareLabel : "Event pass"}</span>
               <span className="settings-value settings-value--strong tnum">{money(order.fare)}</span>
             </div>
           </div>

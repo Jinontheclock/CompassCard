@@ -184,6 +184,44 @@
 }
 
 /* ── nav row ── */
+/* The tab roots float their header over the scroll: solid at the top and
+   dissolving at the foot, so content slides visibly beneath it on the way
+   up. The bodies underneath start where the header ends, so nothing moves
+   until you scroll. */
+.nav-header--float {
+  position: absolute;
+  top: 62px;
+  left: 0;
+  right: 0;
+  height: 46px;
+  z-index: 5;
+  background: linear-gradient(
+    to bottom,
+    var(--bg) 0%,
+    var(--bg) 68%,
+    color-mix(in srgb, var(--bg) 55%, transparent) 100%
+  );
+}
+.nav-header--float::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 22px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--bg) 55%, transparent),
+    transparent
+  );
+}
+.home-body.home-body--undernav {
+  padding-top: 57px;
+}
+.scr-body.scr-body--undernav {
+  padding-top: 46px;
+}
 .nav-header {
   flex: 0 0 46px;
   display: flex;
@@ -1519,6 +1557,97 @@
 .reserve-warn {
   color: var(--warning);
 }
+/* date and departure share a row, half the width each */
+.reserve-row {
+  display: flex;
+  gap: 12px;
+}
+.reserve-row .pick-group {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── the calendar the date box opens ── */
+/* the month needs its full seven columns, so the pop takes its own width
+   rather than its half-row anchor's */
+.cal {
+  left: 0;
+  right: auto;
+  width: 322px;
+  padding: 12px 12px 14px;
+}
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px 10px;
+}
+.cal-month {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.cal-nav {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.cal-nav:active {
+  background: var(--card-bg);
+}
+.cal-nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  justify-items: center;
+}
+.cal-wday {
+  font: var(--app-caption);
+  color: var(--text-muted);
+  padding: 4px 0;
+}
+.cal-day {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.cal-day:active:not(:disabled) {
+  background: var(--card-bg);
+}
+.cal-day:disabled {
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: default;
+}
+.cal-day--today {
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.cal-day--on {
+  background: var(--compass-600);
+  color: #fff;
+  box-shadow: none;
+}
 
 /* ── a ticket, opened: the boarding screen ── */
 .tikd-stack {
@@ -1671,12 +1800,8 @@
   width: 304px;
   padding: 0 4px;
   border-radius: 24px;
-  /* the frame floats this over the screen: card-bg at 70% behind a blur.
-     The flat colour is the fallback where color-mix is not understood. */
-  background: var(--card-bg);
-  background: color-mix(in srgb, var(--card-bg) 70%, transparent);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  /* the bar carries no surface of its own — only its controls show, and
+     whatever scrolls beneath stays fully visible */
 }
 .tab {
   all: unset;

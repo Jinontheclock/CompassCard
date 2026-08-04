@@ -20,14 +20,14 @@ export default function Tickets({ sailings, tickets, onOpenTicket, onOpen, onAcc
     <div className="scr">
       <StatusBar />
 
-      <div className="nav-header">
+      <div className="nav-header nav-header--float">
         <h1 className="home-title">Tickets</h1>
         <button type="button" className="nav-account" onClick={onAccount} aria-label="Account">
           <img src={accountIcon} alt="" width="18" height="18" />
         </button>
       </div>
 
-      <div className="scr-body">
+      <div className="scr-body scr-body--undernav">
         <section className="section">
           <h2 className="section-label">SAILING STATUS · BC FERRIES</h2>
           <div className="panel">

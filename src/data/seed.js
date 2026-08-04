@@ -41,8 +41,10 @@ export const FARES = {
   programCardFee: 25.0,
   /* a digital card is issued in the app for nothing */
   digitalCardFee: 0,
-  /* BC Ferries, Tsawwassen–Swartz Bay, adult foot passenger */
+  /* BC Ferries, Metro Vancouver – Island, adult foot passenger — and the
+     child (5–11) fare, which is half the adult's */
   ferryWalkOn: 19.1,
+  ferryWalkOnChild: 9.55,
   /* the concession rates: stored value by zone, one DayPass, one monthly */
   concession: { storedValue: { 1: 2.3, 2: 3.4, 3: 4.6 }, dayPass: 9.75, monthly: 66.95 },
   /* what the reload screen offers, and what Autoload can be set to */
@@ -108,11 +110,11 @@ export const FERRY = {
 /* the run a pair of terminals rides, named by whichever end is the island's */
 export const ferryRun = (from, to) =>
   Object.keys(FERRY.times).find((t) => t === from || t === to);
-/* the next six days, labelled short and written the board's way */
-export const FERRY_DATES = Array.from({ length: 6 }, (_, i) => {
-  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
-  return { label: `${MONTHS[d.getMonth()]} ${d.getDate()}`, date: sailingDate(i) };
-});
+/* a day written the sailing board's way, and the short way a control shows it */
+export const boardDate = (d) =>
+  `${MONTHS[d.getMonth()]}-${String(d.getDate()).padStart(2, "0")}-${d.getFullYear()}`;
+export const dayLabel = (d) => `${MONTHS[d.getMonth()]} ${d.getDate()}`;
+export const MONTH_NAMES_FULL = MONTH_NAMES;
 
 /* The schools in the U-Pass BC programme the connect screen can pick from —
    the real participating institutions, written the way each writes itself.
@@ -218,15 +220,6 @@ export function seedState() {
           { label: "Reload", sub: "Apple Pay", amount: 50.0, date: "Jan-15-2026" },
           { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Dec-30-2025" },
         ],
-      },
-      {
-        id: "c2",
-        name: "Second Card",
-        balance: 5.0,
-        twin: null,
-        frozen: false,
-        pass: null,
-        history: [],
       },
     ],
     /* the card writes the school short and the connect screen writes it out */
