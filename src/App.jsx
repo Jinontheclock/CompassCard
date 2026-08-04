@@ -264,10 +264,6 @@ export default function App() {
             card={model.cards[0]}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
-            onOpen={(id) => {
-              if (model.cards.length) setOpenCard(model.cards[0].id);
-              push(id);
-            }}
             /* a walk-on pays from stored value, so reserving is a deduction
                and a ledger line, not a charge — the same shape the seeded
                ferry entries have */

@@ -1,7 +1,6 @@
 import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import TabBar from "../components/TabBar.jsx";
-import SettingsRow from "../components/SettingsRow.jsx";
 import { FARES, money } from "../data/seed.js";
 import accountIcon from "../assets/icon-account.svg";
 import onTimeIcon from "../assets/icon-ontime.svg";
@@ -11,9 +10,8 @@ import emptyIcon from "../assets/icon-empty.svg";
    onto what a walk-on costs — and, since a walk-on pays from stored value,
    onto reserving it there and then. A reservation becomes a ticket in the
    half below, which the frame draws empty because nothing has been booked
-   yet. The section under it hands over to the screens that sell the rest:
-   passes and stored value. */
-export default function Tickets({ sailings, card, onReserve, onOpen, onAccount, onSelectTab }) {
+   yet. */
+export default function Tickets({ sailings, card, onReserve, onAccount, onSelectTab }) {
   const [open, setOpen] = useState(null);
   /* which sailing was refused for want of balance */
   const [warn, setWarn] = useState(null);
@@ -132,22 +130,6 @@ export default function Tickets({ sailings, card, onReserve, onOpen, onAccount, 
           )}
         </section>
 
-        {/* the rest of what can be bought lives on the card's own screens —
-            this hands over rather than repeating them */}
-        {card && (
-          <section className="section section--tickets">
-            <h2 className="section-label">FARES &amp; PASSES</h2>
-            <div className="panel">
-              <SettingsRow label="Buy a Monthly or DayPass" onClick={() => onOpen?.("passes")} />
-              <div className="panel-rule panel-rule--inset" />
-              <SettingsRow
-                label="Reload stored value"
-                value={money(card.balance)}
-                onClick={() => onOpen?.("reload")}
-              />
-            </div>
-          </section>
-        )}
       </div>
 
       <TabBar active="tickets" onSelect={onSelectTab} />
