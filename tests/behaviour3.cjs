@@ -16,6 +16,7 @@ const is = (label, got, want) => {
   await routeKit(p);
   const go = async (s) => { await p.click(s); await p.waitForTimeout(430); };
   const txt = async (s) => (await p.textContent(s)).trim().replace(/\s+/g, " ");
+  const pay = async () => { await p.click(".apay-pay"); await p.waitForTimeout(2400); };
 
   console.log("the launch");
   await p.goto("http://localhost:4173/", { waitUntil: "domcontentloaded" });
@@ -70,6 +71,36 @@ const is = (label, got, want) => {
   await go(".card-stack > *:nth-child(1)");
   is("paid from stored value", await txt(".hero-figure"), "5.90");
   is("and written down", await txt(".history-row .history-label"), "BC Ferries · Walk-on");
+
+  console.log("a ticket opens onto its boarding pass");
+  await go(".tab-bar .tab:nth-of-type(2)");
+  await go(".ticket-card");
+  is("the pass opens", await txt(".scr-title"), "Boarding Pass");
+  is("with its eight-digit reference", /^\d{8}$/.test(await txt(".tikd-ref")), "true");
+  is("and a code to scan", await p.locator(".tikd-qr").count(), 1);
+  is("the crossing is BC Ferries' own", await txt(".tikd-pass .settings-row:last-of-type .settings-value"), "1 h 35 min");
+  await go(".tikd-wallet");
+  is("wallet takes the press", await txt(".tikd-wallet"), "Added to Apple Wallet");
+  await go(".scr-footer .btn");                            // cancel the reservation
+  is("cancelling frees the sailing", await txt(".sailing-card:nth-of-type(1) .status-ok"), "On time");
+  await go(".tab-bar .tab:nth-of-type(1)");
+  await go(".card-stack > *:nth-child(1)");
+  is("the fare comes home", await txt(".hero-figure"), "25.00");
+  is("as a refund line", await txt(".history-row .history-label"), "BC Ferries · Refund");
+
+  console.log("an event sells its pass");
+  await go(".tab-bar .tab:nth-of-type(2)");
+  await go(".section:nth-of-type(3) .sailing-card:nth-of-type(1) .sailing-head");
+  is("the pass names its price", (await txt(".section:nth-of-type(3) .sailing-more")).includes("$12.55"), "true");
+  await go(".event-buy");
+  await pay();                                             // Apple Pay is the method
+  is("the event is ticketed", await txt(".section:nth-of-type(3) .status-ok"), "Ticketed");
+  is("and the ticket lands", (await txt(".ticket-card")).includes("Whitecaps FC Match"), "true");
+  await go(".ticket-card");
+  is("an event ticket opens", await txt(".scr-title"), "Event Ticket");
+  is("valid where it says", await txt(".tikd-pass .settings-row:last-of-type .settings-value"), "All zones · event day");
+  await go(".scr-footer .btn");                            // refund the pass
+  is("refunding removes it", await p.locator(".ticket-card").count(), 0);
 
   console.log("the forgot flow");
   await p.goto("http://localhost:4173/", { waitUntil: "domcontentloaded" });

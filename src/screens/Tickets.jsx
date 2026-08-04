@@ -1,23 +1,27 @@
 import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import TabBar from "../components/TabBar.jsx";
-import { FARES, money } from "../data/seed.js";
+import { FARES, EVENTS, money } from "../data/seed.js";
 import accountIcon from "../assets/icon-account.svg";
 import onTimeIcon from "../assets/icon-ontime.svg";
 import emptyIcon from "../assets/icon-empty.svg";
 
 /* The other tab. The sailings are read from the seed, and each one opens
    onto what a walk-on costs — and, since a walk-on pays from stored value,
-   onto reserving it there and then. A reservation becomes a ticket in the
-   half below, which the frame draws empty because nothing has been booked
-   yet. */
-export default function Tickets({ sailings, card, onReserve, onAccount, onSelectTab }) {
+   onto reserving it there and then. Beneath them, what has been issued:
+   every reservation and event pass becomes a ticket that opens onto its
+   own boarding screen. The frame draws the ticket half empty because
+   nothing has been booked yet. Last, the events the network serves — an
+   event pass is a DayPass in event clothes, and it charges the payment
+   method the way a pass purchase does. */
+export default function Tickets({ sailings, card, tickets, onReserve, onBuyEvent, onOpenTicket, onAccount, onSelectTab }) {
   const [open, setOpen] = useState(null);
+  const [openEvent, setOpenEvent] = useState(null);
   /* which sailing was refused for want of balance */
   const [warn, setWarn] = useState(null);
 
-  const reserved = sailings.filter((s) => s.reserved);
   const short = card && card.balance < FARES.ferryWalkOn;
+  const ticketed = (ev) => tickets.some((t) => t.eventId === ev.id);
 
   return (
     <div className="scr">
@@ -100,22 +104,31 @@ export default function Tickets({ sailings, card, onReserve, onAccount, onSelect
 
         <section className="section section--tickets">
           <h2 className="section-label">YOUR TICKETS</h2>
-          {reserved.length ? (
+          {tickets.length ? (
             <div className="panel">
-              {reserved.map((t, i) => (
-                <Fragment key={t.time}>
+              {tickets.map((t, i) => (
+                <Fragment key={t.ref}>
                   {i > 0 && <div className="panel-rule panel-rule--inset" />}
-                  <div className="ticket-card">
+                  <button type="button" className="ticket-card" onClick={() => onOpenTicket?.(t)}>
                     <div className="sailing">
-                      <span className="sailing-leg">{t.from}</span>
-                      <span className="sailing-leg">{t.to}</span>
+                      {t.kind === "ferry" ? (
+                        <>
+                          <span className="sailing-leg">{t.from}</span>
+                          <span className="sailing-leg">{t.to}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="sailing-leg">{t.name}</span>
+                          <span className="sailing-time">{t.venue}</span>
+                        </>
+                      )}
                       <span className="sailing-time">{t.time}</span>
                     </div>
                     <div className="ticket-side">
-                      <span className="ticket-chip">RESERVED</span>
-                      <span className="ticket-fare tnum">{money(FARES.ferryWalkOn)}</span>
+                      <span className="ticket-chip">{t.kind === "ferry" ? "RESERVED" : "PURCHASED"}</span>
+                      <span className="ticket-fare tnum">{money(t.fare)}</span>
                     </div>
-                  </div>
+                  </button>
                 </Fragment>
               ))}
             </div>
@@ -130,6 +143,63 @@ export default function Tickets({ sailings, card, onReserve, onAccount, onSelect
           )}
         </section>
 
+        <section className="section section--tickets">
+          <h2 className="section-label">UPCOMING EVENTS</h2>
+          <div className="panel">
+            {EVENTS.map((ev, i) => (
+              <Fragment key={ev.id}>
+                {i > 0 && <div className="panel-rule panel-rule--inset" />}
+                <div className={"sailing-card" + (openEvent === i ? " sailing-card--open" : "")}>
+                  <button
+                    type="button"
+                    className="sailing-head"
+                    aria-expanded={openEvent === i}
+                    onClick={() => setOpenEvent(openEvent === i ? null : i)}
+                  >
+                    <div className="panel-row">
+                      <div className="sailing">
+                        <span className="sailing-leg">{ev.name}</span>
+                        <span className="sailing-time">{ev.venue}</span>
+                        <span className="sailing-time">{ev.time}</span>
+                      </div>
+                      {ticketed(ev) ? (
+                        <span className="status-ok">
+                          <img src={onTimeIcon} alt="" width="17" height="17" />
+                          Ticketed
+                        </span>
+                      ) : (
+                        <span className="event-price tnum">{money(FARES.dayPass)}</span>
+                      )}
+                    </div>
+                  </button>
+                  <div className="sailing-more-wrap" aria-hidden={openEvent !== i}>
+                    <div className="sailing-inner">
+                      <div className="sailing-more">
+                        <span>Event pass · all zones on the day</span>
+                        <span className="tnum">{money(FARES.dayPass)}</span>
+                      </div>
+                      <div className="sailing-act">
+                        {ticketed(ev) ? (
+                          <p className="sailing-done">Ticketed — your pass is above.</p>
+                        ) : (
+                          <button
+                            type="button"
+                            className="sailing-reserve event-buy"
+                            onClick={() => onBuyEvent?.(ev)}
+                          >
+                            Buy Event Pass · {money(FARES.dayPass)}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Fragment>
+            ))}
+            <div className="panel-rule" />
+            <div className="panel-foot">An event pass covers all zones on the event day</div>
+          </div>
+        </section>
       </div>
 
       <TabBar active="tickets" onSelect={onSelectTab} />

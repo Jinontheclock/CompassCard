@@ -56,6 +56,31 @@ export const FARES = {
 export const replacementFee = (hasProgramPass) =>
   hasProgramPass ? FARES.programCardFee : FARES.cardFee;
 
+/* What the Tickets tab can put a pass to: real venues on the network, the
+   station or route that serves them, and dates that follow the calendar the
+   way the sailings do. An event pass is a DayPass in event clothes — all
+   zones, the day of the event — priced from the same table. */
+export const EVENTS = [
+  {
+    id: "ev1",
+    name: "Whitecaps FC Match",
+    venue: "BC Place · Stadium–Chinatown Stn",
+    time: `07:30 PM ${sailingDate(4)}`,
+  },
+  {
+    id: "ev2",
+    name: "Playland at the PNE",
+    venue: "Hastings Park · R5 Hastings St",
+    time: `11:00 AM ${sailingDate(9)}`,
+  },
+];
+
+/* the eight digits BC Ferries stamps on a booking */
+export const bookingRef = () => String(Math.floor(10000000 + Math.random() * 90000000));
+
+/* Tsawwassen–Swartz Bay, dock to dock — BC Ferries' own figure */
+export const CROSSING = "1 h 35 min";
+
 /* The schools in the U-Pass BC programme the connect screen can pick from —
    the real participating institutions, written the way each writes itself.
    `short` is what fits on the card. */
@@ -179,6 +204,8 @@ export function seedState() {
       renewed: true,
       autoRenew: true,
     },
+    /* what the Tickets tab has issued: reservations and event passes */
+    tickets: [],
     autoload: { on: false, threshold: 5.0, amount: 10.0 },
     /* what pays: the methods on file, and the one everything charges to */
     payment: { methods: ["Apple Pay"], primary: "Apple Pay" },
