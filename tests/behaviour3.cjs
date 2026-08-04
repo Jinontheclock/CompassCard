@@ -41,6 +41,12 @@ const is = (label, got, want) => {
   is("the gate accepts again", await txt(".tap-title"), "Accepted");
   await go(".escape");
 
+  console.log("the ledger runs deep");
+  is("ten days of riding", await p.locator(".history-groups .section").count(), 10);
+  await go(".section:nth-of-type(3) > *:nth-child(3)");   // Feb-21, the 2-Zone trip
+  is("a trip opens onto its taps", (await txt(".section:nth-of-type(3) .history-taps")).includes("Lougheed Tn Ctr"), "true");
+  is("a bus trip is one tap", await p.locator(".section:nth-of-type(9) .history-tap").count(), 1);
+
   console.log("a sailing opens onto its fare");
   await go(".tab-bar .tab:nth-of-type(2)");
   await go(".sailing-card:nth-of-type(1)");

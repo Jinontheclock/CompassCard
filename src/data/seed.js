@@ -122,6 +122,43 @@ export function seedState() {
             balanceAfter: 24.6,
           },
           { label: "Reload", sub: "Apple Pay", amount: 10.0, date: "Feb-25-2026" },
+          /* the weeks before the frames: ordinary riding, written the way a
+             real ledger falls — clumped some days, quiet others. The reload
+             sits above the trip that all but emptied the card, being the
+             answer to it. */
+          { label: "Reload", sub: "Apple Pay", amount: 20.0, date: "Feb-21-2026" },
+          {
+            label: "2-Zone trip",
+            sub: "Stored value",
+            amount: -FARES.storedValue[2],
+            date: "Feb-21-2026",
+            taps: [
+              { time: "05:12 PM", place: "Tap in at Waterfront Stn", amount: money(0) },
+              { time: "05:46 PM", place: "Tap out at Lougheed Tn Ctr Stn", amount: money(-FARES.storedValue[2]) },
+            ],
+            balanceAfter: 0.4,
+          },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Feb-16-2026" },
+          { label: "SeaBus trip", sub: "Stored value", amount: -FARES.storedValue[2], date: "Feb-13-2026" },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Feb-13-2026" },
+          { label: "2-Zone trip", sub: "Stored value", amount: -FARES.storedValue[2], date: "Feb-2-2026" },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Jan-28-2026" },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Jan-28-2026" },
+          /* two days in Victoria: over on the 15th, back on the 17th, with a
+             top-up first and the 620 out to the terminal — a bus trip is one
+             tap, there being no tap out on a bus */
+          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, date: "Jan-17-2026" },
+          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, date: "Jan-15-2026" },
+          {
+            label: "1-Zone trip",
+            sub: "Stored value",
+            amount: -FARES.storedValue[1],
+            date: "Jan-15-2026",
+            taps: [{ time: "07:05 AM", place: "Tap in on Bus 620", amount: money(-FARES.storedValue[1]) }],
+            balanceAfter: 62.15,
+          },
+          { label: "Reload", sub: "Apple Pay", amount: 50.0, date: "Jan-15-2026" },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Dec-30-2025" },
         ],
       },
       {
