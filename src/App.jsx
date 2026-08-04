@@ -268,7 +268,6 @@ export default function App() {
       case "tickets":
         return (
           <Tickets
-            sailings={model.sailings}
             tickets={model.tickets}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
@@ -300,10 +299,6 @@ export default function App() {
                           : c
                       )
                     : m.cards,
-                sailings:
-                  t.kind === "ferry"
-                    ? m.sailings.map((s) => (s.time === t.time ? { ...s, reserved: false } : s))
-                    : m.sailings,
                 tickets: m.tickets.filter((x) => x.ref !== t.ref),
               }))
             }
@@ -365,12 +360,6 @@ export default function App() {
                             : c
                         )
                       : m.cards,
-                    sailings:
-                      o.kind === "ferry"
-                        ? m.sailings.map((s) =>
-                            s.time === o.when && s.from === `${o.from} -` ? { ...s, reserved: true } : s
-                          )
-                        : m.sailings,
                     tickets: [
                       ...m.tickets,
                       o.kind === "ferry"
@@ -448,12 +437,6 @@ export default function App() {
                             : c
                         )
                       : m.cards,
-                    sailings:
-                      o.kind === "ferry"
-                        ? m.sailings.map((s) =>
-                            s.time === o.when && s.from === `${o.from} -` ? { ...s, reserved: true } : s
-                          )
-                        : m.sailings,
                     tickets: [
                       ...m.tickets,
                       o.kind === "ferry"
@@ -509,10 +492,6 @@ export default function App() {
                             : c
                         )
                       : m.cards,
-                  sailings:
-                    t.kind === "ferry"
-                      ? m.sailings.map((s) => (s.time === t.time ? { ...s, reserved: false } : s))
-                      : m.sailings,
                   tickets: m.tickets.filter((x) => x.ref !== t.ref),
                 }));
                 back();

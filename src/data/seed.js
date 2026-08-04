@@ -5,7 +5,7 @@
 
 /* The day the demo lives on is the day it is opened. Every date a screen
    writes — the ledger line a reload adds, the month a pass covers, the day
-   it expires, the sailings on the board — derives from this one clock
+   it expires, the sailings offered to reserve — derives from this one clock
    rather than being written where it is shown. */
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -18,7 +18,7 @@ export const TODAY = {
   monthEnd: `${MONTHS[now.getMonth()]} ${monthEndDay}`,
 };
 
-/* the sailings board writes its dates zero-padded: Aug-02-2026 */
+/* sailing and event dates are written zero-padded: Aug-02-2026 */
 const sailingDate = (daysAhead) => {
   const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysAhead);
   return `${MONTHS[d.getMonth()]}-${String(d.getDate()).padStart(2, "0")}-${d.getFullYear()}`;
@@ -239,24 +239,6 @@ export function seedState() {
        rows without values, which is exactly an account nothing has been
        written into yet. */
     account: { name: "", address: "", phone: "", password: "", notifications: true },
-    /* Written the way the Tickets frame writes them: the leg broken over two
-       lines, the trailing dash included, and the sailing time spelled out in
-       full rather than shortened. */
-    /* out today, back in two days — the board follows the calendar */
-    sailings: [
-      {
-        from: "Vancouver (Tsawwassen) -",
-        to: "Victoria (Swartz Bay)",
-        time: `06:00 PM ${sailingDate(0)}`,
-        status: "On time",
-      },
-      {
-        from: "Victoria (Swartz Bay) -",
-        to: "Vancouver (Tsawwassen)",
-        time: `01:00 PM ${sailingDate(2)}`,
-        status: "On time",
-      },
-    ],
   };
 }
 

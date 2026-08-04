@@ -50,7 +50,7 @@ export default function CardList({ cards, onAccount, onPurchase, onRegister, onC
                 </Button>
               </div>
             </div>
-            <NotePanel>Just checking sailings? The Tickets tab works without a card.</NotePanel>
+            <NotePanel>Just here for tickets? The Tickets tab works without a card.</NotePanel>
           </div>
         ) : (
           <div className="home-stack">

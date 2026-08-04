@@ -48,15 +48,13 @@ const is = (label, got, want) => {
   is("a trip opens onto its taps", (await txt(".section:nth-of-type(3) .history-taps")).includes("Lougheed Tn Ctr"), "true");
   is("a bus trip is one tap", await p.locator(".section:nth-of-type(9) .history-tap").count(), 1);
 
-  console.log("the board reports, the reserve page books");
+  console.log("the shelf starts empty, the reserve page books");
   await go(".tab-bar .tab:nth-of-type(2)");
   is("a fitting page does not scroll", await p.evaluate(() => {
     const el = document.querySelector(".scr-body"); return el.scrollHeight - el.clientHeight;
   }), 0);
-  await go(".sailing-card:nth-of-type(1)");
-  is("the fare unfolds", await txt(".sailing-card:nth-of-type(1) .sailing-more"),
-     "Adult walk-on · pays from stored value$19.10");
-  is("the board only reports", await p.locator(".sailing-reserve").count(), 0);
+  is("nothing is seeded onto the shelf", await p.locator(".ticket-card").count(), 0);
+  is("only the empty card waits", await p.locator(".empty-card").count(), 1);
   await go(".tickets-actions .btn:nth-of-type(1)");        // Reserve Ferries
   is("the reserve page opens", await txt(".scr-title"), "Reserve Ferries");
   await go(".pick-group:nth-of-type(1) .pick-box--tap");   // Fare
@@ -97,7 +95,8 @@ const is = (label, got, want) => {
   await go(".menu-item:nth-of-type(6)");                   // 06:00 PM
   await go(".scr-footer--fixed .btn");                     // Next
   await go(".scr-footer--fixed .btn");                     // Pay with Compass Card
-  is("reserving marks the sailing", await txt(".sailing-card:nth-of-type(1) .status-ok"), "Reserved");
+  is("reserving files under BC Ferries", await txt(".section:nth-of-type(1) .section-label"),
+     "RESERVED SAILINGS · BC FERRIES");
   is("and issues the ticket", (await txt(".ticket-card")).includes("Victoria (Swartz Bay)"), "true");
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
@@ -115,7 +114,8 @@ const is = (label, got, want) => {
   await go(".tikd-wallet");
   is("wallet takes the press", await txt(".tikd-wallet"), "Added to Apple Wallet");
   await go(".ticket-full .btn");                           // cancel the reservation
-  is("cancelling frees the sailing", await txt(".sailing-card:nth-of-type(1) .status-ok"), "On time");
+  is("cancelling clears the shelf", await p.locator(".ticket-card").count(), 0);
+  is("and the empty card returns", await p.locator(".empty-card").count(), 1);
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
   is("the fare comes home", await txt(".hero-figure"), "25.00");

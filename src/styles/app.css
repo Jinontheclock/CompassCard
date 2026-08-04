@@ -1380,7 +1380,8 @@
 }
 
 /* ── tickets ── */
-.section--tickets {
+/* breathing room above the tickets only when a section stands over them */
+.section + .section--tickets {
   margin-top: 21px;
 }
 .sailing {
