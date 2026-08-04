@@ -260,8 +260,35 @@ export default function App() {
         return (
           <Tickets
             sailings={model.sailings}
+            /* the tickets tab acts on the primary card — the first one */
+            card={model.cards[0]}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
+            onOpen={(id) => {
+              if (model.cards.length) setOpenCard(model.cards[0].id);
+              push(id);
+            }}
+            /* a walk-on pays from stored value, so reserving is a deduction
+               and a ledger line, not a charge — the same shape the seeded
+               ferry entries have */
+            onReserve={(i) =>
+              setModel((m) => ({
+                ...m,
+                cards: m.cards.map((c, idx) =>
+                  idx === 0
+                    ? {
+                        ...c,
+                        balance: c.balance - FARES.ferryWalkOn,
+                        history: [
+                          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, date: TODAY.ledger },
+                          ...c.history,
+                        ],
+                      }
+                    : c
+                ),
+                sailings: m.sailings.map((s, idx) => (idx === i ? { ...s, reserved: true } : s)),
+              }))
+            }
           />
         );
       case "carddetail":

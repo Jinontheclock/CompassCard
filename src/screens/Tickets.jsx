@@ -1,17 +1,25 @@
 import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import TabBar from "../components/TabBar.jsx";
+import SettingsRow from "../components/SettingsRow.jsx";
 import { FARES, money } from "../data/seed.js";
 import accountIcon from "../assets/icon-account.svg";
 import onTimeIcon from "../assets/icon-ontime.svg";
 import emptyIcon from "../assets/icon-empty.svg";
 
 /* The other tab. The sailings are read from the seed, and each one opens
-   onto what a walk-on costs — the same fare the ledger already charged.
-   The tickets half is empty on purpose: the frame draws the state before
-   anything is booked. */
-export default function Tickets({ sailings, onAccount, onSelectTab }) {
+   onto what a walk-on costs — and, since a walk-on pays from stored value,
+   onto reserving it there and then. A reservation becomes a ticket in the
+   half below, which the frame draws empty because nothing has been booked
+   yet. The section under it hands over to the screens that sell the rest:
+   passes and stored value. */
+export default function Tickets({ sailings, card, onReserve, onOpen, onAccount, onSelectTab }) {
   const [open, setOpen] = useState(null);
+  /* which sailing was refused for want of balance */
+  const [warn, setWarn] = useState(null);
+
+  const reserved = sailings.filter((s) => s.reserved);
+  const short = card && card.balance < FARES.ferryWalkOn;
 
   return (
     <div className="scr">
@@ -31,48 +39,115 @@ export default function Tickets({ sailings, onAccount, onSelectTab }) {
             {sailings.map((sailing, i) => (
               <Fragment key={i}>
                 {i > 0 && <div className="panel-rule panel-rule--inset" />}
-                <button
-                  type="button"
-                  className="sailing-card"
-                  aria-expanded={open === i}
-                  onClick={() => setOpen(open === i ? null : i)}
-                >
-                  <div className="panel-row">
-                    <div className="sailing">
-                      <span className="sailing-leg">{sailing.from}</span>
-                      <span className="sailing-leg">{sailing.to}</span>
-                      <span className="sailing-time">{sailing.time}</span>
+                <div className={"sailing-card" + (open === i ? " sailing-card--open" : "")}>
+                  <button
+                    type="button"
+                    className="sailing-head"
+                    aria-expanded={open === i}
+                    onClick={() => { setOpen(open === i ? null : i); setWarn(null); }}
+                  >
+                    <div className="panel-row">
+                      <div className="sailing">
+                        <span className="sailing-leg">{sailing.from}</span>
+                        <span className="sailing-leg">{sailing.to}</span>
+                        <span className="sailing-time">{sailing.time}</span>
+                      </div>
+                      <span className="status-ok">
+                        <img src={onTimeIcon} alt="" width="17" height="17" />
+                        {sailing.reserved ? "Reserved" : sailing.status}
+                      </span>
                     </div>
-                    <span className="status-ok">
-                      <img src={onTimeIcon} alt="" width="17" height="17" />
-                      {sailing.status}
-                    </span>
-                  </div>
+                  </button>
                   <div className="sailing-more-wrap" aria-hidden={open !== i}>
-                    <div className="sailing-more">
-                      <span>Adult walk-on · pays from stored value</span>
-                      <span className="tnum">{money(FARES.ferryWalkOn)}</span>
+                    <div className="sailing-inner">
+                      <div className="sailing-more">
+                        <span>Adult walk-on · pays from stored value</span>
+                        <span className="tnum">{money(FARES.ferryWalkOn)}</span>
+                      </div>
+                      {/* what the fare line leads to: reserving it — or the
+                          reason it cannot be reserved yet */}
+                      <div className="sailing-act">
+                        {sailing.reserved ? (
+                          <p className="sailing-done">Reserved — your ticket is below.</p>
+                        ) : card ? (
+                          <button
+                            type="button"
+                            className="sailing-reserve"
+                            onClick={() => {
+                              if (short) { setWarn(i); return; }
+                              setWarn(null);
+                              onReserve?.(i);
+                            }}
+                          >
+                            Reserve walk-on · {money(FARES.ferryWalkOn)}
+                          </button>
+                        ) : (
+                          <p className="sailing-done">Register a card to reserve a walk-on.</p>
+                        )}
+                        {warn === i && (
+                          <p className="sailing-warn">
+                            Not enough stored value on {card.name} — reload first.
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </button>
+                </div>
               </Fragment>
             ))}
             <div className="panel-rule" />
-            <div className="panel-foot">Schedules and status only</div>
+            <div className="panel-foot">Walk-on fares come off your stored value</div>
           </div>
         </section>
 
         <section className="section section--tickets">
           <h2 className="section-label">YOUR TICKETS</h2>
-          <div className="empty-card">
-            <img src={emptyIcon} alt="" width="32" height="32" />
-            <p className="empty-title">No tickets yet</p>
-            <p className="empty-note">
-              Reservations — like bikes and reserved seating — and event tickets will show up here
-              when they open.
-            </p>
-          </div>
+          {reserved.length ? (
+            <div className="panel">
+              {reserved.map((t, i) => (
+                <Fragment key={t.time}>
+                  {i > 0 && <div className="panel-rule panel-rule--inset" />}
+                  <div className="ticket-card">
+                    <div className="sailing">
+                      <span className="sailing-leg">{t.from}</span>
+                      <span className="sailing-leg">{t.to}</span>
+                      <span className="sailing-time">{t.time}</span>
+                    </div>
+                    <div className="ticket-side">
+                      <span className="ticket-chip">RESERVED</span>
+                      <span className="ticket-fare tnum">{money(FARES.ferryWalkOn)}</span>
+                    </div>
+                  </div>
+                </Fragment>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-card">
+              <img src={emptyIcon} alt="" width="32" height="32" />
+              <p className="empty-title">No tickets yet</p>
+              <p className="empty-note">
+                Reserve a sailing above — reservations and event tickets show up here.
+              </p>
+            </div>
+          )}
         </section>
+
+        {/* the rest of what can be bought lives on the card's own screens —
+            this hands over rather than repeating them */}
+        {card && (
+          <section className="section section--tickets">
+            <h2 className="section-label">FARES &amp; PASSES</h2>
+            <div className="panel">
+              <SettingsRow label="Buy a Monthly or DayPass" onClick={() => onOpen?.("passes")} />
+              <div className="panel-rule panel-rule--inset" />
+              <SettingsRow
+                label="Reload stored value"
+                value={money(card.balance)}
+                onClick={() => onOpen?.("reload")}
+              />
+            </div>
+          </section>
+        )}
       </div>
 
       <TabBar active="tickets" onSelect={onSelectTab} />

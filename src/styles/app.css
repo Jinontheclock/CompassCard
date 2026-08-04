@@ -1338,8 +1338,16 @@
   flex-direction: column;
   gap: 2px;
 }
-/* a sailing row that opens onto its fare, unfolding the way a trip does */
+/* A sailing row that opens onto its fare, unfolding the way a trip does.
+   The head is the button and the unfolding half sits beside it rather than
+   inside it, since what unfolds now carries a button of its own. The wrap
+   animates through grid rows, because what it holds is no longer one fixed
+   line — a reserve button, a warning, or the word that it is done. */
 .sailing-card {
+  display: block;
+  width: 100%;
+}
+.sailing-head {
   all: unset;
   box-sizing: border-box;
   display: block;
@@ -1347,16 +1355,20 @@
   cursor: pointer;
   transition: background-color 180ms ease;
 }
-.sailing-card:active {
+.sailing-head:active {
   background: var(--card-bg);
 }
 .sailing-more-wrap {
-  height: 0;
-  overflow: hidden;
-  transition: height 240ms cubic-bezier(0.32, 0.72, 0, 1);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
-.sailing-card[aria-expanded="true"] .sailing-more-wrap {
-  height: 36px;
+.sailing-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+.sailing-card--open .sailing-more-wrap {
+  grid-template-rows: 1fr;
 }
 .sailing-more {
   display: flex;
@@ -1369,8 +1381,80 @@
   opacity: 0;
   transition: opacity 200ms ease;
 }
-.sailing-card[aria-expanded="true"] .sailing-more {
+.sailing-card--open .sailing-more {
   opacity: 1;
+}
+/* what the fare line leads to */
+.sailing-act {
+  padding: 0 16px 14px;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.sailing-card--open .sailing-act {
+  opacity: 1;
+}
+.sailing-reserve {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--compass-600);
+  color: #fff;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+.sailing-reserve:active {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
+.sailing-done {
+  margin: 0;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+.sailing-warn {
+  margin: 8px 0 0;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--warning);
+}
+/* a reservation, become a ticket: the sailing written the board's way,
+   wearing the word and the fare it cost */
+.ticket-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+.ticket-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.ticket-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+  font: var(--app-caption);
+  letter-spacing: 0.06em;
+}
+.ticket-fare {
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
 }
 .sailing-leg {
   font: var(--app-body);
