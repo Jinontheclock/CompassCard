@@ -56,6 +56,13 @@ const is = (label, got, want) => {
   is("the board only reports", await p.locator(".sailing-reserve").count(), 0);
   await go(".tickets-actions .btn:nth-of-type(1)");        // Reserve Ferries
   is("the reserve page opens", await txt(".scr-title"), "Reserve Ferries");
+  await go(".pick-group:nth-of-type(1) .pick-box--tap");
+  is("five terminals to leave from", await p.locator(".menu-item").count(), 5);
+  await go(".menu-item:nth-of-type(2)");                   // West Vancouver (Horseshoe Bay)
+  is("the partner follows the route", await txt(".pick-group:nth-of-type(2) .pick-value"), "Nanaimo (Departure Bay)");
+  is("and the schedule follows the run", (await txt(".ferry-times")).includes("06:15 AM"), "true");
+  await go(".pick-group:nth-of-type(1) .pick-box--tap");
+  await go(".menu-item:nth-of-type(1)");                   // back to Tsawwassen
   await go(".ferry-times > *:nth-child(6)");               // 06:00 PM — the board's sailing
   await go(".scr-footer--fixed .btn");                     // balance 15.00 < 19.10
   is("short balance is refused", (await txt(".reserve-warn")).startsWith("Not enough stored value"), "true");

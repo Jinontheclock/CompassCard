@@ -1,22 +1,67 @@
 import { useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
+import Dropdown from "../components/Dropdown.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
-import { FARES, SAILING_TIMES, ROUTE, money } from "../data/seed.js";
-import tick from "../assets/icon-tick.svg";
+import { FARES, FERRY, FERRY_DATES, ferryRun, money } from "../data/seed.js";
+import chevron from "../assets/icon-chevron.svg";
 
-/* Reserving a sailing, on its own screen: pick the leg, pick the departure,
-   and the button restates both. The fare is the walk-on fare and it comes
-   off stored value, so a card short of it is told to reload rather than
+/* Reserving a sailing, the way BC Ferries' own booking asks it: where from,
+   where to, which day, which departure. The terminals are the real Metro
+   Vancouver – Island ones and the partner list follows the route map, so a
+   harbour only offers the crossings that exist; the schedule and crossing
+   time follow the chosen run. The fare is the walk-on fare and it comes off
+   stored value, so a card short of it is told to reload rather than
    charged — the same rule everywhere money moves in this app. */
 export default function ReserveFerries({ card, onBack, onReserve }) {
-  const [leg, setLeg] = useState("out");
-  const [time, setTime] = useState(SAILING_TIMES[SAILING_TIMES.length - 1]);
+  const [from, setFrom] = useState("Vancouver (Tsawwassen)");
+  const [to, setTo] = useState("Victoria (Swartz Bay)");
+  const [date, setDate] = useState(FERRY_DATES[0].date);
+  const [time, setTime] = useState(FERRY.times[ferryRun("Vancouver (Tsawwassen)", "Victoria (Swartz Bay)")][0]);
+  const [openMenu, setOpenMenu] = useState(null);
   const [warn, setWarn] = useState(false);
 
-  const route = ROUTE[leg];
+  const run = ferryRun(from, to);
+  const times = FERRY.times[run];
   const short = !card || card.balance < FARES.ferryWalkOn;
+
+  /* changing an end keeps the other if the route exists, else takes the
+     first partner — and the schedule follows the run either way */
+  const pickFrom = (t) => {
+    const nextTo = FERRY.links[t].includes(to) ? to : FERRY.links[t][0];
+    setFrom(t);
+    setTo(nextTo);
+    setTime(FERRY.times[ferryRun(t, nextTo)][0]);
+  };
+  const pickTo = (t) => {
+    setTo(t);
+    setTime(FERRY.times[ferryRun(from, t)][0]);
+  };
+
+  const picker = (label, value, options, onPick, key) => (
+    <div className="pick-group">
+      <span className="pick-label">{label}</span>
+      <div className="menu-anchor">
+        <button
+          type="button"
+          className="pick-box pick-box--tap"
+          onClick={() => setOpenMenu(openMenu === key ? null : key)}
+        >
+          <span className="pick-value">{value}</span>
+          <img className="pick-chevron" src={chevron} alt="" width="8" height="14" />
+        </button>
+        <Dropdown
+          open={openMenu === key}
+          wide
+          options={options.map((t) => ({ label: t, value: t }))}
+          value={value}
+          onPick={onPick}
+          onClose={() => setOpenMenu(null)}
+        />
+      </div>
+    </div>
+  );
 
   return (
     <div className="scr">
@@ -25,24 +70,25 @@ export default function ReserveFerries({ card, onBack, onReserve }) {
 
       <div className="scr-body">
         <h1 className="scr-title">Reserve Ferries</h1>
-        <p className="scr-sub">Adult walk-on · Tsawwassen – Swartz Bay</p>
+        <p className="scr-sub">Adult walk-on · Metro Vancouver – Vancouver Island</p>
 
         <div className="reserve-stack">
+          {picker("From", from, Object.keys(FERRY.links), pickFrom, "from")}
+          {picker("To", to, FERRY.links[from], pickTo, "to")}
+
           <section className="section section--gap8">
-            <h2 className="section-label">ROUTE</h2>
-            <div className="panel panel--flat">
-              {["out", "back"].map((key, i) => (
-                <div key={key}>
-                  {i > 0 && <div className="panel-rule panel-rule--inset" />}
-                  <button type="button" className="settings-row settings-row--route" onClick={() => setLeg(key)}>
-                    <span className="sailing">
-                      <span className="sailing-leg">{ROUTE[key].from}</span>
-                      <span className="sailing-leg">{ROUTE[key].to}</span>
-                      <span className="sailing-time">{ROUTE[key].date}</span>
-                    </span>
-                    {leg === key && <img src={tick} alt="chosen" width="12.45" height="9.075" />}
-                  </button>
-                </div>
+            <h2 className="section-label">DATE</h2>
+            <div className="ferry-dates">
+              {FERRY_DATES.map((d) => (
+                <button
+                  type="button"
+                  key={d.date}
+                  className={"preset" + (d.date === date ? " preset--on" : "")}
+                  aria-pressed={d.date === date}
+                  onClick={() => setDate(d.date)}
+                >
+                  {d.label}
+                </button>
               ))}
             </div>
           </section>
@@ -50,7 +96,7 @@ export default function ReserveFerries({ card, onBack, onReserve }) {
           <section className="section section--gap8">
             <h2 className="section-label">DEPARTURE</h2>
             <div className="ferry-times">
-              {SAILING_TIMES.map((t) => (
+              {times.map((t) => (
                 <button
                   type="button"
                   key={t}
@@ -65,7 +111,8 @@ export default function ReserveFerries({ card, onBack, onReserve }) {
           </section>
 
           <NotePanel>
-            Ticket sales for foot passengers end 10 minutes before the sailing.
+            Crossing {FERRY.crossings[run]}, dock to dock. Ticket sales for foot
+            passengers end 10 minutes before the sailing.
           </NotePanel>
         </div>
       </div>
@@ -74,7 +121,7 @@ export default function ReserveFerries({ card, onBack, onReserve }) {
         <Button
           onClick={() => {
             if (short) { setWarn(true); return; }
-            onReserve?.(route, time);
+            onReserve?.({ from, to, when: `${time} ${date}`, crossing: FERRY.crossings[run] });
           }}
         >
           Reserve walk-on · {money(FARES.ferryWalkOn)}

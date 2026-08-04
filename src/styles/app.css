@@ -1497,26 +1497,21 @@
   gap: 20px;
   padding-bottom: 96px;
 }
-/* six departures in the presets' own boxes, three to a row */
-.ferry-times {
+/* six days and six departures in the presets' own boxes, three to a row */
+.ferry-times,
+.ferry-dates {
   display: flex;
   flex-wrap: wrap;
   gap: 14px 14px;
   justify-content: space-between;
 }
-.ferry-times .preset {
+.ferry-times .preset,
+.ferry-dates .preset {
   font-variant-numeric: tabular-nums;
 }
 /* the footnote turned warning when the balance falls short */
 .reserve-warn {
   color: var(--warning);
-}
-/* a route row holds a three-line leg, so it takes its height from it */
-.settings-row--route {
-  height: auto;
-  min-height: 0;
-  padding-top: 12px;
-  padding-bottom: 12px;
 }
 
 /* ── a ticket, opened: the boarding screen ── */

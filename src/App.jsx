@@ -284,8 +284,7 @@ export default function App() {
                ferry entries have. The reservation becomes a ticket with a
                booking reference of its own, and if it is one of the board's
                sailings, the board says so. */
-            onReserve={(route, time) => {
-              const when = `${time} ${route.date}`;
+            onReserve={({ from, to, when, crossing }) => {
               setModel((m) => ({
                 ...m,
                 cards: m.cards.map((c, idx) =>
@@ -300,10 +299,12 @@ export default function App() {
                       }
                     : c
                 ),
-                sailings: m.sailings.map((s) => (s.time === when ? { ...s, reserved: true } : s)),
+                sailings: m.sailings.map((s) =>
+                  s.time === when && s.from === `${from} -` ? { ...s, reserved: true } : s
+                ),
                 tickets: [
                   ...m.tickets,
-                  { ref: bookingRef(), kind: "ferry", from: route.from, to: route.to, time: when, fare: FARES.ferryWalkOn, paidVia: "Stored value" },
+                  { ref: bookingRef(), kind: "ferry", from: `${from} -`, to, time: when, crossing, fare: FARES.ferryWalkOn, paidVia: "Stored value" },
                 ],
               }));
               back();

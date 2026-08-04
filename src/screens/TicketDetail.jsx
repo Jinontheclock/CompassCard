@@ -96,7 +96,7 @@ export default function TicketDetail({ ticket, onBack, onCancel }) {
             <div className="panel-rule panel-rule--inset" />
             <div className="settings-row settings-row--value">
               <span className="settings-label">{ferry ? "Crossing" : "Valid"}</span>
-              <span className="settings-value">{ferry ? CROSSING : "All zones · event day"}</span>
+              <span className="settings-value">{ferry ? ticket.crossing ?? CROSSING : "All zones · event day"}</span>
             </div>
           </div>
 

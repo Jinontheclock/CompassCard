@@ -81,14 +81,38 @@ export const bookingRef = () => String(Math.floor(10000000 + Math.random() * 900
 /* Tsawwassen–Swartz Bay, dock to dock — BC Ferries' own figure */
 export const CROSSING = "1 h 35 min";
 
-/* The route's departures, written the schedule's way, and the two legs the
-   reserve screen offers: out today, back in two days — the same trip the
-   status board watches. */
-export const SAILING_TIMES = ["07:00 AM", "09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "06:00 PM"];
-export const ROUTE = {
-  out: { from: "Vancouver (Tsawwassen) -", to: "Victoria (Swartz Bay)", date: sailingDate(0) },
-  back: { from: "Victoria (Swartz Bay) -", to: "Vancouver (Tsawwassen)", date: sailingDate(2) },
+/* BC Ferries' own map, the demo's slice: the Metro Vancouver – Island runs.
+   Every terminal is real, every partner is a route that exists, and each
+   run keeps its schedule's own departures and crossing time. The adult
+   walk-on fare is the same on all three runs, which is why one figure
+   serves them all. A run is named by its island end. */
+export const FERRY = {
+  links: {
+    "Vancouver (Tsawwassen)": ["Victoria (Swartz Bay)", "Nanaimo (Duke Point)"],
+    "West Vancouver (Horseshoe Bay)": ["Nanaimo (Departure Bay)"],
+    "Victoria (Swartz Bay)": ["Vancouver (Tsawwassen)"],
+    "Nanaimo (Duke Point)": ["Vancouver (Tsawwassen)"],
+    "Nanaimo (Departure Bay)": ["West Vancouver (Horseshoe Bay)"],
+  },
+  times: {
+    "Victoria (Swartz Bay)": ["07:00 AM", "09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "06:00 PM"],
+    "Nanaimo (Duke Point)": ["05:15 AM", "07:45 AM", "10:15 AM", "12:45 PM", "03:15 PM", "05:45 PM"],
+    "Nanaimo (Departure Bay)": ["06:15 AM", "08:25 AM", "10:40 AM", "12:50 PM", "03:10 PM", "05:20 PM"],
+  },
+  crossings: {
+    "Victoria (Swartz Bay)": "1 h 35 min",
+    "Nanaimo (Duke Point)": "2 h 0 min",
+    "Nanaimo (Departure Bay)": "1 h 40 min",
+  },
 };
+/* the run a pair of terminals rides, named by whichever end is the island's */
+export const ferryRun = (from, to) =>
+  Object.keys(FERRY.times).find((t) => t === from || t === to);
+/* the next six days, labelled short and written the board's way */
+export const FERRY_DATES = Array.from({ length: 6 }, (_, i) => {
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+  return { label: `${MONTHS[d.getMonth()]} ${d.getDate()}`, date: sailingDate(i) };
+});
 
 /* The schools in the U-Pass BC programme the connect screen can pick from —
    the real participating institutions, written the way each writes itself.
