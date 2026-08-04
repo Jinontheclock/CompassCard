@@ -29,6 +29,7 @@ import Contact from "./screens/Contact.jsx";
 import Wallet from "./screens/Wallet.jsx";
 import WalletCard from "./screens/WalletCard.jsx";
 import { StatusBar } from "./components/Chrome.jsx";
+import ApplePaySheet from "./components/ApplePaySheet.jsx";
 import compassMark from "./assets/compass-mark.svg";
 import "./styles/app.css";
 
@@ -79,6 +80,9 @@ export default function App() {
   const [chat, setChat] = useState(CHAT);
   const [draft, setDraft] = useState("");
   const [shot, setShot] = useState("tap");
+  /* the Apple Pay sheet standing between asking and having: what it is
+     for, how much, and what happens once it is paid */
+  const [paySheet, setPaySheet] = useState(null);
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
@@ -147,6 +151,29 @@ export default function App() {
   const patchAccount = (patch) => setModel((m) => ({ ...m, account: { ...m.account, ...patch } }));
   /* the one method everything charges to */
   const method = model.payment.primary;
+  /* Anything that costs money passes through here: Apple Pay presents its
+     sheet and hands the flow back once paid; any other method — or a free
+     purchase — goes straight through. */
+  const charge = (label, amount, then) => {
+    if (method === "Apple Pay" && amount > 0) setPaySheet({ label, amount, then });
+    else then();
+  };
+  /* buying a pass puts it on the card, and the ledger gains the line that
+     says what was paid for it */
+  const applyPass = (pass) => {
+    patchCard({
+      pass: {
+        type: pass.zones ? `${pass.short} · ${passZone}-Zone` : pass.short,
+        expires: TODAY.monthEnd,
+      },
+      history: [
+        { label: pass.name, sub: method, amount: -passPrice(pass, passZone), date: TODAY.ledger },
+        ...card.history,
+      ],
+    });
+    back();
+  };
+
   /* a new card's default name: the frame's, unless the account already
      holds a card by that name, and numbered from there */
   const defaultName = () => {
@@ -281,7 +308,7 @@ export default function App() {
             method={method}
             onAmount={setReloadAmount}
             onBack={back}
-            onNext={() => push("reloaddone")}
+            onNext={() => charge(`Reload · ${card.name}`, reloadAmount, () => push("reloaddone"))}
             onOpen={push}
           />
         );
@@ -416,13 +443,15 @@ export default function App() {
             onBack={back}
             /* the card described above is the card that arrives: the typed
                name, holding whatever was loaded at purchase */
-            onPurchase={(name, amount) => {
-              const bought = digitalCard(name, amount);
-              setModel((m) => ({ ...m, cards: [...m.cards, bought] }));
-              setOpenCard(bought.id);
-              setForm((f) => ({ ...f, purchase: { name: "", fee: "" } }));
-              home();
-            }}
+            onPurchase={(name, amount) =>
+              charge("New Compass Card", amount, () => {
+                const bought = digitalCard(name, amount);
+                setModel((m) => ({ ...m, cards: [...m.cards, bought] }));
+                setOpenCard(bought.id);
+                setForm((f) => ({ ...f, purchase: { name: "", fee: "" } }));
+                home();
+              })
+            }
           />
         );
       case "passes":
@@ -438,22 +467,7 @@ export default function App() {
                screen then says it holds */
             onPurchase={() => {
               const pass = PASSES.find((p) => p.id === passId) ?? PASSES[0];
-              patchCard({
-                pass: {
-                  type: pass.zones ? `${pass.short} · ${passZone}-Zone` : pass.short,
-                  expires: TODAY.monthEnd,
-                },
-                history: [
-                  {
-                    label: pass.name,
-                    sub: "Apple Pay",
-                    amount: -passPrice(pass, passZone),
-                    date: TODAY.ledger,
-                  },
-                  ...card.history,
-                ],
-              });
-              back();
+              charge(`${pass.name} · ${card.name}`, passPrice(pass, passZone), () => applyPass(pass));
             }}
           />
         );
@@ -534,6 +548,18 @@ export default function App() {
       >
         <StatusBar light={current === "landing" && !splash} />
       </div>
+      {paySheet && (
+        <ApplePaySheet
+          amount={paySheet.amount}
+          label={paySheet.label}
+          onDone={() => {
+            const then = paySheet.then;
+            setPaySheet(null);
+            then();
+          }}
+          onCancel={() => setPaySheet(null)}
+        />
+      )}
       {splash && (
         <div className="splash" aria-hidden="true">
           <img src={compassMark} alt="" />

@@ -18,6 +18,9 @@ const is = (label, got, want) => {
   await routeKit(p);
   const go = async (s) => { await p.click(s); await p.waitForTimeout(430); };
   const txt = async (s) => (await p.textContent(s)).trim().replace(/\s+/g, " ");
+  /* the Apple Pay sheet: press Pay, then wait out processing + done + the
+     transition into whatever the payment leads to */
+  const pay = async () => { await p.click(".apay-pay"); await p.waitForTimeout(2400); };
   await p.goto("http://localhost:4173/", { waitUntil: "networkidle" });
   await go(".landing-actions > *:nth-child(1)"); await go(".scr-footer .btn");
   await go(".card-stack > *:nth-child(1)");
@@ -35,6 +38,8 @@ const is = (label, got, want) => {
      "Unlimited travel in all zones for one day");
   await go(".zone-row > *:nth-child(2)");
   await go(".scr-footer--fixed .btn");
+  is("Apple Pay asks for the pass", await txt(".apay-total"), "$156.70");
+  await pay();
   is("the pass lands on the card", await txt(".hero-pass-value"), `Monthly · 2-Zone · expires ${MONTH_END}`);
 
   console.log("autoload is set, not stated");
@@ -75,7 +80,10 @@ const is = (label, got, want) => {
   const before = await txt(".hero-figure");
   await go(".tile-grid > *:nth-child(1)");
   await go(".preset-row > *:nth-child(1)");
-  await go(".scr-footer .btn"); await go(".done-footer .btn");
+  await go(".scr-footer .btn");
+  is("Apple Pay asks the amount", await txt(".apay-total"), "$10.00");
+  await pay();
+  await go(".done-footer .btn");
   is("balance", `${before} -> ${await txt(".hero-figure")}`, "15.00 -> 25.00");
   is("newest history line", await txt(".history-row .history-label"), "Reload");
 

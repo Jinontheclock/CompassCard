@@ -86,6 +86,23 @@ const is = (label, got, want) => {
   is("concession is answered", (await txt(".chat-bubble--theirs >> nth=-1")).includes("$2.30"), "true");
   is("off-peak is answered", (await ask("is the weekend cheaper?")).includes("1-Zone $2.85"), "true");
 
+  console.log("home scrolls once the cards outgrow it");
+  await go(".nav-back"); await go(".nav-back");            // chat -> account -> empty home
+  await go(".empty-actions > *:nth-child(1)");             // Purchase New Card
+  await go(".scr-footer--fixed .btn");                     // free digital card
+  for (let i = 0; i < 3; i++) { await go(".home-cards > .btn"); await go(".scr-footer--fixed .btn"); }
+  is("four cards on the stack", await p.locator(".card-stack > *").count(), 4);
+  const scroll = await p.evaluate(() => {
+    const el = document.querySelector(".home-body");
+    return el.scrollHeight - el.clientHeight;
+  });
+  is("the body holds more than it shows", scroll > 0, "true");
+  await p.evaluate(() => { const el = document.querySelector(".home-body"); el.scrollTop = el.scrollHeight; });
+  await p.waitForTimeout(200);
+  is("the button rides below the cards", await p.locator(".home-cards > .btn").isVisible(), "true");
+  await go(".home-cards > .btn");                          // reachable, not overlapped
+  is("and still opens purchase", await txt(".scr-title"), "Purchase New Card");
+
   console.log(`\npage errors: ${errs.length ? errs.join(" | ") : "none"}`);
   await b.close();
   process.exit(fails || errs.length ? 1 : 0);

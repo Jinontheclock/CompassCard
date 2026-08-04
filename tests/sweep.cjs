@@ -53,6 +53,8 @@ const { launchOptions, routeKit } = require("./env.cjs");
   await step("Reload", ".tile-grid > *:nth-child(1)");
   await step("  preset 3", ".preset-row > *:nth-child(3)");
   await step("  Reload", ".scr-footer .btn");
+  await step("  Apple Pay", ".apay-pay");
+  await p.waitForTimeout(2100); // the sheet pays, then hands over to Done
   await step("  Done", ".done-footer .btn");
 
   // tabs, account, help

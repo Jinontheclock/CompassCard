@@ -18,6 +18,9 @@ const is = (label, got, want) => {
   await routeKit(p);
   const go = async (s) => { await p.click(s); await p.waitForTimeout(430); };
   const txt = async (s) => (await p.textContent(s)).trim().replace(/\s+/g, " ");
+  /* the Apple Pay sheet: press Pay, then wait out processing + done + the
+     transition into whatever the payment leads to */
+  const pay = async () => { await p.click(".apay-pay"); await p.waitForTimeout(2400); };
 
   console.log("a fresh account earns its cards");
   await p.goto("http://localhost:4173/", { waitUntil: "networkidle" });
@@ -41,6 +44,8 @@ const is = (label, got, want) => {
   await p.fill(".settings-input--amount", "20");
   is("the load lands on the figure", await txt(".card-tile-amount"), "$20.00");
   await go(".scr-footer--fixed .btn");                     // Purchase
+  is("the load is what Apple Pay asks", await txt(".apay-total"), "$20.00");
+  await pay();
   is("the card joins the list", await p.locator(".card-stack > *").count(), 2);
   is("named as typed", await txt(".card-stack > *:nth-child(2) .card-tile-title"), "Work Card");
   await go(".card-stack > *:nth-child(2)");
@@ -72,9 +77,23 @@ const is = (label, got, want) => {
   await go(".scr-footer .btn");                            // Save
   is("the value sits in the slot", await txt(".section:nth-of-type(1) .settings-row:nth-of-type(1) .settings-value"), "Hajin Lee");
   await go(".section:nth-of-type(1) .settings-row:nth-of-type(4)"); // Password
-  await p.fill(".field-input", "hunter2");
+  is("a first password asks twice", await p.locator(".stack-fields .field").count(), 2);
+  await p.fill(".stack-fields .field:nth-of-type(1) .field-input", "hunter2");
+  await go(".scr-footer .btn");
+  is("a lone password is refused", await txt(".field-error"), "The passwords don't match");
+  await p.fill(".stack-fields .field:nth-of-type(2) .field-input", "hunter2");
   await go(".scr-footer .btn");
   is("a password shows as dots", await txt(".section:nth-of-type(1) .settings-row:nth-of-type(4) .settings-value"), "••••••••");
+  await go(".section:nth-of-type(1) .settings-row:nth-of-type(4)"); // change it
+  is("changing asks for the current one", await p.locator(".stack-fields .field").count(), 3);
+  await p.fill(".stack-fields .field:nth-of-type(1) .field-input", "wrong");
+  await p.fill(".stack-fields .field:nth-of-type(2) .field-input", "hunter3");
+  await p.fill(".stack-fields .field:nth-of-type(3) .field-input", "hunter3");
+  await go(".scr-footer .btn");
+  is("a wrong proof is refused", await txt(".field-error"), "That isn't your current password");
+  await p.fill(".stack-fields .field:nth-of-type(1) .field-input", "hunter2");
+  await go(".scr-footer .btn");
+  is("the right one is accepted", await txt(".scr-title"), "Account");
   const toggled = p.locator(".settings-row--still .toggle");
   is("notifications start on", await toggled.getAttribute("aria-checked"), "true");
   await go(".settings-row--still .toggle");

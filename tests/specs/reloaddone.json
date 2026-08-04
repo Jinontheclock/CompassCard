@@ -1,7 +1,7 @@
 {
   "url": "http://localhost:4173/",
   "tolerance": 0.5,
-  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".card-stack > *:nth-child(1)", ".tile-grid > *:nth-child(1)", ".scr-footer .btn"],
+  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".card-stack > *:nth-child(1)", ".tile-grid > *:nth-child(1)", ".scr-footer .btn", ".apay-pay", "wait:2200"],
   "selectors": {
     "badge": ".done-badge",
     "title": ".done-title",

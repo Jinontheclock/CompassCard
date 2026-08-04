@@ -19,6 +19,9 @@ const shot = shotArg > -1 ? process.argv[shotArg + 1] : null;
 
   await page.goto(spec.url || "http://localhost:4173/", { waitUntil: "networkidle" });
   for (const step of spec.steps || []) {
+    /* a "wait:ms" step stands for time rather than a tap — the Apple Pay
+       sheet takes ~1.8s to pay before the next screen arrives */
+    if (step.startsWith("wait:")) { await page.waitForTimeout(+step.slice(5)); continue; }
     await page.click(step);
     await page.waitForTimeout(430);
   }

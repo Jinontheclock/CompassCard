@@ -513,16 +513,20 @@
 .home-body {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 11px var(--margin) 0;
+  overflow-y: auto;
+  padding: 11px var(--margin) 24px;
 }
 /* the frame fixes this column at 520 and lets the closing line take the
    slack, so the line sits where it sits rather than riding up under the
    button */
+/* 520 is the frame's two-card height — a floor, not a ceiling. More cards
+   grow the stack and the body above scrolls; the closing line never gets
+   overlapped, it just moves down. */
 .home-stack {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  height: 520px;
+  min-height: 520px;
 }
 .home-cards,
 .card-stack {
@@ -1591,7 +1595,13 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 444px;
+  min-height: 444px;
+}
+/* the column may grow now, so the closing line holds the frame's 34 itself —
+   still two lines of 20 overhanging the box by design */
+.passes-stack .home-note {
+  flex: 0 0 34px;
+  height: 34px;
 }
 .passes-list {
   display: flex;
@@ -1744,7 +1754,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 440px;
+  min-height: 440px;
 }
 /* the programme's own card: deeper than a Compass card and ten shorter */
 .card-tile--upass {
@@ -2365,6 +2375,152 @@
 }
 .panel--pop > .menu-anchor:last-child .settings-row {
   border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* ── the Apple Pay sheet ──
+   Apple's surface, not the app's — the system font, a white card off the
+   bottom, hairlines, the black button. It dims the whole phone the way the
+   real sheet does. */
+.apay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+.apay-backdrop {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  animation: cross-in 200ms ease both;
+}
+.apay-sheet {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 18px 20px 34px;
+  border-radius: 20px 20px 0 0;
+  background: #ffffff;
+  font-family: -apple-system, "SF Pro Text", system-ui, sans-serif;
+  color: #1c1c1e;
+  animation: sheet-up 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+}
+.apay-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 32px;
+}
+.apay-mark {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 20px;
+  font-weight: 600;
+}
+.apay-close {
+  all: unset;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background: #e9e9eb;
+  color: #6b6b70;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.apay-rows {
+  margin-top: 14px;
+}
+.apay-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  font-size: 15px;
+}
+.apay-row-label {
+  color: #6b6b70;
+}
+.apay-row-label--total {
+  color: #1c1c1e;
+  font-weight: 600;
+}
+.apay-row-value {
+  color: #1c1c1e;
+}
+.apay-total {
+  font-size: 17px;
+  font-weight: 700;
+}
+.apay-tnum {
+  font-variant-numeric: tabular-nums;
+}
+.apay-rule {
+  height: 1px;
+  background: #e5e5ea;
+}
+.apay-pay {
+  all: unset;
+  box-sizing: border-box;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  background: #000000;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+.apay-pay:active {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+/* the mark rides at the text's own size and ink, a shade below the cap line */
+.apay-apple {
+  width: 0.75em;
+  height: 1em;
+  margin-top: -0.14em;
+}
+.apay-status {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 50px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #6b6b70;
+  animation: cross-in 200ms ease both;
+}
+.apay-status--paid {
+  color: #146b45;
+}
+.apay-spinner {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  border: 2.5px solid #e5e5ea;
+  border-top-color: #6b6b70;
+  animation: apay-spin 800ms linear infinite;
+}
+@keyframes apay-spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ── landing ── */

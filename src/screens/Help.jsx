@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
@@ -44,12 +45,23 @@ function Bubble({ message, onAction }) {
 }
 
 export default function Help({ messages = CHAT, draft, onDraft, onSend, onBack, onAction, onPerson }) {
+  /* the newest bubble is the one being read: the conversation keeps itself
+     scrolled to its own end — landing there at once when the screen opens,
+     and easing down as each new bubble arrives */
+  const bodyRef = useRef(null);
+  const opened = useRef(false);
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (body) body.scrollTo({ top: body.scrollHeight, behavior: opened.current ? "smooth" : "auto" });
+    opened.current = true;
+  }, [messages.length]);
+
   return (
     <div className="scr">
       <StatusBar />
       <NavHeader onBack={onBack} backLabel="Account" />
 
-      <div className="scr-body">
+      <div className="scr-body" ref={bodyRef}>
         <h1 className="scr-title">Help</h1>
         <p className="chat-who">Compass Assistant</p>
 
