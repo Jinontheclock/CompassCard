@@ -6,7 +6,7 @@ import WatchApp from "./watch/WatchApp.jsx";
    one fixed size, and a window too small to hold it scales it down whole
    rather than making it reflow; anything with room to spare gets it at
    1:1. The phone app lives on main and is not loaded here. */
-const RIG = { width: 500, height: 760 };
+const RIG = { width: 560, height: 850 };
 const root = document.documentElement;
 
 function fit() {

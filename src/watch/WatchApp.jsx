@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./watch.css";
+import caseImg from "../assets/watch-case.webp";
 import cardArt from "../assets/compass-card.webp";
 import contactlessIcon from "../assets/icon-contactless.svg";
 
@@ -72,12 +73,13 @@ export default function WatchApp() {
 
   return (
     <div className="watch-stage">
+      {/* The case is the owner's mockup — a Series 11 in Jet Black with the
+          Sport Loop — photographed with its display punched out, so the app
+          shows through the glass. The screen sits under it at the window's
+          own scale: the cutout is 372×444 in the artwork, our display is
+          374×446, and 1.0054× lines the two up to the pixel. */}
       <div className="watch-rig">
-        <div className="watch-band watch-band--top" />
-        <div className="watch-band watch-band--bottom" />
-        <div className="watch-case">
-        <div className="watch-crown" />
-        <div className="watch-side" />
+        <img className="watch-case-img" src={caseImg} alt="" draggable="false" />
         <div className="watch-screen" onPointerDown={down} onPointerUp={up}>
           <div className="w-status">
             <span className="w-title">{page === 0 ? "Wallet" : "Reload"}</span>
@@ -150,7 +152,6 @@ export default function WatchApp() {
               </span>
             </button>
           )}
-          </div>
         </div>
       </div>
     </div>
