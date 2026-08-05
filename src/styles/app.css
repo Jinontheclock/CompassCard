@@ -2640,9 +2640,15 @@
   height: 100%;
   background: var(--bg);
 }
-/* The same door Wallet has, drawn the same way: the surface itself
-   dismisses, behind everything the frame places. */
-.tap-dismiss,
+/* The same door Wallet has: the surface itself dismisses. It lies under
+   everything the frame places — the escape button is written after it in
+   the markup, so that one still takes its own taps. */
+.tap-dismiss {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
 .wallet-passes {
   position: absolute;
   left: 16px;
