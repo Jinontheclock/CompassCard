@@ -10,7 +10,7 @@ import upassIcon from "../assets/icon-upass.svg";
 import lostIcon from "../assets/icon-lost.svg";
 import replaceIcon from "../assets/icon-replace.svg";
 import refundIcon from "../assets/icon-refund.svg";
-import appleLogo from "../assets/apple-logo.png";
+import walletIcon from "../assets/icon-wallet.png";
 
 /* The hub for one card: what is on it, what it has just done, and every way
    of managing it. The tiles run two to a row in the order the frame lays
@@ -114,9 +114,7 @@ export default function CardDetail({ card, onBack, onAccount, onOpen, onSelectTa
                   onClick={() => onOpen?.(tile.id)}
                 >
                   {tile.apple ? (
-                    <span className="tile-apple">
-                      <img src={appleLogo} alt="" />
-                    </span>
+                    <img src={walletIcon} alt="" width="17" height="17" />
                   ) : (
                     <img src={tile.icon} alt="" width="17" height="17" />
                   )}

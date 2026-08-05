@@ -1241,7 +1241,7 @@
 .tile--apple .tile-label {
   color: var(--bg);
 }
-/* the logo is a crop of a square mark, framed the way the frame frames it */
+/* the Apple Pay rows crop the square Apple mark to the frame's framing */
 .tile-apple {
   position: relative;
   flex: none;

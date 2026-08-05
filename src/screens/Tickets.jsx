@@ -5,7 +5,7 @@ import TabBar from "../components/TabBar.jsx";
 import WalletPass from "../components/WalletPass.jsx";
 import { money } from "../data/seed.js";
 import accountIcon from "../assets/icon-account.svg";
-import walletIcon from "../assets/icon-wallet.svg";
+import walletIcon from "../assets/icon-wallet.png";
 import emptyIcon from "../assets/icon-empty.svg";
 
 /* The other tab. Nothing on it is seeded: a fresh account opens onto an
