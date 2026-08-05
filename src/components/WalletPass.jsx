@@ -1,14 +1,22 @@
 import { dayLabel } from "../data/seed.js";
+import bcfLogo from "../assets/bcferries-logo.png";
+import starLogo from "../assets/star-logo.png";
+import triangleLogo from "../assets/triangle-logo.png";
+import stripConcert from "../assets/pass-strip-concert.png";
+import stripCinema from "../assets/pass-strip-cinema.png";
+import stripCoupon from "../assets/pass-strip-coupon.png";
+import passIcon from "../assets/pass-icon.png";
+import contactlessIcon from "../assets/icon-contactless.svg";
 
-/* The pass, drawn Apple Wallet's way — matched to the Hi-Fi board's
-   templates rather than the app's own kit, because a pass is Wallet's
-   surface, not the app's. The ferry boarding pass takes the airline
-   template with ferry words: terminal codes where airport codes go,
-   berth for gate, sailing for flight, crossing for group. The event
-   ticket takes the concert template, each event in its own accent.
-
-   Every code drawn is deterministic in the booking reference, so a
-   ticket always shows its own pattern. */
+/* The pass, drawn Apple Wallet's way — from the Hi-Fi board's own
+   templates, assets and all. The ferry boarding pass takes the airline
+   template with ferry words — terminal codes where airport codes go,
+   berth for gate, sailing for flight — under the BC Ferries wordmark
+   the board carries. An event ticket draws one of the board's three
+   ticket examples: the concert, the cinema, or the coupon, each with
+   its strip artwork and its maker's logo. Which one a ticket gets is
+   the booking reference's choice — random at purchase, faithful to the
+   ticket ever after, like every code drawn on these passes. */
 
 /* the terminals, coded the way BC Ferries shortens them */
 const CODES = {
@@ -18,11 +26,7 @@ const CODES = {
   "Nanaimo (Duke Point)": { city: "NANAIMO", code: "DUK" },
   "Nanaimo (Departure Bay)": { city: "NANAIMO", code: "DEP" },
 };
-/* each event wears its venue's accent */
-const EVENT_LOOKS = {
-  ev1: { accent: "#e2735f", brand: "★ BC PLACE", location: "BC Place" },
-  ev2: { accent: "#e9a83a", brand: "▲ PNE", location: "Hastings Park" },
-};
+const VENUES = { ev1: "BC Place", ev2: "Hastings Park" };
 
 const seededRand = (seed) => {
   let s = 2166136261;
@@ -36,7 +40,7 @@ const seededRand = (seed) => {
   };
 };
 
-/* the scannable square, as before — a QR the gate could read */
+/* the scannable square — a QR the gate could read */
 function QRArt({ seed, size = 118 }) {
   const N = 21;
   const rnd = seededRand(seed);
@@ -62,7 +66,7 @@ function QRArt({ seed, size = 118 }) {
   );
 }
 
-/* the one-dimensional cousin, for the event tickets */
+/* the one-dimensional cousin, for the tickets that scan sideways */
 function BarsArt({ seed, width = 220, height = 44 }) {
   const rnd = seededRand(seed);
   const bars = [];
@@ -88,6 +92,12 @@ const kv = (k, v, right) => (
     <span className="wpass-v">{v}</span>
   </span>
 );
+const kvBig = (k, v, right) => (
+  <span className={"wpass-kv" + (right ? " wpass-kv--right" : "")}>
+    <span className="wpass-k">{k}</span>
+    <span className="wpass-v wpass-v--big">{v}</span>
+  </span>
+);
 
 export default function WalletPass({ ticket, passenger = "Guest" }) {
   if (ticket.kind === "ferry") {
@@ -98,7 +108,7 @@ export default function WalletPass({ ticket, passenger = "Guest" }) {
     return (
       <div className="wpass wpass--ferry">
         <div className="wpass-top">
-          <span className="wpass-brand">BC Ferries</span>
+          <img className="wpass-logo" src={bcfLogo} alt="BC Ferries" />
           {kv("BERTH", String(3 + (Number(ticket.ref) % 3)), true)}
         </div>
         <div className="wpass-route">
@@ -133,31 +143,88 @@ export default function WalletPass({ ticket, passenger = "Guest" }) {
     );
   }
 
-  const look = EVENT_LOOKS[ticket.eventId] ?? EVENT_LOOKS.ev1;
+  /* an event ticket: one of the board's three examples, by the ref's roll */
+  const n = Number(ticket.ref);
+  const skin = ["concert", "cinema", "coupon"][n % 3];
   const [evTime, evDate] = [ticket.time.slice(0, 8), ticket.time.slice(9)];
   const ed = new Date(evDate.replace(/-/g, " "));
+  const date = isNaN(ed) ? evDate : dayLabel(ed);
+  const venue = VENUES[ticket.eventId] ?? ticket.venue;
+  const seat = `${10 + (n % 20)}${"ABCDEF"[n % 6]}`;
+
+  if (skin === "concert")
+    return (
+      <div className="wpass wpass--event wpass--concert">
+        <div className="wpass-evtop">
+          <img className="wpass-evlogo" src={starLogo} alt="STAR" />
+          <span className="wpass-toprow">
+            {kv("DATE", date, true)}
+            {kv("TIME", evTime, true)}
+          </span>
+        </div>
+        <img className="wpass-strip" src={stripConcert} alt="" />
+        <div className="wpass-evbody">
+          <div className="wpass-fields wpass-fields--one">{kvBig("EVENT", ticket.name)}</div>
+          <div className="wpass-fields">
+            {kv("LOCATION", venue)}
+            {kv("CHECK-IN", evTime)}
+            {kv("SECTION", String(1 + (n % 6)))}
+            {kv("SEAT", seat, true)}
+          </div>
+        </div>
+        <div className="wpass-code-panel">
+          <BarsArt seed={ticket.ref} />
+        </div>
+        <img className="wpass-appicon" src={passIcon} alt="" />
+      </div>
+    );
+
+  if (skin === "cinema")
+    return (
+      <div className="wpass wpass--event wpass--cinema">
+        <div className="wpass-evtop">
+          <img className="wpass-evlogo" src={starLogo} alt="STAR" />
+          <span className="wpass-toprow">{kv("TIME", evTime, true)}</span>
+        </div>
+        <img className="wpass-strip" src={stripCinema} alt="" />
+        <div className="wpass-evbody">
+          <div className="wpass-fields">
+            {kvBig("EVENT", ticket.name)}
+            {kvBig("DATE", date, true)}
+          </div>
+          <div className="wpass-fields">
+            {kv("VENUE", venue)}
+            {kv("GATE", String(1 + (n % 8)))}
+            {kv("SEAT", seat)}
+            {kv("TYPE", "GA", true)}
+          </div>
+        </div>
+        <img className="wpass-appicon" src={passIcon} alt="" />
+        <img className="wpass-nfc" src={contactlessIcon} alt="" width="20" height="20" />
+      </div>
+    );
+
   return (
-    <div className="wpass wpass--event" style={{ background: look.accent }}>
-      <div className="wpass-top">
-        <span className="wpass-brand">{look.brand}</span>
-        <span className="wpass-toprow">
-          {kv("DATE", isNaN(ed) ? evDate : dayLabel(ed), true)}
-          {kv("TIME", evTime, true)}
-        </span>
+    <div className="wpass wpass--event wpass--coupon">
+      <div className="wpass-evtop">
+        <img className="wpass-evlogo" src={triangleLogo} alt="TRIANGLE" />
+        <span className="wpass-toprow">{kv("EXPIRE", date, true)}</span>
       </div>
-      <div className="wpass-fields wpass-fields--one">
-        {kv("EVENT", ticket.name)}
-      </div>
-      <div className="wpass-fields">
-        {kv("LOCATION", look.location)}
-        {kv("CHECK-IN", evTime)}
-        {kv("VALID", "All zones")}
-        {kv("FARE", "Day Pass")}
+      <img className="wpass-strip wpass-strip--tall" src={stripCoupon} alt="" />
+      <div className="wpass-evbody">
+        <div className="wpass-fields">
+          {kvBig("PASS", ticket.name)}
+          {kvBig("VALID", "All zones", true)}
+        </div>
+        <div className="wpass-fields wpass-fields--one">
+          {kv("NOTE", "Please show before entry")}
+        </div>
       </div>
       <div className="wpass-code-panel">
         <BarsArt seed={ticket.ref} />
         <span className="wpass-ref tnum">{ticket.ref}</span>
       </div>
+      <img className="wpass-appicon" src={passIcon} alt="" />
     </div>
   );
 }

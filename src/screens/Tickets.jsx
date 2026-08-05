@@ -5,6 +5,7 @@ import TabBar from "../components/TabBar.jsx";
 import WalletPass from "../components/WalletPass.jsx";
 import { money } from "../data/seed.js";
 import accountIcon from "../assets/icon-account.svg";
+import walletIcon from "../assets/icon-wallet.svg";
 import emptyIcon from "../assets/icon-empty.svg";
 
 /* The other tab. Nothing on it is seeded: a fresh account opens onto an
@@ -62,11 +63,14 @@ export default function Tickets({ tickets, passenger, onCancel, onOpen, onAccoun
                 disabled={walleted.includes(t.ref)}
                 onClick={() => setWalleted([...walleted, t.ref])}
               >
+                <img src={walletIcon} alt="" width="20" height="20" />
                 {walleted.includes(t.ref) ? "Added to Apple Wallet" : "Add to Apple Wallet"}
               </button>
-              <Button tone="secondary" onClick={() => onCancel?.(t)}>
-                {t.kind === "ferry" ? `Cancel Reservation · refund ${money(t.fare)}` : "Refund Ticket"}
-              </Button>
+              {/* the way out speaks quietly, and only leads to the page
+                  that asks properly before anything is undone */}
+              <button type="button" className="ticket-cancel" onClick={() => onCancel?.(t)}>
+                {t.kind === "ferry" ? "Cancel Reservation" : "Refund Ticket"}
+              </button>
             </div>
           </div>
         </div>

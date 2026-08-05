@@ -184,10 +184,10 @@
 }
 
 /* ── nav row ── */
-/* The tab roots float their header over the scroll: solid at the top and
-   dissolving at the foot, so content slides visibly beneath it on the way
-   up. The bodies underneath start where the header ends, so nothing moves
-   until you scroll. */
+/* The tab roots float their header over the scroll: solid behind the
+   title and dissolving immediately under it, so the fade never reaches
+   the content below. The bodies underneath start where the header ends,
+   so nothing moves until you scroll. */
 .nav-header--float {
   position: absolute;
   top: 62px;
@@ -195,26 +195,7 @@
   right: 0;
   height: 46px;
   z-index: 5;
-  background: linear-gradient(
-    to bottom,
-    var(--bg) 0%,
-    var(--bg) 68%,
-    color-mix(in srgb, var(--bg) 55%, transparent) 100%
-  );
-}
-.nav-header--float::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  height: 22px;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--bg) 55%, transparent),
-    transparent
-  );
+  background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 84%, transparent 100%);
 }
 .home-body.home-body--undernav {
   padding-top: 57px;
@@ -1412,6 +1393,13 @@
 .sailing-more-wrap {
   display: grid;
   grid-template-rows: 0fr;
+  /* folded content leaves the page for keyboards too, once the fold lands */
+  visibility: hidden;
+  transition: grid-template-rows 240ms cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0s 240ms;
+}
+.sailing-card--open .sailing-more-wrap {
+  visibility: visible;
   transition: grid-template-rows 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 .sailing-inner {
@@ -1536,6 +1524,24 @@
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);
 }
+/* the way out, said quietly — a line of accent text, not a boxed button */
+.ticket-cancel {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--accent);
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+.ticket-cancel:active {
+  opacity: 0.55;
+}
 
 /* ── the pass, drawn Wallet's way (from the Hi-Fi board's templates) ── */
 .wpass {
@@ -1553,10 +1559,9 @@
   align-items: flex-start;
   justify-content: space-between;
 }
-.wpass-brand {
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+.wpass-logo {
+  display: block;
+  height: 21px;
 }
 .wpass-toprow {
   display: flex;
@@ -1642,8 +1647,91 @@
   letter-spacing: 0.16em;
   color: #3a3a3c;
 }
-.wpass--event .wpass-brand {
-  letter-spacing: 0.12em;
+/* ── the event skins, from the board's three ticket examples ── */
+.wpass--event {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  /* the punch at the top edge, where the templates cut theirs */
+  -webkit-mask-image: radial-gradient(circle 14px at 50% 0, transparent 13px, #000 14px);
+  mask-image: radial-gradient(circle 14px at 50% 0, transparent 13px, #000 14px);
+}
+.wpass--concert {
+  background: #f26d5f;
+}
+.wpass--cinema {
+  background: #6f352f;
+}
+.wpass--coupon {
+  background: #fcad00;
+  color: #1c1c1e;
+  /* the coupon perforates its edges instead of punching its top */
+  -webkit-mask-image: radial-gradient(circle 3px at 4px 0, transparent 3px, #000 3.5px),
+    radial-gradient(circle 3px at 4px 100%, transparent 3px, #000 3.5px);
+  -webkit-mask-size: 14px 100%;
+  -webkit-mask-repeat: repeat-x;
+  -webkit-mask-composite: source-in;
+  mask-image: radial-gradient(circle 3px at 4px 0, transparent 3px, #000 3.5px),
+    radial-gradient(circle 3px at 4px 100%, transparent 3px, #000 3.5px);
+  mask-size: 14px 100%;
+  mask-repeat: repeat-x;
+  mask-composite: intersect;
+}
+.wpass--coupon .wpass-k {
+  color: #7a5200;
+  opacity: 1;
+}
+.wpass-evtop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 12px 16px;
+}
+.wpass-evlogo {
+  display: block;
+  height: 22px;
+}
+.wpass-strip {
+  display: block;
+  width: 100%;
+  height: 87px;
+  object-fit: cover;
+}
+.wpass-strip--tall {
+  height: 123px;
+}
+.wpass-evbody {
+  padding: 14px 16px 4px;
+}
+.wpass-evbody .wpass-fields {
+  margin-top: 0;
+}
+.wpass-evbody .wpass-fields + .wpass-fields {
+  margin-top: 14px;
+}
+.wpass-v--big {
+  font-size: 18px;
+  font-weight: 600;
+}
+.wpass--event .wpass-code-panel {
+  margin: 14px auto 16px;
+}
+.wpass--cinema .wpass-evbody {
+  padding-bottom: 44px;
+}
+.wpass-appicon {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+.wpass-nfc {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
 }
 /* The two doors under the collection, stacked the way the card list stacks
    its purchase button. The tab-bar clearance is added only once tickets

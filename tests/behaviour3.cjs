@@ -113,8 +113,12 @@ const is = (label, got, want) => {
   is("the crossing is BC Ferries' own", (await txt(".wpass")).includes("1 h 35 min"), "true");
   await go(".tikd-wallet");
   is("wallet takes the press", await txt(".tikd-wallet"), "Added to Apple Wallet");
-  await go(".ticket-full .btn");                           // cancel the reservation
-  is("cancelling clears the shelf", await p.locator(".ticket-card").count(), 0);
+  await go(".ticket-cancel");                              // the quiet way out
+  is("cancelling asks first", await txt(".scr-title"), "Cancel Reservation");
+  is("the page states the fare", (await txt(".scr-body")).includes("$19.10"), "true");
+  is("and where it returns to", (await txt(".scr-body")).includes("Stored value"), "true");
+  await go(".scr-footer--fixed .btn");                     // Confirm Refund
+  is("confirming clears the shelf", await p.locator(".ticket-card").count(), 0);
   is("and the empty card returns", await p.locator(".empty-card").count(), 1);
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
@@ -134,12 +138,14 @@ const is = (label, got, want) => {
   await pay();
   is("and the ticket lands", (await txt(".ticket-card")).includes("Whitecaps FC Match"), "true");
   await go(".ticket-card");
-  is("the event wears its venue", await p.locator(".wpass--event").count(), 1);
-  is("a barcode at its foot", await p.locator(".wpass-bars").count(), 1);
-  is("valid where it says", (await txt(".wpass--event")).includes("All zones"), "true");
+  is("the event wears a board skin", await p.locator(".wpass--event").count(), 1);
+  is("its strip carries the artwork", await p.locator(".wpass-strip").count(), 1);
+  is("and names the event", (await txt(".wpass--event")).includes("Whitecaps FC Match"), "true");
   is("paid the way it chose", (await txt(".ticket-paidline")).includes("Apple Pay"), "true");
-  await go(".ticket-full .btn");                           // refund the pass
-  is("refunding removes it", await p.locator(".ticket-card").count(), 0);
+  await go(".ticket-cancel");                              // the quiet way out
+  is("refunding asks first", await txt(".scr-title"), "Refund Ticket");
+  await go(".scr-footer--fixed .btn");                     // Confirm Refund
+  is("confirming removes it", await p.locator(".ticket-card").count(), 0);
 
   console.log("the forgot flow");
   await p.goto("http://localhost:4173/", { waitUntil: "domcontentloaded" });

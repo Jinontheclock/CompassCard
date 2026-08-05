@@ -29,6 +29,7 @@ import PurchaseTickets from "./screens/PurchaseTickets.jsx";
 import Checkout from "./screens/Checkout.jsx";
 import AccountEdit from "./screens/AccountEdit.jsx";
 import Contact from "./screens/Contact.jsx";
+import CancelConfirm from "./screens/CancelConfirm.jsx";
 import Wallet from "./screens/Wallet.jsx";
 import WalletCard from "./screens/WalletCard.jsx";
 import { StatusBar } from "./components/Chrome.jsx";
@@ -90,10 +91,14 @@ export default function App() {
   /* the Apple Pay sheet standing between asking and having: what it is
      for, how much, and what happens once it is paid */
   const [paySheet, setPaySheet] = useState(null);
+  /* the ticket standing on the cancel confirmation page, waiting to be
+     let go — held as the object itself so the leaving screen can still
+     draw it while the cancellation settles */
+  const [cancelTicket, setCancelTicket] = useState(null);
 
   /* Screens that exist. A tile pointing at one still being built is a
      no-op rather than a drop back to the Landing screen. */
-  const BUILT = new Set(["signup", "login", "forgot", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact", "ferryreserve", "buytickets", "checkout"]);
+  const BUILT = new Set(["signup", "login", "forgot", "cardregister", "home", "tickets", "account", "carddetail", "reload", "autoload", "reloaddone", "payment", "history", "lost", "replace", "refund", "purchase", "passes", "upass", "upassconnect", "help", "shot", "wallet", "walletcard", "acctedit", "contact", "cancelconfirm", "ferryreserve", "buytickets", "checkout"]);
   /* How one screen leaves and the next arrives. Going deeper slides in from
      the right, going back slides out to it, a tab change crosses over in
      place — the three moves a stack navigation has. The leaving screen is
@@ -273,10 +278,19 @@ export default function App() {
             onAccount={() => push("account")}
             onOpen={push}
             passenger={model.account.name || "Guest"}
-            /* cancelling undoes exactly what issuing did: only stored value
+            onCancel={(t) => { setCancelTicket(t); push("cancelconfirm"); }}
+          />
+        );
+      case "cancelconfirm":
+        return (
+          <CancelConfirm
+            ticket={cancelTicket}
+            onBack={back}
+            /* confirming undoes exactly what issuing did: only stored value
                has a balance to hand back — a card method is refunded on its
-               own side of the counter — and a ferry frees its sailing */
-            onCancel={(t) =>
+               own side of the counter */
+            onConfirm={() => {
+              const t = cancelTicket;
               setModel((m) => ({
                 ...m,
                 cards:
@@ -300,8 +314,9 @@ export default function App() {
                       )
                     : m.cards,
                 tickets: m.tickets.filter((x) => x.ref !== t.ref),
-              }))
-            }
+              }));
+              back();
+            }}
           />
         );
       case "ferryreserve":
@@ -454,47 +469,6 @@ export default function App() {
                     then: settle,
                   });
                 else settle();
-              }}
-            />
-          )
-        );
-      case "ticket":
-        return (
-          openTicket && (
-            <TicketDetail
-              ticket={openTicket}
-              onBack={back}
-              /* cancelling undoes exactly what issuing did: a reservation
-                 hands its fare back to stored value and frees the sailing;
-                 an event pass simply leaves, refunded to its method */
-              onCancel={(t) => {
-                setModel((m) => ({
-                  ...m,
-                  /* only stored value has a balance to hand back — a card
-                     method is refunded on its own side of the counter */
-                  cards:
-                    t.paidVia === "Stored value"
-                      ? m.cards.map((c, idx) =>
-                          idx === 0
-                            ? {
-                                ...c,
-                                balance: c.balance + t.fare,
-                                history: [
-                                  {
-                                    label: t.kind === "ferry" ? "BC Ferries · Refund" : `${t.name} · Refund`,
-                                    sub: "Stored value",
-                                    amount: t.fare,
-                                    date: TODAY.ledger,
-                                  },
-                                  ...c.history,
-                                ],
-                              }
-                            : c
-                        )
-                      : m.cards,
-                  tickets: m.tickets.filter((x) => x.ref !== t.ref),
-                }));
-                back();
               }}
             />
           )
