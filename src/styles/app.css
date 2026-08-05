@@ -344,9 +344,13 @@
   letter-spacing: var(--app-callout-tracking);
   color: var(--warning);
 }
-/* the masked value is set wide in the frames — 3.4px at 17 is 0.2em */
-.field-input[type="password"]::placeholder {
+/* the masked value is set wide in the frames — 3.4px at 17 is 0.2em —
+   but the placeholder speaks in the same voice as every other field's */
+.field-input[type="password"] {
   letter-spacing: 0.2em;
+}
+.field-input[type="password"]::placeholder {
+  letter-spacing: var(--app-body-tracking, normal);
 }
 
 /* ── note panel ── */
@@ -2633,6 +2637,42 @@
 /* The same door Wallet has, drawn the same way: the surface itself
    dismisses, behind everything the frame places. */
 .tap-dismiss,
+.wallet-passes {
+  position: absolute;
+  left: 16px;
+  top: 531px;
+  width: 370px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* with no Compass card in Wallet, the passes take the cards' place */
+.wallet-passes--alone {
+  top: 127px;
+}
+.wallet-pass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: #4a90d0;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+.wallet-pass img {
+  display: block;
+}
+.wallet-pass-note {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+.wallet-pass--dark-on-light {
+  color: #1c1c1e;
+}
+
 .wallet-dismiss {
   all: unset;
   position: absolute;

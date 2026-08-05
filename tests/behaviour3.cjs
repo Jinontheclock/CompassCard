@@ -113,8 +113,11 @@ const is = (label, got, want) => {
   is("with its eight-digit reference", /^\d{8}$/.test(await txt(".wpass-ref")), "true");
   is("and a code to scan", await p.locator(".wpass-qr").count(), 1);
   is("the crossing is BC Ferries' own", (await txt(".wpass")).includes("1 h 35 min"), "true");
-  await go(".tikd-wallet");
-  is("wallet takes the press", await txt(".tikd-wallet"), "Added to Apple Wallet");
+  await go(".tikd-wallet");                                // hands over to Wallet
+  is("the pass lands in Wallet", await p.locator(".wallet-pass").count(), 1);
+  await go(".escape");                                     // Back to Compass
+  await go(".ticket-card");                                // unfold again
+  is("the button remembers", await txt(".tikd-wallet"), "Added to Apple Wallet");
   await go(".ticket-cancel");                              // the quiet way out
   is("cancelling asks first", await txt(".scr-title"), "Cancel Reservation");
   is("the page states the fare", (await txt(".scr-body")).includes("$19.10"), "true");

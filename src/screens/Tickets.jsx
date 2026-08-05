@@ -13,10 +13,9 @@ import emptyIcon from "../assets/icon-empty.svg";
    tickets, and each section appears only once it has something to show.
    Folded, a ticket keeps to its essentials; unfolded, it is the wallet
    pass at full size with Wallet and the way out beneath it. */
-export default function Tickets({ tickets, passenger, avatar, onCancel, onOpen, onAccount, onSelectTab }) {
-  /* which ticket stands unfolded, and which have taken the Wallet press */
+export default function Tickets({ tickets, passenger, avatar, onCancel, onAddToWallet, onOpen, onAccount, onSelectTab }) {
+  /* which ticket stands unfolded */
   const [openTicket, setOpenTicket] = useState(null);
-  const [walleted, setWalleted] = useState([]);
   const ferries = tickets.filter((t) => t.kind === "ferry");
   const events = tickets.filter((t) => t.kind !== "ferry");
 
@@ -59,11 +58,11 @@ export default function Tickets({ tickets, passenger, avatar, onCancel, onOpen, 
               <button
                 type="button"
                 className="tikd-wallet"
-                disabled={walleted.includes(t.ref)}
-                onClick={() => setWalleted([...walleted, t.ref])}
+                disabled={t.inWallet}
+                onClick={() => onAddToWallet?.(t)}
               >
                 <img src={walletIcon} alt="" width="20" height="20" />
-                {walleted.includes(t.ref) ? "Added to Apple Wallet" : "Add to Apple Wallet"}
+                {t.inWallet ? "Added to Apple Wallet" : "Add to Apple Wallet"}
               </button>
               {/* the way out speaks quietly, and only leads to the page
                   that asks properly before anything is undone */}

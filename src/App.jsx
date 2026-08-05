@@ -114,7 +114,7 @@ export default function App() {
   /* the screens that are about one card, which an account with no cards
      cannot open — the assistant offers some of them, and an empty account
      may be sitting in that chat */
-  const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "wallet", "walletcard"]);
+  const NEEDS_CARD = new Set(["carddetail", "reload", "autoload", "reloaddone", "history", "lost", "replace", "refund", "passes", "upass", "upassconnect", "walletcard"]);
   const push = (id) => {
     if (!BUILT.has(id) || (NEEDS_CARD.has(id) && model.cards.length === 0)) return;
     animate("push");
@@ -186,9 +186,11 @@ export default function App() {
     back();
   };
 
-  /* a new card's default name: the next ordinal after the cards you hold —
-     the second card is simply "Second Card" — and numbered past the list */
+  /* a new card's default name: the very first introduces itself, and the
+     ones after take the next ordinal — the second card is simply
+     "Second Card" — numbered past the list when the ordinals run out */
   const defaultName = () => {
+    if (model.cards.length === 0) return "My First Compass Card";
     const taken = new Set(model.cards.map((c) => c.name));
     const ordinals = ["Second Card", "Third Card", "Fourth Card", "Fifth Card", "Sixth Card"];
     const free = ordinals.find((n) => !taken.has(n));
@@ -282,6 +284,13 @@ export default function App() {
             onOpen={push}
             passenger={model.account.name || "Guest"}
             onCancel={(t) => { setCancelTicket(t); push("cancelconfirm"); }}
+            onAddToWallet={(t) => {
+              setModel((m) => ({
+                ...m,
+                tickets: m.tickets.map((x) => (x.ref === t.ref ? { ...x, inWallet: true } : x)),
+              }));
+              push("wallet");
+            }}
           />
         );
       case "cancelconfirm":
@@ -633,7 +642,14 @@ export default function App() {
       case "shot":
         return <TapResult shot={shot} declined={card.frozen} onDismiss={back} />;
       case "wallet":
-        return <Wallet onOpenCard={() => push("walletcard")} onDismiss={back} />;
+        return (
+          <Wallet
+            hasCard={model.cards.length > 0}
+            passes={model.tickets.filter((t) => t.inWallet)}
+            onOpenCard={() => push("walletcard")}
+            onDismiss={back}
+          />
+        );
       case "walletcard":
         return (
           <WalletCard
