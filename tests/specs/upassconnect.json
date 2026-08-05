@@ -2,7 +2,8 @@
   "url": "http://localhost:4173/",
   "tolerance": 0.5,
   "steps": [
-    ".landing-actions > *:nth-child(1)",
+    ".landing-actions > *:nth-child(2)",
+    ".scr-footer .btn",
     ".scr-footer .btn",
     ".card-stack > *:nth-child(1)",
     ".tile-grid > *:nth-child(4)"

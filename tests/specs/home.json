@@ -2,7 +2,8 @@
   "url": "http://localhost:4173/",
   "tolerance": 0.5,
   "steps": [
-    ".landing-actions > *:nth-child(1)",
+    ".landing-actions > *:nth-child(2)",
+    ".scr-footer .btn",
     ".scr-footer .btn"
   ],
   "selectors": {
@@ -50,7 +51,7 @@
       "x": 16,
       "y": 426,
       "w": 370,
-      "h": 213
+      "h": 40
     },
     "tabbar": {
       "x": 49,

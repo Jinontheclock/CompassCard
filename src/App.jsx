@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { seedState, digitalCard, registeredCard, bookingRef, FARES, PASSES, TODAY, passPrice } from "./data/seed.js";
+import { seedState, loginState, digitalCard, registeredCard, bookingRef, FARES, PASSES, TODAY, passPrice } from "./data/seed.js";
 import { reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
@@ -242,9 +242,10 @@ export default function App() {
             values={form.login}
             onChange={change("login")}
             onBack={back}
-            /* a returning account has its cards already */
+            /* a returning account arrives mid-life: cards, tickets, a
+               filled account and the portrait in the corner */
             onNext={() => {
-              setModel((m) => ({ ...m, cards: seedState().cards }));
+              setModel(loginState());
               home();
             }}
             onSignUp={() => push("signup")}
@@ -263,6 +264,7 @@ export default function App() {
         return (
           <CardList
             cards={model.cards}
+            avatar={model.avatar}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
             onPurchase={() => push("purchase")}
@@ -274,6 +276,7 @@ export default function App() {
         return (
           <Tickets
             tickets={model.tickets}
+            avatar={model.avatar}
             onSelectTab={selectTab}
             onAccount={() => push("account")}
             onOpen={push}
@@ -477,6 +480,7 @@ export default function App() {
         return (
           <CardDetail
             card={card}
+            avatar={model.avatar}
             onBack={back}
             onAccount={() => push("account")}
             onOpen={(id) => push(id === "upass" && !card.upassOn ? "upassconnect" : id)}

@@ -2,7 +2,8 @@
   "url": "http://localhost:4173/",
   "tolerance": 0.5,
   "steps": [
-    ".landing-actions > *:nth-child(1)",
+    ".landing-actions > *:nth-child(2)",
+    ".scr-footer .btn",
     ".scr-footer .btn",
     ".nav-account",
     ".section:nth-of-type(3) .settings-row:nth-of-type(1)"

@@ -36,11 +36,11 @@ function TileLabel({ tile }) {
   );
 }
 
-export default function CardDetail({ card, onBack, onAccount, onOpen, onSelectTab }) {
+export default function CardDetail({ card, avatar, onBack, onAccount, onOpen, onSelectTab }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Cards" account onAccount={onAccount} />
+      <NavHeader onBack={onBack} backLabel="Cards" account avatar={avatar} onAccount={onAccount} />
 
       <div className="scr-body">
         <h1 className="scr-title scr-title--alone">{card.name}</h1>
@@ -114,9 +114,9 @@ export default function CardDetail({ card, onBack, onAccount, onOpen, onSelectTa
                   onClick={() => onOpen?.(tile.id)}
                 >
                   {tile.apple ? (
-                    <img src={walletIcon} alt="" width="17" height="17" />
+                    <img src={walletIcon} alt="" width="20" height="20" />
                   ) : (
-                    <img src={tile.icon} alt="" width="17" height="17" />
+                    <img src={tile.icon} alt="" width="20" height="20" />
                   )}
                   <span className="tile-label">
                     <TileLabel tile={tile} />

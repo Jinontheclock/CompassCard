@@ -25,20 +25,22 @@ const is = (label, got, want) => {
   is("and lets go", await p.locator(".splash").count(), 0);
 
   console.log("a frozen card is turned away");
-  await go(".landing-actions > *:nth-child(1)"); await go(".scr-footer .btn");
+  await go(".landing-actions > *:nth-child(2)"); await go(".scr-footer .btn"); await go(".scr-footer .btn");
   await go(".card-stack > *:nth-child(1)");
   await go(".tile-grid > *:nth-child(5)"); await go(".lost-actions .btn"); await go(".nav-back");
   is("the hero says frozen", (await txt(".hero-frozen")).startsWith("Frozen"), "true");
   await go(".nav-back");
   is("the tile wears the chip", await txt(".card-stack > *:nth-child(1) .frozen-chip"), "FROZEN");
   await go(".card-stack > *:nth-child(1)"); await go(".linkish");
-  await go(".section:nth-of-type(1) .panel--tap");
+  await go(".section:nth-of-type(1) .history-head");
+  await go(".section:nth-of-type(1) .history-gate");
   is("the gate turns it away", await txt(".tap-title"), "Declined");
   is("and says why", await txt(".tap-amount"), "Card frozen");
   await go(".escape");
   await go(".nav-back"); await go(".tile-grid > *:nth-child(5)"); await go(".lost-actions .btn");
   is("unfreezing turns it back", await txt(".lost-actions .btn"), "Freeze Card");
-  await go(".nav-back"); await go(".linkish"); await go(".section:nth-of-type(1) .panel--tap");
+  await go(".nav-back"); await go(".linkish"); await go(".section:nth-of-type(1) .history-head");
+  await go(".section:nth-of-type(1) .history-gate");
   is("the gate accepts again", await txt(".tap-title"), "Accepted");
   await go(".escape");
 
@@ -202,6 +204,22 @@ const is = (label, got, want) => {
   is("the button rides below the cards", await p.locator(".home-cards > .btn").isVisible(), "true");
   await go(".home-cards > .btn");                          // reachable, not overlapped
   is("and still opens purchase", await txt(".scr-title"), "Purchase New Card");
+
+  console.log("logging in brings a life along");
+  await p.goto("http://localhost:4173/", { waitUntil: "domcontentloaded" });
+  await p.waitForTimeout(1400);
+  await go(".landing-actions > *:nth-child(1)"); await go(".scr-footer .btn");
+  is("the corner wears the portrait", await p.locator(".nav-avatar").count(), 1);
+  await go(".tab-bar .tab:nth-of-type(2)");
+  is("the shelf arrives stocked", await p.locator(".ticket-card").count(), 3);
+  is("a crossing filed under BC Ferries", await txt(".section:nth-of-type(1) .section-label"),
+     "RESERVED SAILINGS · BC FERRIES");
+  is("with its return alongside", (await txt(".section:nth-of-type(1)")).includes("01:00 PM"), "true");
+  is("and an event on the shelf", (await txt(".section--tickets")).includes("Whitecaps FC Match"), "true");
+  await go(".nav-account");
+  is("the account knows its rider", (await txt(".scr-body")).includes("Hajin Lee"), "true");
+  is("their e-mail", (await txt(".scr-body")).includes("hajinlee.ca@gmail.com"), "true");
+  is("and their phone", (await txt(".scr-body")).includes("(604) 555-0132"), "true");
 
   console.log(`\npage errors: ${errs.length ? errs.join(" | ") : "none"}`);
   await b.close();

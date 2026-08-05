@@ -1,7 +1,13 @@
 {
   "url": "http://localhost:4173/",
   "tolerance": 0.5,
-  "steps": [".landing-actions > *:nth-child(1)", ".scr-footer .btn", ".card-stack > *:nth-child(1)", ".tile-grid > *:nth-child(8)"],
+  "steps": [
+    ".landing-actions > *:nth-child(2)",
+    ".scr-footer .btn",
+    ".scr-footer .btn",
+    ".card-stack > *:nth-child(1)",
+    ".tile-grid > *:nth-child(8)"
+  ],
   "selectors": {
     "navRow": ".status-bar",
     "title": ".wallet-title",
@@ -12,12 +18,44 @@
     "home": ".home-indicator"
   },
   "expect": {
-    "navRow": { "x": 0, "y": 0, "w": 402, "h": 62 },
-    "title": { "x": 16, "y": 62, "w": 370, "h": 41 },
-    "name": { "x": 16, "y": 62, "h": 41 },
-    "actions": { "x": 307, "y": 65.5, "w": 79, "h": 34 },
-    "stack": { "x": 16, "y": 127, "w": 370, "h": 335 },
-    "card": { "x": 16, "y": 279, "w": 370, "h": 232 },
-    "home": { "y": 840, "h": 34 }
+    "navRow": {
+      "x": 0,
+      "y": 0,
+      "w": 402,
+      "h": 62
+    },
+    "title": {
+      "x": 16,
+      "y": 62,
+      "w": 370,
+      "h": 41
+    },
+    "name": {
+      "x": 16,
+      "y": 62,
+      "h": 41
+    },
+    "actions": {
+      "x": 307,
+      "y": 65.5,
+      "w": 79,
+      "h": 34
+    },
+    "stack": {
+      "x": 16,
+      "y": 127,
+      "w": 370,
+      "h": 335
+    },
+    "card": {
+      "x": 16,
+      "y": 279,
+      "w": 370,
+      "h": 232
+    },
+    "home": {
+      "y": 840,
+      "h": 34
+    }
   }
 }

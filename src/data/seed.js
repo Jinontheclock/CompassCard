@@ -165,9 +165,29 @@ export function seedState() {
         history: [
           /* the two entries the tap frames are the confirmation of: the
              figures on those screens are these, read back */
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Mar-1-2026", shot: "tap" },
+          {
+            label: "1-Zone trip",
+            sub: "Stored value",
+            amount: -FARES.storedValue[1],
+            date: "Mar-1-2026",
+            taps: [
+              { time: "09:12 AM", place: "Tap in at Main St–Science World Stn", amount: money(0) },
+              { time: "09:26 AM", place: "Tap out at Waterfront Stn", amount: money(-FARES.storedValue[1]) },
+            ],
+            /* the figure the tap frame reads back */
+            balanceAfter: 12.15,
+            shot: "tap",
+          },
           { label: "Reload", sub: "Apple Pay", amount: 20.0, date: "Mar-1-2026" },
-          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, date: "Feb-25-2026", shot: "ferry" },
+          {
+            label: "BC Ferries · Walk-on",
+            sub: "Adult foot passenger",
+            amount: -FARES.ferryWalkOn,
+            date: "Feb-25-2026",
+            /* a ferry pays the whole fare at the gangway — one tap */
+            taps: [{ time: "04:45 PM", place: "Tap in at Tsawwassen terminal", amount: money(-FARES.ferryWalkOn) }],
+            shot: "ferry",
+          },
           {
             label: "3-Zone trip",
             sub: "Stored value",
@@ -238,7 +258,9 @@ export function seedState() {
     /* what the Account rows hold. Empty until typed — the frames draw the
        rows without values, which is exactly an account nothing has been
        written into yet. */
-    account: { name: "", address: "", phone: "", password: "", notifications: true },
+    account: { name: "", email: "", address: "", phone: "", password: "", notifications: true },
+    /* the portrait only a returning rider carries */
+    avatar: false,
   };
 }
 
@@ -316,3 +338,54 @@ export const byDate = (history) => {
   }
   return days;
 };
+
+/* The rider who logs in rather than signs up: the same card, but a life
+   already lived on it — a name and contacts on the account, the portrait
+   in the corner, and a shelf holding a return crossing and an event.
+   Signing up starts from nothing; logging in starts from here. */
+export function loginState() {
+  const m = seedState();
+  m.avatar = true;
+  m.account = {
+    name: "Hajin Lee",
+    email: "hajinlee.ca@gmail.com",
+    address: "4700 Kingsway, Burnaby, BC",
+    phone: "(604) 555-0132",
+    password: "compass",
+    notifications: true,
+  };
+  const ev = EVENTS[0];
+  m.tickets = [
+    {
+      ref: "31459268",
+      kind: "ferry",
+      from: "Vancouver (Tsawwassen) -",
+      to: "Victoria (Swartz Bay)",
+      time: `06:00 PM ${sailingDate(0)}`,
+      crossing: CROSSING,
+      fare: FARES.ferryWalkOn,
+      paidVia: "Apple Pay",
+    },
+    {
+      ref: "31459269",
+      kind: "ferry",
+      from: "Victoria (Swartz Bay) -",
+      to: "Vancouver (Tsawwassen)",
+      time: `01:00 PM ${sailingDate(2)}`,
+      crossing: CROSSING,
+      fare: FARES.ferryWalkOn,
+      paidVia: "Apple Pay",
+    },
+    {
+      ref: "48271935",
+      kind: "event",
+      eventId: ev.id,
+      name: ev.name,
+      venue: ev.venue,
+      time: ev.time,
+      fare: FARES.dayPass,
+      paidVia: "Apple Pay",
+    },
+  ];
+  return m;
+}

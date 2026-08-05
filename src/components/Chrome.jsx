@@ -1,4 +1,6 @@
 import { useClock } from "./useClock.js";
+import accountIcon from "../assets/icon-account.svg";
+import avatarImg from "../assets/avatar.webp";
 
 /* iOS chrome that every screen carries: the status bar at the top and the
    home indicator at the bottom. Both are drawn rather than imported so they
@@ -33,4 +35,18 @@ export function StatusBar({ light = false }) {
 
 export function HomeIndicator({ light = false }) {
   return <div className={"home-indicator" + (light ? " home-indicator--light" : "")} />;
+}
+
+/* the corner button every tab and hub carries: the plain mark for a new
+   account, the rider's own portrait once they have logged in */
+export function NavAccount({ avatar = false, onClick }) {
+  return (
+    <button type="button" className="nav-account" onClick={onClick} aria-label="Account">
+      {avatar ? (
+        <img className="nav-avatar" src={avatarImg} alt="" />
+      ) : (
+        <img src={accountIcon} alt="" width="18" height="18" />
+      )}
+    </button>
+  );
 }

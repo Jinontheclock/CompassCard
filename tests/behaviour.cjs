@@ -22,7 +22,7 @@ const is = (label, got, want) => {
      transition into whatever the payment leads to */
   const pay = async () => { await p.click(".apay-pay"); await p.waitForTimeout(2400); };
   await p.goto("http://localhost:4173/", { waitUntil: "networkidle" });
-  await go(".landing-actions > *:nth-child(1)"); await go(".scr-footer .btn");
+  await go(".landing-actions > *:nth-child(2)"); await go(".scr-footer .btn"); await go(".scr-footer .btn");
   await go(".card-stack > *:nth-child(1)");
 
   console.log("zone prices follow TransLink");

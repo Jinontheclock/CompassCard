@@ -1,10 +1,9 @@
 import { Fragment, useState } from "react";
-import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
+import { StatusBar, HomeIndicator, NavAccount } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import TabBar from "../components/TabBar.jsx";
 import WalletPass from "../components/WalletPass.jsx";
 import { money } from "../data/seed.js";
-import accountIcon from "../assets/icon-account.svg";
 import walletIcon from "../assets/icon-wallet.png";
 import emptyIcon from "../assets/icon-empty.svg";
 
@@ -14,7 +13,7 @@ import emptyIcon from "../assets/icon-empty.svg";
    tickets, and each section appears only once it has something to show.
    Folded, a ticket keeps to its essentials; unfolded, it is the wallet
    pass at full size with Wallet and the way out beneath it. */
-export default function Tickets({ tickets, passenger, onCancel, onOpen, onAccount, onSelectTab }) {
+export default function Tickets({ tickets, passenger, avatar, onCancel, onOpen, onAccount, onSelectTab }) {
   /* which ticket stands unfolded, and which have taken the Wallet press */
   const [openTicket, setOpenTicket] = useState(null);
   const [walleted, setWalleted] = useState([]);
@@ -84,9 +83,7 @@ export default function Tickets({ tickets, passenger, onCancel, onOpen, onAccoun
 
       <div className="nav-header nav-header--float">
         <h1 className="home-title">Tickets</h1>
-        <button type="button" className="nav-account" onClick={onAccount} aria-label="Account">
-          <img src={accountIcon} alt="" width="18" height="18" />
-        </button>
+        <NavAccount avatar={avatar} onClick={onAccount} />
       </div>
 
       <div className="scr-body scr-body--undernav">

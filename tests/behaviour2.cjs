@@ -77,15 +77,15 @@ const is = (label, got, want) => {
   await p.fill(".field-input", "Hajin Lee");
   await go(".scr-footer .btn");                            // Save
   is("the value sits in the slot", await txt(".section:nth-of-type(1) .settings-row:nth-of-type(1) .settings-value"), "Hajin Lee");
-  await go(".section:nth-of-type(1) .settings-row:nth-of-type(4)"); // Password
+  await go(".section:nth-of-type(1) .settings-row:nth-of-type(5)"); // Password
   is("a first password asks twice", await p.locator(".stack-fields .field").count(), 2);
   await p.fill(".stack-fields .field:nth-of-type(1) .field-input", "hunter2");
   await go(".scr-footer .btn");
   is("a lone password is refused", await txt(".field-error"), "The passwords don't match");
   await p.fill(".stack-fields .field:nth-of-type(2) .field-input", "hunter2");
   await go(".scr-footer .btn");
-  is("a password shows as dots", await txt(".section:nth-of-type(1) .settings-row:nth-of-type(4) .settings-value"), "••••••••");
-  await go(".section:nth-of-type(1) .settings-row:nth-of-type(4)"); // change it
+  is("a password shows as dots", await txt(".section:nth-of-type(1) .settings-row:nth-of-type(5) .settings-value"), "••••••••");
+  await go(".section:nth-of-type(1) .settings-row:nth-of-type(5)"); // change it
   is("changing asks for the current one", await p.locator(".stack-fields .field").count(), 3);
   await p.fill(".stack-fields .field:nth-of-type(1) .field-input", "wrong");
   await p.fill(".stack-fields .field:nth-of-type(2) .field-input", "hunter3");

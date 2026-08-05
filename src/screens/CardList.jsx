@@ -1,9 +1,8 @@
-import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
+import { StatusBar, HomeIndicator, NavAccount } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import CardTile from "../components/CardTile.jsx";
 import NotePanel from "../components/NotePanel.jsx";
 import TabBar from "../components/TabBar.jsx";
-import accountIcon from "../assets/icon-account.svg";
 import plusIcon from "../assets/icon-plus.svg";
 import plusLight from "../assets/icon-plus-light.svg";
 import emptyIcon from "../assets/icon-empty.svg";
@@ -15,7 +14,7 @@ import emptyIcon from "../assets/icon-empty.svg";
    Two states, both drawn: cardlist-01 once there is a card, cardlist-02
    before there is one. Carrying on past Card Register without registering
    is what lands you on the second. */
-export default function CardList({ cards, onAccount, onPurchase, onRegister, onCard, onSelectTab }) {
+export default function CardList({ cards, avatar, onAccount, onPurchase, onRegister, onCard, onSelectTab }) {
   const empty = cards.length === 0;
 
   return (
@@ -24,9 +23,7 @@ export default function CardList({ cards, onAccount, onPurchase, onRegister, onC
 
       <div className="nav-header nav-header--float">
         <h1 className="home-title">Compass Card</h1>
-        <button type="button" className="nav-account" onClick={onAccount} aria-label="Account">
-          <img src={accountIcon} alt="" width="18" height="18" />
-        </button>
+        <NavAccount avatar={avatar} onClick={onAccount} />
       </div>
 
       <div className="home-body home-body--undernav">

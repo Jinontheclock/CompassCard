@@ -2,7 +2,8 @@
   "url": "http://localhost:4173/",
   "tolerance": 0.5,
   "steps": [
-    ".landing-actions > *:nth-child(1)",
+    ".landing-actions > *:nth-child(2)",
+    ".scr-footer .btn",
     ".scr-footer .btn",
     ".nav-account"
   ],
@@ -41,7 +42,7 @@
       "x": 16,
       "y": 182,
       "w": 370,
-      "h": 246
+      "h": 295
     },
     "row1": {
       "x": 17,
@@ -51,33 +52,33 @@
     },
     "label2": {
       "x": 16,
-      "y": 444,
+      "y": 493,
       "w": 370,
       "h": 20
     },
     "panel2": {
       "x": 16,
-      "y": 468,
+      "y": 517,
       "w": 370,
       "h": 99
     },
     "label3": {
       "x": 16,
-      "y": 583,
+      "y": 632,
       "w": 370,
       "h": 20
     },
     "panel3": {
       "x": 16,
-      "y": 607,
+      "y": 656,
       "w": 370,
       "h": 103
     },
     "note": {
       "x": 16,
-      "y": 726,
+      "y": 775,
       "w": 370,
-      "h": 16
+      "h": 20
     },
     "btn": {
       "y": 766,

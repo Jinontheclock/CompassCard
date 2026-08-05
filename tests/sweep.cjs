@@ -42,9 +42,11 @@ const { launchOptions, routeKit } = require("./env.cjs");
 
   // history + the two tap shots
   await step("See all", ".linkish");
-  await step("  1-Zone trip -> tap", ".section:nth-of-type(1) .panel--tap");
+  await step("  1-Zone unfolds", ".section:nth-of-type(1) .history-head");
+  await step("  gate screen", ".section:nth-of-type(1) .history-gate");
   await step("  dismiss", ".escape");
-  await step("  BC Ferries -> ferry", ".section:nth-of-type(2) .panel--tap");
+  await step("  BC Ferries unfolds", ".section:nth-of-type(2) .history-head");
+  await step("  gate screen", ".section:nth-of-type(2) .history-gate");
   await step("  dismiss", ".escape");
   await step("  open 3-Zone", ".section:nth-of-type(2) > *:nth-child(3)");
   await step("  back", ".nav-back");
