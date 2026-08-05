@@ -2015,8 +2015,14 @@
   height: 49px;
   padding: 0 4px;
   border-radius: 24px;
-  /* the bar floats over the scroll and carries no surface of its own —
-     only its controls show, and whatever passes beneath stays visible */
+  /* the bar floats over the scroll wearing the frames' own pill — card-bg
+     at 70% behind a blur, so what passes beneath stays visible around it
+     and glows through it. The flat colour is the fallback where color-mix
+     is not understood. */
+  background: var(--card-bg);
+  background: color-mix(in srgb, var(--card-bg) 70%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 /* on the tab roots the home indicator floats with it, so the body runs
    all the way to the glass */
