@@ -82,10 +82,7 @@ export default function PurchasePasses({ card, passId, zone, onPass, onZone, onB
             })}
           </div>
 
-          <p className="home-note">
-            <span>Passes attach to this card and start covering taps</span>
-            <span>immediately.</span>
-          </p>
+          <p className="home-note">Passes attach to this card and start covering taps immediately.</p>
         </div>
       </div>
 

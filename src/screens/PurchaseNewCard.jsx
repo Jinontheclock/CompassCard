@@ -3,6 +3,7 @@ import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
 import SettingsRow from "../components/SettingsRow.jsx";
+import { money } from "../data/seed.js";
 import contactless from "../assets/icon-contactless.svg";
 
 /* Buying a card rather than registering one. Two of the three rows are
@@ -12,10 +13,8 @@ import contactless from "../assets/icon-contactless.svg";
    form. The type is the one thing already settled: this screen issues
    digital cards.
 
-   The big figure keeps the frame's own way of writing nothing, $00.00, so
-   an empty card reads as the frame draws it and a loaded one takes the
-   same shape. */
-const showAmount = (n) => "$" + n.toFixed(2).padStart(5, "0");
+   The big figure counts money the way every other figure in the app does,
+   so an empty card reads $0.00 rather than a doubled zero. */
 
 export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee, onBack, onPurchase }) {
   const shownName = name || defaultName;
@@ -48,7 +47,7 @@ export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee,
             <div className="card-tile-foot">
               <div className="card-tile-value">
                 <span className="card-tile-label">CARD · DIGITAL</span>
-                <span className="card-tile-amount tnum">{showAmount(amount)}</span>
+                <span className="card-tile-amount tnum">{money(amount)}</span>
               </div>
             </div>
           </div>
