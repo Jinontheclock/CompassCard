@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import NavHeader from "../components/NavHeader.jsx";
-import { FARES, EVENTS, money } from "../data/seed.js";
+import { FARES, EVENTS, money , whenLabel } from "../data/seed.js";
 import onTimeIcon from "../assets/icon-ontime.svg";
 
 /* Buying event passes, on its own screen: the events the network serves,
@@ -39,7 +39,7 @@ export default function PurchaseTickets({ tickets, onBack, onBuyEvent }) {
                       <div className="sailing">
                         <span className="sailing-leg">{ev.name}</span>
                         <span className="sailing-time">{ev.venue}</span>
-                        <span className="sailing-time">{ev.time}</span>
+                        <span className="sailing-time">{whenLabel(ev.time, ev.days)}</span>
                       </div>
                       {ticketed(ev) ? (
                         <span className="status-ok">

@@ -3,7 +3,7 @@ import { StatusBar, HomeIndicator, NavAccount } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import TabBar from "../components/TabBar.jsx";
 import WalletPass from "../components/WalletPass.jsx";
-import { money } from "../data/seed.js";
+import { money, whenLabel } from "../data/seed.js";
 import walletIcon from "../assets/icon-wallet.png";
 import emptyIcon from "../assets/icon-empty.svg";
 
@@ -41,7 +41,7 @@ export default function Tickets({ tickets, passenger, avatar, onCancel, onAddToW
                 <span className="sailing-time">{t.venue}</span>
               </>
             )}
-            <span className="sailing-time">{t.time}</span>
+            <span className="sailing-time">{whenLabel(t.time, t.days)}</span>
           </div>
           <div className="ticket-side">
             <span className="ticket-chip">{t.kind === "ferry" ? "RESERVED" : "PURCHASED"}</span>

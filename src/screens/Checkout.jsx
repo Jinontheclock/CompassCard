@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
-import { money } from "../data/seed.js";
+import { money , whenLabel } from "../data/seed.js";
 import appleLogo from "../assets/apple-logo.png";
 import tick from "../assets/icon-tick.svg";
 
@@ -42,13 +42,13 @@ export default function Checkout({ order, card, onBack, onPay }) {
                 <>
                   <span className="sailing-leg">{order.from} -</span>
                   <span className="sailing-leg">{order.to}</span>
-                  <span className="sailing-time">{order.when}</span>
+                  <span className="sailing-time">{whenLabel(order.time, order.days)}</span>
                 </>
               ) : (
                 <>
                   <span className="sailing-leg">{order.ev.name}</span>
                   <span className="sailing-time">{order.ev.venue}</span>
-                  <span className="sailing-time">{order.ev.time}</span>
+                  <span className="sailing-time">{whenLabel(order.ev.time, order.ev.days)}</span>
                 </>
               )}
             </div>

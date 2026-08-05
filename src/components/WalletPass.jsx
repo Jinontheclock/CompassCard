@@ -1,4 +1,4 @@
-import { dayLabel, CODES } from "../data/seed.js";
+import { dayName, CODES } from "../data/seed.js";
 import bcfLogo from "../assets/bcferries-logo.png";
 import starLogo from "../assets/star-logo.png";
 import triangleLogo from "../assets/triangle-logo.png";
@@ -93,10 +93,9 @@ const kvBig = (k, v, right) => (
 
 export default function WalletPass({ ticket, passenger = "Guest" }) {
   if (ticket.kind === "ferry") {
-    const [time, date] = [ticket.time.slice(0, 8), ticket.time.slice(9)];
+    const time = ticket.time;
     const from = CODES[ticket.from.replace(/ -$/, "")] ?? { city: "", code: "···" };
     const to = CODES[ticket.to] ?? { city: "", code: "···" };
-    const d = new Date(date.replace(/-/g, " "));
     return (
       <div className="wpass wpass--ferry">
         <div className="wpass-top">
@@ -120,7 +119,7 @@ export default function WalletPass({ ticket, passenger = "Guest" }) {
         </div>
         <div className="wpass-fields">
           {kv("SCHEDULED", time)}
-          {kv("SAILING", isNaN(d) ? date : dayLabel(d))}
+          {kv("SAILING", dayName(ticket.days))}
           {kv("FARE", ticket.fareSub?.startsWith("Child") ? "Child" : "Adult")}
           {kv("CROSSING", ticket.crossing ?? "1 h 35 min")}
         </div>
@@ -138,9 +137,8 @@ export default function WalletPass({ ticket, passenger = "Guest" }) {
   /* an event ticket: one of the board's three examples, by the ref's roll */
   const n = Number(ticket.ref);
   const skin = ["concert", "cinema", "coupon"][n % 3];
-  const [evTime, evDate] = [ticket.time.slice(0, 8), ticket.time.slice(9)];
-  const ed = new Date(evDate.replace(/-/g, " "));
-  const date = isNaN(ed) ? evDate : dayLabel(ed);
+  const evTime = ticket.time;
+  const date = dayName(ticket.days);
   const venue = VENUES[ticket.eventId] ?? ticket.venue;
   const seat = `${10 + (n % 20)}${"ABCDEF"[n % 6]}`;
 

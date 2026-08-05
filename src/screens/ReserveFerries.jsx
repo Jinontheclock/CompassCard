@@ -4,7 +4,7 @@ import Button from "../components/Button.jsx";
 import Dropdown from "../components/Dropdown.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
-import { FARES, FERRY, ferryRun, boardDate, dayLabel, MONTH_NAMES_FULL, money } from "../data/seed.js";
+import { FARES, FERRY, ferryRun, fmtDate, offsetOf, MONTH_NAMES_FULL, money } from "../data/seed.js";
 import chevron from "../assets/icon-chevron.svg";
 
 /* The fares a walk-on can be: the adult fare the table carries, and the
@@ -176,7 +176,7 @@ export default function ReserveFerries({ onBack, onNext }) {
           <div className="reserve-row">
             {box(
               "Date",
-              dayLabel(date),
+              fmtDate(date),
               "date",
               <CalendarPop
                 open={openMenu === "date"}
@@ -201,7 +201,8 @@ export default function ReserveFerries({ onBack, onNext }) {
             onNext?.({
               from,
               to,
-              when: `${time} ${boardDate(date)}`,
+              time,
+              days: offsetOf(date),
               crossing: FERRY.crossings[run],
               fare: fareType.fare,
               fareLabel: fareType.label,

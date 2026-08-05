@@ -39,8 +39,8 @@ export default function History({ card, onBack, onSelectTab, onShot }) {
 
         <div className="history-groups">
           {byDate(card.history).map((day) => (
-            <section className="section section--gap4" key={day.date}>
-              <h2 className="section-label">{day.date}</h2>
+            <section className="section section--gap4" key={day.daysAgo}>
+              <h2 className="section-label">{agoName(day.daysAgo)}</h2>
               {day.entries.map((entry, i) => (
                 <Fragment key={i}>
                   {/* the frame builds the first of a day from the row

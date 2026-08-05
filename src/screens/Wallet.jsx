@@ -17,7 +17,7 @@ function PassTile({ t }) {
       <div className="wallet-pass wallet-pass--ferry">
         <img src={bcfLogo} alt="BC Ferries" style={{ height: 14 }} />
         <span className="wallet-pass-note">
-          {from} → {to} · {t.time.slice(0, 8)}
+          {from} → {to} · {t.time}
         </span>
       </div>
     );

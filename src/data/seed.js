@@ -12,17 +12,34 @@ const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "Ju
 const now = new Date();
 const monthEndDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 export const TODAY = {
-  /* the ledger writes its dates the way the seeded history does: Mar-1-2026 */
-  ledger: `${MONTHS[now.getMonth()]}-${now.getDate()}-${now.getFullYear()}`,
   month: MONTH_NAMES[now.getMonth()],
   monthEnd: `${MONTHS[now.getMonth()]} ${monthEndDay}`,
 };
 
-/* sailing and event dates are written zero-padded: Aug-02-2026 */
-const sailingDate = (daysAhead) => {
-  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysAhead);
-  return `${MONTHS[d.getMonth()]}-${String(d.getDate()).padStart(2, "0")}-${d.getFullYear()}`;
+/* Nothing here stores a date. A day is kept as its distance from today —
+   negative behind, positive ahead — so the demo's past stays the same
+   distance behind whenever it is opened, and the two are turned into words
+   in one place. Vancouver keeps daylight saving, so a day is not always
+   86,400,000ms; rounding is what carries the two nights it isn't. */
+const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+export const dateFromOffset = (n) =>
+  new Date(now.getFullYear(), now.getMonth(), now.getDate() + n);
+export const offsetOf = (d) => Math.round((startOfDay(d) - startOfDay(now)) / 86400000);
+export const fmtDate = (d) => {
+  const n = offsetOf(d);
+  if (n === 0) return "Today";
+  if (n === -1) return "Yesterday";
+  if (n === 1) return "Tomorrow";
+  return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
+/* the same, said from an offset — which is how everything here stores one.
+   A ticket counts forward to the day it is for; the ledger counts back to
+   the day it happened, so each has its own way in and the sign is written
+   down once rather than at every call. */
+export const dayName = (n) => fmtDate(dateFromOffset(n));
+export const agoName = (daysAgo) => fmtDate(dateFromOffset(-daysAgo));
+/* a clock time and the day it falls on, as a row writes them together */
+export const whenLabel = (time, days) => `${time} · ${dayName(days)}`;
 
 /* TransLink's fares, effective July 1 2026. Adult rates carry the app;
    the concession table is here for what quotes it — the assistant. */
@@ -67,13 +84,15 @@ export const EVENTS = [
     id: "ev1",
     name: "Whitecaps FC Match",
     venue: "BC Place · Stadium–Chinatown Stn",
-    time: `07:30 PM ${sailingDate(4)}`,
+    time: "07:30 PM",
+    days: 4,
   },
   {
     id: "ev2",
     name: "Playland at the PNE",
     venue: "Hastings Park · R5 Hastings St",
-    time: `11:00 AM ${sailingDate(9)}`,
+    time: "11:00 AM",
+    days: 9,
   },
 ];
 
@@ -121,10 +140,6 @@ export const FERRY = {
 /* the run a pair of terminals rides, named by whichever end is the island's */
 export const ferryRun = (from, to) =>
   Object.keys(FERRY.times).find((t) => t === from || t === to);
-/* a day written the sailing board's way, and the short way a control shows it */
-export const boardDate = (d) =>
-  `${MONTHS[d.getMonth()]}-${String(d.getDate()).padStart(2, "0")}-${d.getFullYear()}`;
-export const dayLabel = (d) => `${MONTHS[d.getMonth()]} ${d.getDate()}`;
 export const MONTH_NAMES_FULL = MONTH_NAMES;
 
 /* The schools in the U-Pass BC programme the connect screen can pick from —
@@ -180,7 +195,7 @@ export function seedState() {
             label: "1-Zone trip",
             sub: "Stored value",
             amount: -FARES.storedValue[1],
-            date: "Mar-1-2026",
+            daysAgo: 0,
             taps: [
               { time: "09:12 AM", place: "Tap in at Main St–Science World Stn", amount: money(0) },
               { time: "09:26 AM", place: "Tap out at Waterfront Stn", amount: money(-FARES.storedValue[1]) },
@@ -189,12 +204,12 @@ export function seedState() {
             balanceAfter: 12.15,
             shot: "tap",
           },
-          { label: "Reload", sub: "Apple Pay", amount: 20.0, date: "Mar-1-2026" },
+          { label: "Reload", sub: "Apple Pay", amount: 20.0, daysAgo: 0 },
           {
             label: "BC Ferries · Walk-on",
             sub: "Adult foot passenger",
             amount: -FARES.ferryWalkOn,
-            date: "Feb-25-2026",
+            daysAgo: 4,
             /* a ferry pays the whole fare at the gangway — one tap */
             taps: [{ time: "04:45 PM", place: "Tap in at Tsawwassen terminal", amount: money(-FARES.ferryWalkOn) }],
             shot: "ferry",
@@ -203,7 +218,7 @@ export function seedState() {
             label: "3-Zone trip",
             sub: "Stored value",
             amount: -FARES.storedValue[3],
-            date: "Feb-25-2026",
+            daysAgo: 4,
             /* the only entry the frames open up: a trip is two taps, and the
                fare is only known at the second */
             taps: [
@@ -212,44 +227,44 @@ export function seedState() {
             ],
             balanceAfter: 24.6,
           },
-          { label: "Reload", sub: "Apple Pay", amount: 10.0, date: "Feb-25-2026" },
+          { label: "Reload", sub: "Apple Pay", amount: 10.0, daysAgo: 4 },
           /* the weeks before the frames: ordinary riding, written the way a
              real ledger falls — clumped some days, quiet others. The reload
              sits above the trip that all but emptied the card, being the
              answer to it. */
-          { label: "Reload", sub: "Apple Pay", amount: 20.0, date: "Feb-21-2026" },
+          { label: "Reload", sub: "Apple Pay", amount: 20.0, daysAgo: 8 },
           {
             label: "2-Zone trip",
             sub: "Stored value",
             amount: -FARES.storedValue[2],
-            date: "Feb-21-2026",
+            daysAgo: 8,
             taps: [
               { time: "05:12 PM", place: "Tap in at Waterfront Stn", amount: money(0) },
               { time: "05:46 PM", place: "Tap out at Lougheed Tn Ctr Stn", amount: money(-FARES.storedValue[2]) },
             ],
             balanceAfter: 0.4,
           },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Feb-16-2026" },
-          { label: "SeaBus trip", sub: "Stored value", amount: -FARES.storedValue[2], date: "Feb-13-2026" },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Feb-13-2026" },
-          { label: "2-Zone trip", sub: "Stored value", amount: -FARES.storedValue[2], date: "Feb-2-2026" },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Jan-28-2026" },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Jan-28-2026" },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 13 },
+          { label: "SeaBus trip", sub: "Stored value", amount: -FARES.storedValue[2], daysAgo: 16 },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 16 },
+          { label: "2-Zone trip", sub: "Stored value", amount: -FARES.storedValue[2], daysAgo: 27 },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 32 },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 32 },
           /* two days in Victoria: over on the 15th, back on the 17th, with a
              top-up first and the 620 out to the terminal — a bus trip is one
              tap, there being no tap out on a bus */
-          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, date: "Jan-17-2026" },
-          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, date: "Jan-15-2026" },
+          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, daysAgo: 43 },
+          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, daysAgo: 45 },
           {
             label: "1-Zone trip",
             sub: "Stored value",
             amount: -FARES.storedValue[1],
-            date: "Jan-15-2026",
+            daysAgo: 45,
             taps: [{ time: "07:05 AM", place: "Tap in on Bus 620", amount: money(-FARES.storedValue[1]) }],
             balanceAfter: 62.15,
           },
-          { label: "Reload", sub: "Apple Pay", amount: 50.0, date: "Jan-15-2026" },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], date: "Dec-30-2025" },
+          { label: "Reload", sub: "Apple Pay", amount: 50.0, daysAgo: 45 },
+          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 61 },
         ],
       },
     ],
@@ -336,21 +351,15 @@ export const monthName = (offset = 0) =>
 export const signed = (n) =>
   (n < 0 ? "−$" : "+$") + Math.abs(n).toFixed(2);
 
-/* History writes its date twice over: in full as the heading of a day's
-   entries, and shortened beside the entry itself where the card detail
-   shows only the last two. "Mar-1-2026" reads "Mar 1" there. */
-export const shortDate = (date) => {
-  const [month, day] = date.split("-");
-  return `${month} ${day}`;
-};
+
 
 /* the entries of one card, grouped into the days the History screen lists */
 export const byDate = (history) => {
   const days = [];
   for (const entry of history) {
     const last = days[days.length - 1];
-    if (last && last.date === entry.date) last.entries.push(entry);
-    else days.push({ date: entry.date, entries: [entry] });
+    if (last && last.daysAgo === entry.daysAgo) last.entries.push(entry);
+    else days.push({ daysAgo: entry.daysAgo, entries: [entry] });
   }
   return days;
 };
@@ -377,7 +386,8 @@ export function loginState() {
       kind: "ferry",
       from: "Vancouver (Tsawwassen) -",
       to: "Victoria (Swartz Bay)",
-      time: `06:00 PM ${sailingDate(0)}`,
+      time: "06:00 PM",
+      days: 0,
       crossing: CROSSING,
       fare: FARES.ferryWalkOn,
       fareSub: "Adult foot passenger",
@@ -388,7 +398,8 @@ export function loginState() {
       kind: "ferry",
       from: "Victoria (Swartz Bay) -",
       to: "Vancouver (Tsawwassen)",
-      time: `01:00 PM ${sailingDate(2)}`,
+      time: "01:00 PM",
+      days: 2,
       crossing: CROSSING,
       fare: FARES.ferryWalkOn,
       fareSub: "Adult foot passenger",
@@ -401,6 +412,7 @@ export function loginState() {
       name: ev.name,
       venue: ev.venue,
       time: ev.time,
+      days: ev.days,
       fare: FARES.dayPass,
       paidVia: "Apple Pay",
     },

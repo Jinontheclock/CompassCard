@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import TabBar from "../components/TabBar.jsx";
-import { signed, shortDate } from "../data/seed.js";
+import { signed, agoName } from "../data/seed.js";
 import reloadIcon from "../assets/icon-reload.svg";
 import autoloadIcon from "../assets/icon-autoload.svg";
 import passesIcon from "../assets/icon-passes.svg";
@@ -90,7 +90,7 @@ export default function CardDetail({ card, avatar, onBack, onAccount, onOpen, on
                       <div className="history-what">
                         <span className="history-label">{entry.label}</span>
                         <span className="history-sub">
-                          {entry.sub} · {shortDate(entry.date)}
+                          {entry.sub} · {agoName(entry.daysAgo)}
                         </span>
                       </div>
                       <span className={"history-amount tnum" + (entry.amount > 0 ? " history-amount--credit" : "")}>

@@ -166,7 +166,7 @@ export default function App() {
     if (m.autoload.on && balance < m.autoload.threshold) {
       balance += m.autoload.amount;
       history = [
-        { label: "Autoload", sub: m.payment.primary, amount: m.autoload.amount, date: TODAY.ledger },
+        { label: "Autoload", sub: m.payment.primary, amount: m.autoload.amount, daysAgo: 0 },
         ...history,
       ];
     }
@@ -201,7 +201,7 @@ export default function App() {
         expires: TODAY.monthEnd,
       },
       history: [
-        { label: pass.name, sub: method, amount: -passPrice(pass, passZone), date: TODAY.ledger },
+        { label: pass.name, sub: method, amount: -passPrice(pass, passZone), daysAgo: 0 },
         ...card.history,
       ],
     });
@@ -343,7 +343,7 @@ export default function App() {
                                   label: t.kind === "ferry" ? "BC Ferries · Refund" : `${t.name} · Refund`,
                                   sub: "Stored value",
                                   amount: t.fare,
-                                  date: TODAY.ledger,
+                                  daysAgo: 0,
                                 },
                                 ...c.history,
                               ],
@@ -405,8 +405,8 @@ export default function App() {
                                 c,
                                 o.fare,
                                 o.kind === "ferry"
-                                  ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, date: TODAY.ledger }
-                                  : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
+                                  ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, daysAgo: 0 }
+                                  : { label: o.ev.name, sub: "Event pass", amount: -o.fare, daysAgo: 0 },
                               )
                             : c
                         )
@@ -466,7 +466,7 @@ export default function App() {
                           ? {
                               ...c,
                               history: [
-                                { label: `U-Pass BC · ${month}`, sub: "Auto-renewed", amountText: "Included", date: TODAY.ledger },
+                                { label: `U-Pass BC · ${month}`, sub: "Auto-renewed", amountText: "Included", daysAgo: 0 },
                                 ...c.history,
                               ],
                             }
@@ -525,7 +525,7 @@ export default function App() {
               patchCard({
                 balance: card.balance + reloadAmount,
                 history: [
-                  { label: "Reload", sub: method, amount: reloadAmount, date: TODAY.ledger },
+                  { label: "Reload", sub: method, amount: reloadAmount, daysAgo: 0 },
                   ...card.history,
                 ],
               });
@@ -569,7 +569,7 @@ export default function App() {
                 twin: `Plastic ···· ${String(Math.floor(1000 + Math.random() * 9000))} · one balance`,
                 balance: Math.max(0, card.balance - fee),
                 history: [
-                  { label: "Card replaced", sub: "Balance, pass and history moved", amount: -fee, date: TODAY.ledger },
+                  { label: "Card replaced", sub: "Balance, pass and history moved", amount: -fee, daysAgo: 0 },
                   ...card.history,
                 ],
               };

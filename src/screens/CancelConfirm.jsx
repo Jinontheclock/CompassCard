@@ -3,7 +3,7 @@ import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import NotePanel from "../components/NotePanel.jsx";
 import SettingsRow from "../components/SettingsRow.jsx";
-import { money } from "../data/seed.js";
+import { money, whenLabel } from "../data/seed.js";
 
 /* Giving a ticket back. Nothing is undone on the tab itself — the quiet
    cancel link only leads here, where the rows state the whole of it and
@@ -16,14 +16,14 @@ export default function CancelConfirm({ ticket, onBack, onConfirm }) {
     ? [
         { label: "From", value: ticket.from.replace(/ -$/, "") },
         { label: "To", value: ticket.to },
-        { label: "Sailing", value: ticket.time },
+        { label: "Sailing", value: whenLabel(ticket.time, ticket.days) },
         { label: "Fare", value: money(ticket.fare) },
         { label: "Refund to", value: ticket.paidVia },
       ]
     : [
         { label: "Event", value: ticket.name },
         { label: "Venue", value: ticket.venue.split(" \u00b7 ")[0] },
-        { label: "Date", value: ticket.time },
+        { label: "Date", value: whenLabel(ticket.time, ticket.days) },
         { label: "Fare", value: money(ticket.fare) },
         { label: "Refund to", value: ticket.paidVia },
       ];

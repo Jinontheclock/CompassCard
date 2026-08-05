@@ -3,7 +3,7 @@ const { chromium } = require("playwright");
 const { launchOptions, routeKit } = require("./env.cjs");
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const NOW = new Date();
-const TODAY_SHORT = `${MON[NOW.getMonth()]} ${NOW.getDate()}`;
+const TODAY_SHORT = "Today";
 const MONTH_END = `${MON[NOW.getMonth()]} ${new Date(NOW.getFullYear(), NOW.getMonth() + 1, 0).getDate()}`;
 let fails = 0;
 const is = (label, got, want) => {
