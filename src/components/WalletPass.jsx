@@ -1,4 +1,4 @@
-import { dayLabel } from "../data/seed.js";
+import { dayLabel, CODES } from "../data/seed.js";
 import bcfLogo from "../assets/bcferries-logo.png";
 import starLogo from "../assets/star-logo.png";
 import triangleLogo from "../assets/triangle-logo.png";
@@ -18,14 +18,6 @@ import contactlessIcon from "../assets/icon-contactless.svg";
    the booking reference's choice — random at purchase, faithful to the
    ticket ever after, like every code drawn on these passes. */
 
-/* the terminals, coded the way BC Ferries shortens them */
-const CODES = {
-  "Vancouver (Tsawwassen)": { city: "VANCOUVER", code: "TSA" },
-  "West Vancouver (Horseshoe Bay)": { city: "WEST VANCOUVER", code: "HSB" },
-  "Victoria (Swartz Bay)": { city: "VICTORIA", code: "SWB" },
-  "Nanaimo (Duke Point)": { city: "NANAIMO", code: "DUK" },
-  "Nanaimo (Departure Bay)": { city: "NANAIMO", code: "DEP" },
-};
 const VENUES = { ev1: "BC Place", ev2: "Hastings Park" };
 
 const seededRand = (seed) => {

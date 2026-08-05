@@ -63,15 +63,6 @@ export const TOPICS = [
     action: { label: "Stored value", sub: "Open the card", to: "carddetail" },
   },
   {
-    id: "reload",
-    match: /reload|top ?up|add money|load/i,
-    lines: [
-      `You can add ${money(FARES.reloadPresets[0])}, ${money(FARES.reloadPresets[1])} or`,
-      `${money(FARES.reloadPresets[2])} at a time, or set Autoload to do it.`,
-    ],
-    action: { label: "Add stored value", sub: "Open Reload", to: "reload" },
-  },
-  {
     id: "autoload",
     match: /auto ?load/i,
     lines: [
@@ -80,6 +71,15 @@ export const TOPICS = [
       "charged until you turn it on.",
     ],
     action: { label: "Autoload", sub: "Set it up", to: "autoload" },
+  },
+  {
+    id: "reload",
+    match: /reload|top ?up|add money|\bload\b/i,
+    lines: [
+      `You can add ${money(FARES.reloadPresets[0])}, ${money(FARES.reloadPresets[1])} or`,
+      `${money(FARES.reloadPresets[2])} at a time, or set Autoload to do it.`,
+    ],
+    action: { label: "Add stored value", sub: "Open Reload", to: "reload" },
   },
   {
     id: "lost",
@@ -102,7 +102,7 @@ export const TOPICS = [
   },
   {
     id: "refund",
-    match: /refund|money back|cancel/i,
+    match: /refund|money back|\bcancel|\bclose\b/i,
     lines: [
       "A refund returns the stored value to your",
       "payment method and closes the card.",
@@ -110,12 +110,27 @@ export const TOPICS = [
     action: { label: "Request a refund", sub: "Open Refund", to: "refund" },
   },
   {
+    /* Cancelling a booking is not closing a card, though both say "cancel".
+       What tells them apart is the thing named beside it, in either order —
+       so that pairing settles this topic rather than its word count. */
+    id: "ticketcancel",
+    match: /\bcancel|\brefund/i,
+    settles:
+      /\b(cancel\w*|refund\w*)\b[^.?!]*\b(ticket|sailing|ferry|booking|reservation|event|match|game)\b|\b(ticket|sailing|ferry|booking|reservation|event)\b[^.?!]*\b(cancel\w*|refund\w*)\b/i,
+    lines: [
+      "Open the ticket on the Tickets tab —",
+      "cancelling gives the fare straight back.",
+    ],
+    action: { label: "Your tickets", sub: "Open the Tickets tab", to: "tickets" },
+  },
+  {
     id: "ferry",
     match: /ferry|ferries|sailing|swartz|tsawwassen|victoria|nanaimo/i,
     lines: [
-      `A walk-on to Victoria is ${money(FARES.ferryWalkOn)}.`,
-      "It comes off the same balance.",
-      "Sailings are on the Tickets tab.",
+      `A walk-on to Victoria is ${money(FARES.ferryWalkOn)},`,
+      `or ${money(FARES.ferryWalkOnChild)} for a child. It comes off`,
+      "the same balance. Sailings are on the",
+      "Tickets tab.",
     ],
     action: { label: "Reserve Ferries", sub: "Pick a sailing", to: "ferryreserve" },
   },
@@ -131,6 +146,7 @@ export const TOPICS = [
   {
     id: "wallet",
     match: /wallet|apple pay|phone|tap with/i,
+    settles: /apple wallet|\bwallet\b[^.?!]*\bpass(es)?\b|\bpass(es)?\b[^.?!]*\bwallet\b/i,
     lines: [
       "Add the card to Apple Wallet and you can",
       "tap with the phone. Both share one",
@@ -146,6 +162,10 @@ export const TOPICS = [
   },
 ];
 
+/* Enough to lift a settled topic clear of any word count a rival can reach —
+   no question in this demo names five things. */
+const SETTLED = 5;
+
 /* Nothing matched. The assistant says so plainly rather than guessing, and
    points at the button that reaches somebody who can answer. */
 export const FALLBACK = {
@@ -160,9 +180,18 @@ export const FALLBACK = {
    brushes against: "what does a monthly pass cost" names two things the
    passes topic knows and one the fares topic does, so it is answered about
    passes. A tie goes to whichever is listed first, which is why the U-Pass
-   sits above passes — every u-pass is also a pass. */
+   sits above passes — every u-pass is also a pass.
+
+   Counting words settles most questions, but not the ones where two topics
+   share a word and only the pairing tells them apart: cancelling a booking
+   and closing a card both say "cancel". A topic may name that pairing in
+   `settles`, and a message that satisfies it is decided there rather than
+   left to the count — which a phrase spanning the sentence could never win,
+   since it can only ever match once. */
 export const reply = (text) => {
-  const score = (topic) => (text.match(new RegExp(topic.match.source, "gi")) ?? []).length;
+  const score = (topic) =>
+    (text.match(new RegExp(topic.match.source, "gi")) ?? []).length +
+    (topic.settles?.test(text) ? SETTLED : 0);
   const best = TOPICS.map((t) => [t, score(t)])
     .filter(([, n]) => n > 0)
     .sort((a, b) => b[1] - a[1])[0];

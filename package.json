@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "bash tests/verify.sh",
-    "test:flows": "node tests/behaviour.cjs && node tests/behaviour2.cjs && node tests/behaviour3.cjs",
+    "test:flows": "node tests/behaviour.cjs && node tests/behaviour2.cjs && node tests/behaviour3.cjs && node tests/behaviour4.cjs",
     "test:sweep": "node tests/sweep.cjs"
   },
   "dependencies": {

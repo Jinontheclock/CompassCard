@@ -53,7 +53,9 @@ export default function Help({ messages = [], draft, onDraft, onSend, onBack, on
     const body = bodyRef.current;
     if (body) body.scrollTo({ top: body.scrollHeight, behavior: opened.current ? "smooth" : "auto" });
     opened.current = true;
-  }, [messages.length]);
+    /* the whole conversation, not its length: a reply takes the typing
+       bubble's place rather than adding one, so the count never moves */
+  }, [messages]);
 
   return (
     <div className="scr">

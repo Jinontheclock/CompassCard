@@ -83,6 +83,8 @@ export default function App() {
   /* the assistant — the conversation starts empty and the first word is the
      rider's — and whichever of the two tap frames was opened */
   const [chat, setChat] = useState([]);
+  /* what tags each pending bubble, so its own reply finds it */
+  const chatCount = useRef(0);
   const [draft, setDraft] = useState("");
   const [shot, setShot] = useState("tap");
   /* what the Tickets tab is in the middle of buying: a sailing or an event
@@ -105,7 +107,11 @@ export default function App() {
      kept just long enough to play its half, then dropped. */
   const [anim, setAnim] = useState(null);
   const animCount = useRef(0);
-  const animate = (dir) => setAnim({ from: current, dir, n: ++animCount.current });
+  /* A screen slides out drawn as it was, not as the model leaves it: the
+     element is captured here, while the state it belongs to still stands.
+     Refunding the last card empties that state on the very frame the slide
+     begins, and a re-render would have nothing left to draw it from. */
+  const animate = (dir) => setAnim({ node: screen(current), dir, n: ++animCount.current });
   useEffect(() => {
     if (!anim) return undefined;
     const t = setTimeout(() => setAnim(null), anim.dir === "fade" ? 200 : 300);
@@ -222,6 +228,10 @@ export default function App() {
      Both ways out of Card Register — registering one and carrying on without
      one — end at the same place. */
   const screen = (id) => {
+    /* A screen about one card cannot draw without one. push() turns those
+       away, but the stack may still hold one from before the last card left,
+       so the renderer checks too rather than trusting the way in. */
+    if (NEEDS_CARD.has(id) && !card) return null;
     switch (id) {
       case "signup":
         return (
@@ -353,7 +363,7 @@ export default function App() {
             onBack={back}
             /* choosing is this screen's whole job — paying is the next one's */
             onNext={(sail) => {
-              setOrder({ kind: "ferry", ...sail, fare: FARES.ferryWalkOn });
+              setOrder({ kind: "ferry", ...sail });
               push("checkout");
             }}
           />
@@ -404,82 +414,7 @@ export default function App() {
                     tickets: [
                       ...m.tickets,
                       o.kind === "ferry"
-                        ? { ref: bookingRef(), kind: "ferry", from: `${o.from} -`, to: o.to, time: o.when, crossing: o.crossing, fare: o.fare, paidVia }
-                        : { ref: bookingRef(), kind: "event", eventId: o.ev.id, name: o.ev.name, venue: o.ev.venue, time: o.ev.time, fare: o.fare, paidVia },
-                    ],
-                  }));
-                  animate("pop");
-                  setStack(["tickets"]);
-                };
-                if (payWith === "Apple Pay")
-                  setPaySheet({
-                    label: order.kind === "ferry" ? "BC Ferries · Walk-on" : order.ev.name,
-                    amount: order.fare,
-                    then: settle,
-                  });
-                else settle();
-              }}
-            />
-          )
-        );
-      case "ferryreserve":
-        return (
-          <ReserveFerries
-            onBack={back}
-            /* choosing is this screen's whole job — paying is the next one's */
-            onNext={(sail) => {
-              setOrder({ kind: "ferry", ...sail, fare: FARES.ferryWalkOn });
-              push("checkout");
-            }}
-          />
-        );
-      case "buytickets":
-        return (
-          <PurchaseTickets
-            tickets={model.tickets}
-            onBack={back}
-            onBuyEvent={(ev) => {
-              setOrder({ kind: "event", ev, fare: FARES.dayPass });
-              push("checkout");
-            }}
-          />
-        );
-      case "checkout":
-        return (
-          order && (
-            <Checkout
-              order={order}
-              card={model.cards[0]}
-              onBack={back}
-              /* Paying settles the order: stored value deducts and writes
-                 its ledger line, a card method just pays — and Apple Pay
-                 presents its sheet first, the way a reload does. Either
-                 way the ticket is issued and the tab is where it lands. */
-              onPay={(payWith) => {
-                const settle = () => {
-                  const o = order;
-                  const viaSV = payWith === "Compass Card";
-                  const paidVia = viaSV ? "Stored value" : payWith;
-                  setModel((m) => ({
-                    ...m,
-                    cards: viaSV
-                      ? m.cards.map((c, idx) =>
-                          idx === 0
-                            ? chargeStoredValue(
-                                m,
-                                c,
-                                o.fare,
-                                o.kind === "ferry"
-                                  ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, date: TODAY.ledger }
-                                  : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
-                              )
-                            : c
-                        )
-                      : m.cards,
-                    tickets: [
-                      ...m.tickets,
-                      o.kind === "ferry"
-                        ? { ref: bookingRef(), kind: "ferry", from: `${o.from} -`, to: o.to, time: o.when, crossing: o.crossing, fare: o.fare, paidVia }
+                        ? { ref: bookingRef(), kind: "ferry", from: `${o.from} -`, to: o.to, time: o.when, crossing: o.crossing, fare: o.fare, fareSub: o.fareSub, paidVia }
                         : { ref: bookingRef(), kind: "event", eventId: o.ev.id, name: o.ev.name, venue: o.ev.venue, time: o.ev.time, fare: o.fare, paidVia },
                     ],
                   }));
@@ -670,14 +605,26 @@ export default function App() {
             onSend={() => {
               const text = draft.trim();
               if (!text) return;
-              /* the assistant reads before it answers: the typing dots hold
-                 its place, and the reply takes it over a beat later */
-              setChat((c) => [...c, { from: "user", lines: [text] }, { from: "bot", typing: true }]);
+              /* The assistant reads before it answers: the typing dots hold
+                 its place, and the reply takes that place over a beat later.
+                 The dots are tagged, because a second question sent inside
+                 the beat would otherwise have its own dots taken instead. */
+              const pending = ++chatCount.current;
+              setChat((c) => [...c, { from: "user", lines: [text] }, { from: "bot", typing: true, pending }]);
               setDraft("");
-              setTimeout(() => setChat((c) => [...c.slice(0, -1), reply(text)]), 900);
+              setTimeout(
+                () => setChat((c) => c.map((m) => (m.pending === pending ? reply(text) : m))),
+                900
+              );
             }}
             onBack={back}
-            onAction={push}
+            /* The assistant opens screens the way the rest of the app does:
+               a tab root is crossed to rather than stacked on, and a U-Pass
+               nobody has connected is connected first. */
+            onAction={(id) => {
+              if (id === "tickets" || id === "home") return selectTab(id);
+              push(id === "upass" && !card?.upassOn ? "upassconnect" : id);
+            }}
             /* asking for a person does not leave the conversation — the
                assistant hands over, and the person arrives a beat later */
             onPerson={() => {
@@ -697,7 +644,7 @@ export default function App() {
           />
         );
       case "shot":
-        return <TapResult shot={shot} declined={card.frozen} onDismiss={back} />;
+        return <TapResult shot={shot} declined={!!card?.frozen} onDismiss={back} />;
       case "wallet":
         return (
           <Wallet
@@ -824,7 +771,7 @@ export default function App() {
     <div className="screen" data-cards={model.cards.length}>
       {anim && (
         <div key={`out-${anim.n}`} className={`stage stage--out-${anim.dir}`} aria-hidden="true">
-          {screen(anim.from)}
+          {anim.node}
         </div>
       )}
       <div key={anim ? `in-${anim.n}` : "steady"} className={"stage" + (anim ? ` stage--in-${anim.dir}` : "")}>

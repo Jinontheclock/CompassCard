@@ -2,6 +2,7 @@ import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import walletActions from "../assets/wallet-actions.png";
 import walletStack from "../assets/wallet-stack.webp";
 import walletCard from "../assets/wallet-card.webp";
+import { CODES } from "../data/seed.js";
 import bcfLogo from "../assets/bcferries-logo.png";
 import starLogo from "../assets/star-logo.png";
 import triangleLogo from "../assets/triangle-logo.png";
@@ -9,13 +10,18 @@ import triangleLogo from "../assets/triangle-logo.png";
 /* a boarding pass or ticket the app handed over, drawn the slim way
    Wallet stacks its passes — each in the colour its full pass wears */
 function PassTile({ t }) {
-  if (t.kind === "ferry")
+  if (t.kind === "ferry") {
+    const from = CODES[t.from.replace(/ -$/, "")]?.code ?? "···";
+    const to = CODES[t.to]?.code ?? "···";
     return (
       <div className="wallet-pass wallet-pass--ferry">
         <img src={bcfLogo} alt="BC Ferries" style={{ height: 14 }} />
-        <span className="wallet-pass-note">TSA → SWB · {t.time.slice(0, 8)}</span>
+        <span className="wallet-pass-note">
+          {from} → {to} · {t.time.slice(0, 8)}
+        </span>
       </div>
     );
+  }
   const skin = Number(t.ref) % 3;
   return (
     <div

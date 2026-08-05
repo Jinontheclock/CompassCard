@@ -88,6 +88,17 @@ export const CROSSING = "1 h 35 min";
    run keeps its schedule's own departures and crossing time. The adult
    walk-on fare is the same on all three runs, which is why one figure
    serves them all. A run is named by its island end. */
+/* the terminals as BC Ferries shortens them — the boarding pass sets these
+   where an airline sets airport codes, and the Wallet stack reads the same
+   table, so a tile and the pass it belongs to name one route */
+export const CODES = {
+  "Vancouver (Tsawwassen)": { city: "VANCOUVER", code: "TSA" },
+  "West Vancouver (Horseshoe Bay)": { city: "WEST VANCOUVER", code: "HSB" },
+  "Victoria (Swartz Bay)": { city: "VICTORIA", code: "SWB" },
+  "Nanaimo (Duke Point)": { city: "NANAIMO", code: "DUK" },
+  "Nanaimo (Departure Bay)": { city: "NANAIMO", code: "DEP" },
+};
+
 export const FERRY = {
   links: {
     "Vancouver (Tsawwassen)": ["Victoria (Swartz Bay)", "Nanaimo (Duke Point)"],
@@ -369,6 +380,7 @@ export function loginState() {
       time: `06:00 PM ${sailingDate(0)}`,
       crossing: CROSSING,
       fare: FARES.ferryWalkOn,
+      fareSub: "Adult foot passenger",
       paidVia: "Apple Pay",
     },
     {
@@ -379,6 +391,7 @@ export function loginState() {
       time: `01:00 PM ${sailingDate(2)}`,
       crossing: CROSSING,
       fare: FARES.ferryWalkOn,
+      fareSub: "Adult foot passenger",
       paidVia: "Apple Pay",
     },
     {
