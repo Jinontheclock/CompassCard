@@ -27,19 +27,29 @@
   /* ── Ink ── */
   --text-primary: #0f0f0f;
   --text-secondary: #5c5c5c;
-  --text-muted: #8f8f8f;
+  /* the quietest ink that still reads: 4.81 on the background, 5.02 on a
+     panel. The old value lives on as --hairline, which is not read */
+  --text-muted: #6f6f6f;
+  /* rules, dashes and dots — drawn, not read, so 3.10 is enough for them */
+  --hairline: #8f8f8f;
 
   /* ── Status. Never carried by colour alone: every status shows a colour,
      an icon and a word. ── */
   --success: #146b45;
   --warning: #7a4f00;
+  /* refused, not merely cautioned — the two say different things and so
+     cannot share a colour */
+  --error: #c0362c;
   /* the filled mark that says a thing has happened. A shade off --success,
      which Figma leaves as a raw fill rather than naming — it carries a white
      glyph, so it sits a step lighter than the word beside it. */
   --success-mark: #0f7b4f;
 
-  /* U-Pass BC's own gold, which the frames use only for those initials */
+  /* U-Pass BC's own gold. The bright one is for fills and marks; set as
+     text it comes to 1.77, so words take the darker of the two — the
+     brightest the hue reaches while still being readable. */
   --upass-gold: #f5b314;
+  --upass-gold-ink: #8f6700;
 
   /* ── iOS chrome, from the Apple UI kit the frames are built on ── */
   --labels-primary: #000000;
