@@ -17,6 +17,12 @@ const is = (label, got, want) => {
   const go = async (s) => { await p.click(s); await p.waitForTimeout(430); };
   const txt = async (s) => (await p.textContent(s)).trim().replace(/\s+/g, " ");
   const pay = async () => { await p.click(".apay-pay"); await p.waitForTimeout(2400); };
+  /* History keeps the row it was left on, so opening is only a click when
+     the row is not already open */
+  const openRow = async (sel) => {
+    const head = p.locator(sel);
+    if ((await head.getAttribute("aria-expanded")) !== "true") { await head.click(); await p.waitForTimeout(430); }
+  };
 
   console.log("the launch");
   await p.goto("http://localhost:4173/", { waitUntil: "domcontentloaded" });
@@ -32,14 +38,14 @@ const is = (label, got, want) => {
   await go(".nav-back");
   is("the tile wears the chip", await txt(".card-stack > *:nth-child(1) .frozen-chip"), "FROZEN");
   await go(".card-stack > *:nth-child(1)"); await go(".linkish");
-  await go(".section:nth-of-type(1) .history-head");
+  await openRow(".section:nth-of-type(1) .history-head");
   await go(".section:nth-of-type(1) .history-gate");
   is("the gate turns it away", await txt(".tap-title"), "Declined");
   is("and says why", await txt(".tap-amount"), "Card frozen");
   await go(".escape");
   await go(".nav-back"); await go(".tile-grid > *:nth-child(5)"); await go(".lost-actions .btn");
   is("unfreezing turns it back", await txt(".lost-actions .btn"), "Freeze Card");
-  await go(".nav-back"); await go(".linkish"); await go(".section:nth-of-type(1) .history-head");
+  await go(".nav-back"); await go(".linkish"); await openRow(".section:nth-of-type(1) .history-head");
   await go(".section:nth-of-type(1) .history-gate");
   is("the gate accepts again", await txt(".tap-title"), "Accepted");
   await go(".escape");

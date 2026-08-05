@@ -1,8 +1,8 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import TabBar from "../components/TabBar.jsx";
-import { byDate, money, signed } from "../data/seed.js";
+import { agoName, byDate, money, signed } from "../data/seed.js";
 
 /* Everything the card has done, gathered into days. The entry itself drops
    the date here — the heading above it carries that — which is the one
@@ -21,12 +21,13 @@ function Entry({ entry }) {
   );
 }
 
-export default function History({ card, onBack, onSelectTab, onShot }) {
+export default function History({ card, open, onOpen, onBack, onSelectTab, onShot }) {
   /* An entry opens to show the taps behind it. Only a trip has any, so only
      a trip opens. The list arrives closed, as the History frame draws it,
-     and opening one gives the frame drawn with details. */
-  const [open, setOpen] = useState(null);
-  const keyOf = (entry) => `${entry.date}/${entry.label}`;
+     and opening one gives the frame drawn with details. Which row stands
+     open is the app's to remember, so leaving and coming back finds it. */
+  const setOpen = onOpen;
+  const keyOf = (entry) => `${entry.daysAgo}/${entry.label}`;
 
   return (
     <div className="scr">

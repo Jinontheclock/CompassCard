@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { seedState, loginState, digitalCard, registeredCard, bookingRef, FARES, PASSES, TODAY, passPrice, replacementFee, monthName } from "./data/seed.js";
 import { reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
@@ -82,6 +82,9 @@ export default function App() {
   const [autoRenew, setAutoRenew] = useState(model.upass.autoRenew);
   /* the assistant — the conversation starts empty and the first word is the
      rider's — and whichever of the two tap frames was opened */
+  /* which History row stands open — held here so coming back to History
+     finds it as it was left */
+  const [historyOpen, setHistoryOpen] = useState(null);
   const [chat, setChat] = useState([]);
   /* what tags each pending bubble, so its own reply finds it */
   const chatCount = useRef(0);
@@ -107,11 +110,26 @@ export default function App() {
      kept just long enough to play its half, then dropped. */
   const [anim, setAnim] = useState(null);
   const animCount = useRef(0);
-  /* A screen slides out drawn as it was, not as the model leaves it: the
-     element is captured here, while the state it belongs to still stands.
-     Refunding the last card empties that state on the very frame the slide
-     begins, and a re-render would have nothing left to draw it from. */
-  const animate = (dir) => setAnim({ node: screen(current), dir, n: ++animCount.current });
+  /* Which screen is leaving, and how. The node captured alongside it is a
+     fallback, not the plan: normally the leaving stage renders the screen
+     itself, keyed by that screen's id, so React moves the instance it
+     already had rather than building a second one — a row left open stays
+     open all the way out. The fallback answers the one case that cannot be
+     re-rendered: refunding the last card empties the model on the very
+     frame the slide begins, and a screen about a card has none to draw. */
+  /* How far each screen was scrolled when it was last left. React moves a
+     stage's DOM node rather than rebuilding it, but a move is a removal and
+     an insert and the browser lets go of the offset in between — and a
+     screen that has been popped off is built again from nothing. Both are
+     answered by writing the offset down on the way out and putting it back
+     on the way in. */
+  const scrollMem = useRef({});
+  const bodyOf = (stage) => stage?.querySelector(".scr-body, .home-body");
+  const animate = (dir) => {
+    const leaving = bodyOf(document.querySelector(".stage"));
+    if (leaving) scrollMem.current[current] = leaving.scrollTop;
+    setAnim({ from: current, node: screen(current), dir, n: ++animCount.current });
+  };
   useEffect(() => {
     if (!anim) return undefined;
     const t = setTimeout(() => setAnim(null), anim.dir === "fade" ? 200 : 300);
@@ -153,6 +171,16 @@ export default function App() {
     setStack([root]);
   };
   const current = stack[stack.length - 1];
+  /* put each stage back where it was scrolled to: the one leaving, whose
+     DOM node the browser reset as React moved it, and the one arriving,
+     which may have been built again from nothing. */
+  useLayoutEffect(() => {
+    const stages = document.querySelectorAll(".stage");
+    const out = bodyOf(document.querySelector('[class*="stage--out-"]'));
+    if (out && anim) out.scrollTop = scrollMem.current[anim.from] ?? 0;
+    const inbound = bodyOf(stages[stages.length - 1]);
+    if (inbound) inbound.scrollTop = scrollMem.current[current] ?? 0;
+  }, [anim, current]);
 
   /* Whichever card is open. Every screen under a card is handed this one
      rather than looking it up again. */
@@ -414,8 +442,8 @@ export default function App() {
                     tickets: [
                       ...m.tickets,
                       o.kind === "ferry"
-                        ? { ref: bookingRef(), kind: "ferry", from: `${o.from} -`, to: o.to, time: o.when, crossing: o.crossing, fare: o.fare, fareSub: o.fareSub, paidVia }
-                        : { ref: bookingRef(), kind: "event", eventId: o.ev.id, name: o.ev.name, venue: o.ev.venue, time: o.ev.time, fare: o.fare, paidVia },
+                        ? { ref: bookingRef(), kind: "ferry", from: `${o.from} -`, to: o.to, time: o.time, days: o.days, crossing: o.crossing, fare: o.fare, fareSub: o.fareSub, paidVia }
+                        : { ref: bookingRef(), kind: "event", eventId: o.ev.id, name: o.ev.name, venue: o.ev.venue, time: o.ev.time, days: o.ev.days, fare: o.fare, paidVia },
                     ],
                   }));
                   animate("pop");
@@ -591,6 +619,8 @@ export default function App() {
         return (
           <History
             card={card}
+            open={historyOpen}
+            onOpen={setHistoryOpen}
             onBack={back}
             onSelectTab={selectTab}
             onShot={(id) => { setShot(id); push("shot"); }}
@@ -770,11 +800,11 @@ export default function App() {
   return (
     <div className="screen" data-cards={model.cards.length}>
       {anim && (
-        <div key={`out-${anim.n}`} className={`stage stage--out-${anim.dir}`} aria-hidden="true">
-          {anim.node}
+        <div key={`scr-${anim.from}`} className={`stage stage--out-${anim.dir}`} aria-hidden="true">
+          {screen(anim.from) ?? anim.node}
         </div>
       )}
-      <div key={anim ? `in-${anim.n}` : "steady"} className={"stage" + (anim ? ` stage--in-${anim.dir}` : "")}>
+      <div key={`scr-${current}`} className={"stage" + (anim ? ` stage--in-${anim.dir}` : "")}>
         {screen(current)}
       </div>
       {/* The status bar is the phone's, not the app's: one fixed bar rides
