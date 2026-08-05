@@ -9,7 +9,7 @@ import radioTick from "../assets/icon-radio-tick.svg";
    deepest Compass blue, with the two initials in its gold — and everything
    under it is the state of this month: whether it has renewed, and whether
    it will keep renewing. */
-export default function UPass({ card, upass, onBack, onAutoRenew, onSelectTab }) {
+export default function UPass({ card, upass, nextMonth, onBack, onAutoRenew, onRoll, onSelectTab }) {
   return (
     <div className="scr">
       <StatusBar />
@@ -63,6 +63,12 @@ export default function UPass({ card, upass, onBack, onAutoRenew, onSelectTab })
             <span>Renews automatically each month while you are enrolled.</span>
             <span>Managed through your school.</span>
           </p>
+
+          {/* the demo's hand on the calendar: turn the month and watch the
+              toggle above decide what happens to the pass */}
+          <button type="button" className="linkish upass-roll" onClick={onRoll}>
+            Jump to {nextMonth} 1 →
+          </button>
         </div>
       </div>
 

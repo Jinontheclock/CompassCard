@@ -15,7 +15,7 @@ function Entry({ entry }) {
         <span className="history-sub">{entry.sub}</span>
       </div>
       <span className={"history-amount tnum" + (entry.amount > 0 ? " history-amount--credit" : "")}>
-        {signed(entry.amount)}
+        {entry.amountText ?? signed(entry.amount)}
       </span>
     </div>
   );

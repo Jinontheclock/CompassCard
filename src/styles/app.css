@@ -2384,6 +2384,12 @@
   font: var(--app-subhead);
   color: var(--success);
 }
+.upass-roll {
+  align-self: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--compass-600);
+}
 .upass-note {
   margin: 0;
   height: 40px;

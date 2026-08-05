@@ -244,6 +244,7 @@ export function seedState() {
     ],
     /* the card writes the school short and the connect screen writes it out */
     upass: {
+      offset: 0,
       school: "BCIT",
       schoolName: "British Columbia Institute of Technology",
       month: TODAY.month,
@@ -317,6 +318,10 @@ export const passPrice = (pass, zone) => (pass.zones ? pass.prices[zone] : pass.
 
 /* History reads as a ledger, so a credit carries its plus and a debit the
    true minus sign rather than a hyphen. */
+/* the name of the month `offset` months from now — the U-Pass rolls on it */
+export const monthName = (offset = 0) =>
+  MONTHS[(new Date().getMonth() + offset) % 12];
+
 export const signed = (n) =>
   (n < 0 ? "−$" : "+$") + Math.abs(n).toFixed(2);
 

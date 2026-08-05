@@ -224,6 +224,63 @@ const is = (label, got, want) => {
   is("their e-mail", (await txt(".scr-body")).includes("hajinlee.ca@gmail.com"), "true");
   is("and their phone", (await txt(".scr-body")).includes("(604) 555-0132"), "true");
 
+  console.log("the flows join hands");
+  await go(".nav-back");                                   // Account -> Tickets
+  await go(".tab-bar .tab:nth-of-type(1)");
+  await go(".card-stack > *:nth-child(1)");
+  await go(".tile-grid > *:nth-child(2)");                 // Autoload
+  await go(".panel--pop .settings-row:nth-of-type(1)");    // threshold menu
+  await go(".menu-item:nth-of-type(2)");                   // below $10
+  await go(".scr-footer .btn");                            // Turn on Autoload
+  await go(".nav-back");
+  await go(".tile-grid > *:nth-child(1)");                 // Reload +$10 -> 25.00
+  await go(".preset-row > *:nth-child(1)");
+  await go(".scr-footer .btn");
+  await pay();
+  await go(".done-footer .btn");
+  await go(".tab-bar .tab:nth-of-type(2)");
+  await go(".tickets-actions .btn:nth-of-type(1)");        // reserve the 6 PM again
+  await go(".reserve-row .pick-group:nth-of-type(2) .pick-box--tap");
+  await go(".menu-item:nth-of-type(6)");
+  await go(".scr-footer--fixed .btn");
+  await go(".scr-footer--fixed .btn");                     // stored value: 25 - 19.10 = 5.90 < 10
+  await go(".tab-bar .tab:nth-of-type(1)");
+  await go(".card-stack > *:nth-child(1)");
+  is("autoload catches the dip", await txt(".history-row .history-label"), "Autoload");
+  is("and tops the card back up", await txt(".hero-figure"), "15.90");
+
+  console.log("the month turns for the U-Pass");
+  await go(".tile-grid > *:nth-child(4)");                 // U-Pass -> connect first
+  await go(".scr-footer--connect .btn");
+  await go(".upass-roll");                                 // Jump to next month
+  is("the pass renews itself", (await txt(".upass-state")).includes("Renewed"), "true");
+  await go(".nav-back");
+  is("and the ledger says Included", (await txt(".history-row")).includes("Included"), "true");
+  await go(".tile-grid > *:nth-child(4)");                 // straight to U-Pass now
+  await go(".upass-stack .toggle");                        // auto-renew off
+  await go(".upass-roll");
+  is("without it the pass lapses", (await txt(".upass-state")).includes("Not renewed"), "true");
+  await go(".nav-back");
+
+  console.log("a frozen card hands itself to its successor");
+  await go(".tile-grid > *:nth-child(5)");                 // Lost
+  await go(".lost-actions .btn:nth-of-type(1)");           // Freeze
+  await go(".lost-actions .btn:nth-of-type(2)");           // Move to replacement
+  await go(".scr-footer--fixed .btn");                     // Order Replacement
+  is("the order stays placed", await txt(".scr-footer--fixed .btn"), "Replacement Ordered");
+  await go(".nav-back"); await go(".nav-back");            // Replace -> Lost -> the card
+  is("the freeze lifts with the move", await p.locator(".hero-frozen").count(), 0);
+  is("and the fee is written down", await txt(".history-row .history-label"), "Card replaced");
+
+  console.log("the assistant opens the doors it names");
+  await go(".nav-account");
+  await go(".section:nth-of-type(3) .settings-row:nth-of-type(1)");
+  await p.fill(".chat-input", "Can I reserve a ferry to Victoria?");
+  await go(".chat-send");
+  await p.waitForTimeout(1200);
+  await go(".chat-action");
+  is("the reserve page answers the door", await txt(".scr-title"), "Reserve Ferries");
+
   console.log(`\npage errors: ${errs.length ? errs.join(" | ") : "none"}`);
   await b.close();
   process.exit(fails || errs.length ? 1 : 0);

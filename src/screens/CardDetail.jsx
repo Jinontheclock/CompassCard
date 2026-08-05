@@ -94,7 +94,7 @@ export default function CardDetail({ card, avatar, onBack, onAccount, onOpen, on
                         </span>
                       </div>
                       <span className={"history-amount tnum" + (entry.amount > 0 ? " history-amount--credit" : "")}>
-                        {signed(entry.amount)}
+                        {entry.amountText ?? signed(entry.amount)}
                       </span>
                     </div>
                   </Fragment>

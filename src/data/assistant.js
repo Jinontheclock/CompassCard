@@ -111,12 +111,22 @@ export const TOPICS = [
   },
   {
     id: "ferry",
-    match: /ferry|ferries|sailing|swartz|tsawwassen/i,
+    match: /ferry|ferries|sailing|swartz|tsawwassen|victoria|nanaimo/i,
     lines: [
       `A walk-on to Victoria is ${money(FARES.ferryWalkOn)}.`,
       "It comes off the same balance.",
       "Sailings are on the Tickets tab.",
     ],
+    action: { label: "Reserve Ferries", sub: "Pick a sailing", to: "ferryreserve" },
+  },
+  {
+    id: "events",
+    match: /event|whitecaps|playland|concert|game|match|show/i,
+    lines: [
+      `An event pass is ${money(FARES.dayPass)} — every zone,`,
+      "all day, on the day of the event.",
+    ],
+    action: { label: "Purchase Tickets", sub: "Events on sale", to: "buytickets" },
   },
   {
     id: "wallet",

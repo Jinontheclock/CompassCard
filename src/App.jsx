@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { seedState, loginState, digitalCard, registeredCard, bookingRef, FARES, PASSES, TODAY, passPrice } from "./data/seed.js";
+import { seedState, loginState, digitalCard, registeredCard, bookingRef, FARES, PASSES, TODAY, passPrice, replacementFee, monthName } from "./data/seed.js";
 import { reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
@@ -151,6 +151,22 @@ export default function App() {
   /* Whichever card is open. Every screen under a card is handed this one
      rather than looking it up again. */
   const card = model.cards.find((c) => c.id === openCard) ?? model.cards[0];
+  /* a stored-value charge: the fare comes off, and if the balance lands
+     under the Autoload line, the reload it stands for runs in the same
+     breath — written down above the fare it answered */
+  const chargeStoredValue = (m, c, fare, entry) => {
+    let balance = c.balance - fare;
+    let history = [entry, ...c.history];
+    if (m.autoload.on && balance < m.autoload.threshold) {
+      balance += m.autoload.amount;
+      history = [
+        { label: "Autoload", sub: m.payment.primary, amount: m.autoload.amount, date: TODAY.ledger },
+        ...history,
+      ];
+    }
+    return { ...c, balance, history };
+  };
+
   /* what the acting screen changes about that card */
   const patchCard = (patch) =>
     setModel((m) => ({
@@ -374,16 +390,14 @@ export default function App() {
                     cards: viaSV
                       ? m.cards.map((c, idx) =>
                           idx === 0
-                            ? {
-                                ...c,
-                                balance: c.balance - o.fare,
-                                history: [
-                                  o.kind === "ferry"
-                                    ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, date: TODAY.ledger }
-                                    : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
-                                  ...c.history,
-                                ],
-                              }
+                            ? chargeStoredValue(
+                                m,
+                                c,
+                                o.fare,
+                                o.kind === "ferry"
+                                  ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, date: TODAY.ledger }
+                                  : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
+                              )
                             : c
                         )
                       : m.cards,
@@ -451,16 +465,14 @@ export default function App() {
                     cards: viaSV
                       ? m.cards.map((c, idx) =>
                           idx === 0
-                            ? {
-                                ...c,
-                                balance: c.balance - o.fare,
-                                history: [
-                                  o.kind === "ferry"
-                                    ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, date: TODAY.ledger }
-                                    : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
-                                  ...c.history,
-                                ],
-                              }
+                            ? chargeStoredValue(
+                                m,
+                                c,
+                                o.fare,
+                                o.kind === "ferry"
+                                  ? { label: "BC Ferries · Walk-on", sub: o.fareSub, amount: -o.fare, date: TODAY.ledger }
+                                  : { label: o.ev.name, sub: "Event pass", amount: -o.fare, date: TODAY.ledger },
+                              )
                             : c
                         )
                       : m.cards,
@@ -501,8 +513,34 @@ export default function App() {
           <UPass
             card={card}
             upass={{ ...model.upass, autoRenew }}
+            nextMonth={monthName((model.upass.offset ?? 0) + 1)}
             onBack={back}
             onAutoRenew={setAutoRenew}
+            /* the month turns: auto-renew answers it with a new month and a
+               ledger line; without it the pass simply stands unrenewed */
+            onRoll={() =>
+              setModel((m) => {
+                const offset = (m.upass.offset ?? 0) + 1;
+                const month = monthName(offset);
+                return {
+                  ...m,
+                  upass: { ...m.upass, offset, month, renewed: autoRenew },
+                  cards: autoRenew
+                    ? m.cards.map((c) =>
+                        c.id === card.id
+                          ? {
+                              ...c,
+                              history: [
+                                { label: `U-Pass BC · ${month}`, sub: "Auto-renewed", amountText: "Included", date: TODAY.ledger },
+                                ...c.history,
+                              ],
+                            }
+                          : c
+                      )
+                    : m.cards,
+                };
+              })
+            }
             onSelectTab={selectTab}
           />
         );
@@ -583,7 +621,26 @@ export default function App() {
                Program pass fee to replace */
             programPass={!!card.upassOn}
             onBack={back}
-            onOrder={() => patchCard({ replaced: true })}
+            /* ordering builds the successor on the spot: same balance less
+               the fee, same pass and history, the freeze left behind on a
+               card that no longer exists */
+            onOrder={() => {
+              const fee = replacementFee(!!card.upassOn);
+              const fresh = {
+                ...card,
+                id: "c" + Math.random().toString(36).slice(2, 8),
+                frozen: false,
+                replaced: true,
+                twin: `Plastic ···· ${String(Math.floor(1000 + Math.random() * 9000))} · one balance`,
+                balance: Math.max(0, card.balance - fee),
+                history: [
+                  { label: "Card replaced", sub: "Balance, pass and history moved", amount: -fee, date: TODAY.ledger },
+                  ...card.history,
+                ],
+              };
+              setModel((m) => ({ ...m, cards: m.cards.map((c) => (c.id === card.id ? fresh : c)) }));
+              setOpenCard(fresh.id);
+            }}
           />
         );
       case "lost":
