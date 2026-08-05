@@ -2718,9 +2718,6 @@
   letter-spacing: 0.1em;
   color: var(--text-secondary);
 }
-.tap-mark--declined {
-  background: var(--warning);
-}
 .tap-mark {
   position: absolute;
   left: 165px;
@@ -2732,6 +2729,11 @@
   height: 72px;
   border-radius: 36px;
   background: var(--success-mark);
+}
+/* the modifier has to follow the base it overrides — same specificity,
+   so the later rule is the one that wins */
+.tap-mark--declined {
+  background: var(--error);
 }
 /* Accepted is set at app/heading's size but in the bold cut, a step this
    scale has no token for; it takes the nearest and the frame's weight. */
