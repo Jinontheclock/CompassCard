@@ -1,0 +1,277 @@
+/* The watch demo, measured from the Hi-Fi board's watch frames at twice
+   their drawn size — 187×223 becomes a 374×446 display — so the small
+   type renders sharp. The case around it is scenery: a dark aluminium
+   body, the crown and side button, the stubs of a band. The screen is
+   the design; everything else just holds it up. */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── the stage: centre the watch, scale it down whole when cramped ── */
+.watch-stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3a3a3c;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+.watch-rig {
+  position: relative;
+  transform: scale(var(--fit, 1));
+}
+
+/* ── the hardware ── */
+.watch-band {
+  position: absolute;
+  left: 50%;
+  width: 220px;
+  height: 110px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #202022, #161618);
+  z-index: 0;
+}
+.watch-band--top {
+  top: -92px;
+  border-radius: 42px 42px 12px 12px;
+}
+.watch-band--bottom {
+  bottom: -92px;
+  border-radius: 12px 12px 42px 42px;
+}
+.watch-case {
+  position: relative;
+  z-index: 1;
+  padding: 28px 26px;
+  background: linear-gradient(155deg, #2c2c2e 0%, #131315 55%, #1f1f21 100%);
+  border-radius: 128px;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.16),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.6),
+    0 24px 60px rgba(0, 0, 0, 0.5);
+}
+.watch-crown {
+  position: absolute;
+  right: -13px;
+  top: 122px;
+  width: 15px;
+  height: 68px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #3a3a3c, #131315);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+.watch-side {
+  position: absolute;
+  right: -10px;
+  top: 214px;
+  width: 11px;
+  height: 92px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #313133, #101012);
+}
+
+/* ── the display ── */
+.watch-screen {
+  position: relative;
+  width: 374px;
+  height: 446px;
+  border-radius: 88px;
+  background: #000;
+  color: #fff;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.w-status {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 24px 36px 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.w-title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #0a84ff;
+}
+.w-time {
+  font-size: 30px;
+  font-weight: 600;
+}
+.w-time--corner {
+  position: absolute;
+  top: 24px;
+  right: 36px;
+}
+
+/* ── the two faces ── */
+.w-pages {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.w-page {
+  flex: 0 0 100%;
+}
+.w-card {
+  all: unset;
+  display: block;
+  width: 280px;
+  height: 176px;
+  margin: 84px auto 0;
+  border-radius: 22px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 140ms ease;
+}
+.w-card:active {
+  transform: scale(0.96);
+}
+.w-card--still {
+  cursor: default;
+}
+.w-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.w-balance {
+  margin-top: 26px;
+  text-align: center;
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 700;
+}
+.w-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 27px;
+  font-weight: 600;
+}
+.w-line img {
+  width: 28px;
+  height: 28px;
+}
+
+/* the reload face */
+.w-balance-line {
+  margin-top: 66px;
+  text-align: center;
+  font-size: 27px;
+  font-weight: 500;
+  color: #98989d;
+}
+.w-presets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 286px;
+  margin: 20px auto 0;
+}
+.w-preset {
+  all: unset;
+  box-sizing: border-box;
+  height: 88px;
+  border-radius: 44px;
+  background: #363638;
+  color: #fff;
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 88px;
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease;
+}
+.w-preset:active {
+  transform: scale(0.96);
+  background: #48484a;
+}
+
+/* ── the page dots ── */
+.w-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  z-index: 2;
+}
+.w-dot {
+  all: unset;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #48484a;
+  cursor: pointer;
+}
+.w-dot--on {
+  background: #fff;
+}
+
+/* ── what stands over the faces ── */
+.w-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 3;
+}
+.w-overlay--result {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 3;
+  color: #fff;
+  font-family: inherit;
+  cursor: pointer;
+  display: block;
+}
+.w-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 92px;
+  height: 92px;
+  margin: 128px auto 0;
+  border-radius: 50%;
+  background: #30d158;
+}
+.w-result {
+  display: block;
+  margin-top: 66px;
+  text-align: center;
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 700;
+}
+.w-sub {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 27px;
+  font-weight: 500;
+  color: #98989d;
+}

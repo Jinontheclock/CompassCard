@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "bash tests/verify.sh",
+    "test": "node tests/watch.cjs",
     "test:flows": "node tests/behaviour.cjs && node tests/behaviour2.cjs && node tests/behaviour3.cjs",
     "test:sweep": "node tests/sweep.cjs"
   },
