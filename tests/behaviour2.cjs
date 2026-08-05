@@ -74,9 +74,9 @@ const is = (label, got, want) => {
   await go(".nav-account");
   await go(".section:nth-of-type(1) .settings-row:nth-of-type(1)"); // Name
   is("the editor opens on the row", await txt(".scr-title"), "Name");
-  await p.fill(".field-input", "Hajin Lee");
+  await p.fill(".field-input", "Alex Morgan");
   await go(".scr-footer .btn");                            // Save
-  is("the value sits in the slot", await txt(".section:nth-of-type(1) .settings-row:nth-of-type(1) .settings-value"), "Hajin Lee");
+  is("the value sits in the slot", await txt(".section:nth-of-type(1) .settings-row:nth-of-type(1) .settings-value"), "Alex Morgan");
   await go(".section:nth-of-type(1) .settings-row:nth-of-type(5)"); // Password
   is("a first password asks twice", await p.locator(".stack-fields .field").count(), 2);
   await p.fill(".stack-fields .field:nth-of-type(1) .field-input", "hunter2");

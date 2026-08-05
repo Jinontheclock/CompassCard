@@ -372,9 +372,12 @@ export function loginState() {
   const m = seedState();
   m.avatar = true;
   m.account = {
-    name: "Hajin Lee",
-    email: "hajinlee.ca@gmail.com",
-    address: "4700 Kingsway, Burnaby, BC",
+    /* A stand-in rider. The demo is public, so nobody real lives here:
+       example.com is reserved by RFC 2606 and 555-01xx is the number range
+       kept aside for fiction. */
+    name: "Alex Morgan",
+    email: "alex.morgan@example.com",
+    address: "1234 Main St, Vancouver, BC",
     phone: "(604) 555-0132",
     password: "compass",
     notifications: true,

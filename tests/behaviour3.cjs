@@ -220,8 +220,8 @@ const is = (label, got, want) => {
   is("with its return alongside", (await txt(".section:nth-of-type(1)")).includes("01:00 PM"), "true");
   is("and an event on the shelf", (await txt(".section--tickets")).includes("Whitecaps FC Match"), "true");
   await go(".nav-account");
-  is("the account knows its rider", (await txt(".scr-body")).includes("Hajin Lee"), "true");
-  is("their e-mail", (await txt(".scr-body")).includes("hajinlee.ca@gmail.com"), "true");
+  is("the account knows its rider", (await txt(".scr-body")).includes("Alex Morgan"), "true");
+  is("their e-mail", (await txt(".scr-body")).includes("alex.morgan@example.com"), "true");
   is("and their phone", (await txt(".scr-body")).includes("(604) 555-0132"), "true");
 
   console.log("the flows join hands");
