@@ -112,6 +112,7 @@ const is = (label, got, want) => {
   is("the box opens the school list", await p.locator(".menu-item").count(), 7);
   await go(".menu-item:nth-of-type(2)");
   is("picking writes it in", await txt(".pick-value"), "University of British Columbia");
+  await p.fill(".pick-input", "A01234567");   // the U-Pass needs a student number
   await go(".scr-footer--connect .btn");                   // Connect
   is("the card writes it short", await txt(".card-tile-passname"), "UBC");
   await go(".nav-back");

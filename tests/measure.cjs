@@ -22,6 +22,12 @@ const shot = shotArg > -1 ? process.argv[shotArg + 1] : null;
     /* a "wait:ms" step stands for time rather than a tap — the Apple Pay
        sheet takes ~1.8s to pay before the next screen arrives */
     if (step.startsWith("wait:")) { await page.waitForTimeout(+step.slice(5)); continue; }
+    /* a "fill:selector|text" step types into a field rather than tapping */
+    if (step.startsWith("fill:")) {
+      const [sel, text] = step.slice(5).split("|");
+      await page.fill(sel, text ?? "");
+      continue;
+    }
     await page.click(step);
     await page.waitForTimeout(430);
   }

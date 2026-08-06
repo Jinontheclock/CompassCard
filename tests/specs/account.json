@@ -17,7 +17,6 @@
     "panel2": ".section:nth-of-type(2) .panel",
     "label3": ".section:nth-of-type(3) .section-label",
     "panel3": ".section:nth-of-type(3) .panel",
-    "btn": ".account-footer .btn",
     "home": ".home-indicator"
   },
   "expect": {
@@ -72,11 +71,6 @@
       "y": 656,
       "w": 370,
       "h": 103
-    },
-    "btn": {
-      "y": 766,
-      "w": 370,
-      "h": 50
     },
     "home": {
       "y": 840,

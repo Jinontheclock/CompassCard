@@ -71,7 +71,9 @@ const is = (label, got, want) => {
   is("plain card", await txt(".settings-row:nth-of-type(3) .settings-value"), "$6.00");
   is("note still names the other", await txt(".replace-note"), "$25.00 applies to Program pass cards.");
   await go(".nav-back");
-  await go(".tile-grid > *:nth-child(4)"); await go(".scr-footer--connect .btn"); await go(".nav-back");
+  await go(".tile-grid > *:nth-child(4)");
+  await p.fill(".pick-input", "A01234567");   // the U-Pass needs a student number
+  await go(".scr-footer--connect .btn"); await go(".nav-back");
   await go(".tile-grid > *:nth-child(6)");
   is("program pass card", await txt(".settings-row:nth-of-type(3) .settings-value"), "$25.00");
   await go(".nav-back");

@@ -257,6 +257,7 @@ const is = (label, got, want) => {
 
   console.log("the month turns for the U-Pass");
   await go(".tile-grid > *:nth-child(4)");                 // U-Pass -> connect first
+  await p.fill(".pick-input", "A01234567");   // the U-Pass needs a student number
   await go(".scr-footer--connect .btn");
   await go(".upass-roll");                                 // Jump to next month
   is("the pass renews itself", (await txt(".upass-state")).includes("Renewed"), "true");

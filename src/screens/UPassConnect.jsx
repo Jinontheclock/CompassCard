@@ -13,6 +13,11 @@ import checkIcon from "../assets/icon-check-sm.svg";
    card number nor a monthly deadline comes into it. */
 export default function UPassConnect({ upass, studentId, onStudentId, onSchool, onBack, backLabel, onConnect }) {
   const [open, setOpen] = useState(false);
+  /* A student number is what the school knows this rider by, so there is
+     nothing to connect without one. What counts as a valid one is the
+     school's business and differs between them, so the only thing checked
+     here is that something was typed. */
+  const named = studentId.trim().length > 0;
 
   return (
     <div className="scr">
@@ -57,6 +62,7 @@ export default function UPassConnect({ upass, studentId, onStudentId, onSchool, 
                 onChange={(e) => onStudentId?.(e.target.value)}
               />
             </div>
+            {!named && <span className="pick-hint">Enter your student number to connect.</span>}
           </div>
 
           <div className="panel panel--flat">
@@ -74,7 +80,9 @@ export default function UPassConnect({ upass, studentId, onStudentId, onSchool, 
       </div>
 
       <div className="scr-footer scr-footer--connect">
-        <Button onClick={onConnect}>Connect</Button>
+        <Button disabled={!named} onClick={onConnect}>
+          Connect
+        </Button>
         <p className="scr-footnote">Eligibility is confirmed with your school.</p>
       </div>
 

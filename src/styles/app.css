@@ -1386,11 +1386,6 @@
   flex-direction: column;
   gap: 16px;
 }
-.account-footer {
-  flex: 0 0 74px;
-  padding: 0 var(--margin);
-}
-
 /* ── tickets ── */
 /* breathing room above the tickets only when a section stands over them */
 .section + .section--tickets {
@@ -2419,6 +2414,12 @@
   height: 20px;
   display: flex;
   align-items: center;
+  font: var(--app-callout);
+  letter-spacing: var(--app-callout-tracking);
+  color: var(--text-secondary);
+}
+/* what a field is waiting for, said under it rather than after the fact */
+.pick-hint {
   font: var(--app-callout);
   letter-spacing: var(--app-callout-tracking);
   color: var(--text-secondary);

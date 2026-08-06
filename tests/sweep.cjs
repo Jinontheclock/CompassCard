@@ -35,7 +35,10 @@ const { launchOptions, routeKit } = require("./env.cjs");
   for (let i = 1; i <= 8; i++) {
     await step("  tile " + i + " " + tiles[i-1], `.tile-grid > *:nth-child(${i})`);
     if (i === 1) { await step("    payment row", ".value-row--tap"); await step("    back", ".nav-back"); }
-    if (i === 4) { await step("    Connect", ".scr-footer--connect .btn"); }
+    if (i === 4) {
+      await p.fill(".pick-input", "A01234567");
+      await step("    Connect", ".scr-footer--connect .btn");
+    }
     if (i === 8) { await step("    open card", ".wallet-card"); await step("    Open the Compass App", ".wallet-panel--open"); continue; }
     await step("    back", ".nav-back");
   }

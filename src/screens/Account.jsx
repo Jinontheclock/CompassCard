@@ -1,5 +1,4 @@
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
-import Button from "../components/Button.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import SettingsRow from "../components/SettingsRow.jsx";
 import Toggle from "../components/Toggle.jsx";
@@ -59,11 +58,18 @@ export default function Account({ account, onBack, backLabel, onOpen, onEdit, on
             </div>
           </section>
 
+          {/* Closing a card is a card matter, so it sits with the card and
+              at the weight of every other row. It used to be the screen's
+              one filled button, which made the loudest thing on a settings
+              screen the way to lose a card — the emphasis belongs on the
+              confirmation, a step before it happens, not here. */}
+          <section className="section">
+            <h2 className="section-label">CARD</h2>
+            <div className="panel">
+              <SettingsRow label="Request refund" onClick={onRefund} />
+            </div>
+          </section>
         </div>
-      </div>
-
-      <div className="account-footer">
-        <Button onClick={onRefund}>Request Refund</Button>
       </div>
 
       <HomeIndicator />
