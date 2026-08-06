@@ -2,6 +2,7 @@ import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import TabBar from "../components/TabBar.jsx";
 import Toggle from "../components/Toggle.jsx";
+import { DEMO } from "../data/seed.js";
 import contactless from "../assets/icon-contactless.svg";
 import radioTick from "../assets/icon-radio-tick.svg";
 
@@ -64,11 +65,14 @@ export default function UPass({ upass, nextMonth, onBack, backLabel, onAutoRenew
             <span>Managed through your school.</span>
           </p>
 
-          {/* the demo's hand on the calendar: turn the month and watch the
-              toggle above decide what happens to the pass */}
-          <button type="button" className="linkish upass-roll" onClick={onRoll}>
-            Jump to {nextMonth} 1 →
-          </button>
+          {/* The demo's hand on the calendar: turn the month and watch the
+              toggle above decide what happens to the pass. No app can do
+              this, so it is only here when the demo is asked for. */}
+          {DEMO && (
+            <button type="button" className="linkish upass-roll" onClick={onRoll}>
+              Jump to {nextMonth} 1 →
+            </button>
+          )}
         </div>
       </div>
 

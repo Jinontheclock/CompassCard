@@ -653,7 +653,10 @@ export default function App() {
                 id: "c" + Math.random().toString(36).slice(2, 8),
                 frozen: false,
                 replaced: true,
-                twin: `Plastic ···· ${String(Math.floor(1000 + Math.random() * 9000))} · one balance`,
+                /* the successor's own last four. A fixed number rather
+                   than a fresh one each run: it is drawn on screen, and
+                   two captures of the same step should show one card. */
+                twin: "Plastic ···· 0142 · one balance",
                 balance: Math.max(0, card.balance - fee),
                 history: [
                   { label: "Card replaced", sub: "Balance, pass and history moved", amount: -fee, daysAgo: 0 },

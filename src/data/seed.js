@@ -96,6 +96,15 @@ export const EVENTS = [
   },
 ];
 
+/* Controls that exist only to drive the demo — turning the calendar forward
+   to watch a pass renew, and anything else that skips ahead — are not part
+   of the app being shown, and a capture should not contain one. They are
+   kept behind `?demo=1`, read once here so every such control asks the same
+   question. The app has no router, so this is the whole of its query
+   handling. */
+export const DEMO =
+  typeof window !== "undefined" && new URLSearchParams(window.location.search).has("demo");
+
 /* the eight digits BC Ferries stamps on a booking */
 export const bookingRef = () => String(Math.floor(10000000 + Math.random() * 90000000));
 

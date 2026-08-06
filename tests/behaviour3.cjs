@@ -215,7 +215,8 @@ const is = (label, got, want) => {
   is("and still opens purchase", await txt(".scr-title"), "Purchase New Card");
 
   console.log("logging in brings a life along");
-  await p.goto("http://localhost:4173/", { waitUntil: "domcontentloaded" });
+  /* the month-turn control below is demo-only, so this run asks for it */
+  await p.goto("http://localhost:4173/?demo=1", { waitUntil: "domcontentloaded" });
   await p.waitForTimeout(1400);
   await go(".landing-actions > *:nth-child(1)"); await go(".scr-footer .btn");
   is("the corner wears the portrait", await p.locator(".nav-avatar").count(), 1);
