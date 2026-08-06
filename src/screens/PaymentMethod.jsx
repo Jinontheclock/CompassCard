@@ -65,18 +65,25 @@ export default function PaymentMethod({ methods, primary, onSelect, onAdd, onBac
         <div className="payment-stack">
           <section className="section">
             <h2 className="section-label">PRIMARY PAYMENT</h2>
+            {/* the rule goes between two rows, never after the last one —
+                once every method is on file the add row goes away, and a
+                rule drawn behind it would be left hanging on the floor of
+                the panel */}
             <div className="panel panel--flat">
-              {methods.map((method) => (
+              {methods.map((method, i) => (
                 <Fragment key={method}>
+                  {i > 0 && <div className="panel-rule panel-rule--inset" />}
                   <PayRow label={method} chosen={method === primary} onPick={() => onSelect?.(method)} />
-                  <div className="panel-rule panel-rule--inset" />
                 </Fragment>
               ))}
               {methods.length < PAYMENT_METHODS.length && (
-                <button type="button" className="settings-row" onClick={onAdd}>
-                  <span className="settings-label settings-label--action">Add payment method</span>
-                  <img src={chevron} alt="" width="8" height="14" />
-                </button>
+                <>
+                  <div className="panel-rule panel-rule--inset" />
+                  <button type="button" className="settings-row" onClick={onAdd}>
+                    <span className="settings-label settings-label--action">Add payment method</span>
+                    <img src={chevron} alt="" width="8" height="14" />
+                  </button>
+                </>
               )}
             </div>
           </section>
