@@ -1092,6 +1092,30 @@
   font: var(--app-body);
   color: var(--text-primary);
 }
+/* the card marks, at the height of the Apple mark beside them. Where a
+   method carries more than one they overlap the way a till sticker sets
+   them, so three brands cost about the width of one and a half */
+.pay-marks {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+/* the mark column is one width whatever it holds — a method carrying three
+   brands and one carrying a single mark must still start their names on the
+   same line, or the list reads as ragged. The width sits on the column, not
+   on the marks: the Apple mark is a fixed crop and stretches if resized. */
+.pay-method > .pay-marks {
+  width: 58px;
+  justify-content: flex-start;
+}
+.pay-mark {
+  width: 24px;
+  height: 17px;
+  object-fit: contain;
+}
+.pay-mark + .pay-mark {
+  margin-left: -7px;
+}
 .preset-row {
   display: flex;
   align-items: center;

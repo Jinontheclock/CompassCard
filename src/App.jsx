@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { seedState, loginState, digitalCard, registeredCard, bookingRef, FARES, PASSES, TODAY, passPrice, replacementFee, monthName } from "./data/seed.js";
+import { seedState, loginState, digitalCard, registeredCard, bookingRef, FARES, PASSES, PAYMENT_METHODS, TODAY, passPrice, replacementFee, monthName } from "./data/seed.js";
 import { reply } from "./data/assistant.js";
 import Landing from "./screens/Landing.jsx";
 import SignUp from "./screens/SignUp.jsx";
@@ -813,12 +813,16 @@ export default function App() {
             methods={model.payment.methods}
             primary={method}
             onSelect={(m) => setModel((mm) => ({ ...mm, payment: { ...mm.payment, primary: m } }))}
+            /* adding offers whichever method is not on file yet; the screen
+               drops the row once none are left rather than keeping a
+               control that does nothing */
             onAdd={() =>
-              setModel((mm) =>
-                mm.payment.methods.includes("Credit Card")
-                  ? mm
-                  : { ...mm, payment: { ...mm.payment, methods: [...mm.payment.methods, "Credit Card"] } }
-              )
+              setModel((mm) => {
+                const next = PAYMENT_METHODS.find((m) => !mm.payment.methods.includes(m));
+                return next
+                  ? { ...mm, payment: { ...mm.payment, methods: [...mm.payment.methods, next] } }
+                  : mm;
+              })
             }
             onBack={back}
           />

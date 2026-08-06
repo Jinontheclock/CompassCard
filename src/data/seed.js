@@ -105,6 +105,11 @@ export const EVENTS = [
 export const DEMO =
   typeof window !== "undefined" && new URLSearchParams(window.location.search).has("demo");
 
+/* What can pay, in the order the Payment Method screen lists them. Apple Pay
+   leads because it is the one the demo actually presents a sheet for; the
+   rest are on file the way a real account carries more than one. */
+export const PAYMENT_METHODS = ["Apple Pay", "Credit Card", "PayPal", "Gift Card"];
+
 /* the eight digits BC Ferries stamps on a booking */
 export const bookingRef = () => String(Math.floor(10000000 + Math.random() * 90000000));
 
@@ -318,7 +323,7 @@ export function seedState() {
     tickets: [],
     autoload: { on: false, threshold: 5.0, amount: 10.0 },
     /* what pays: the methods on file, and the one everything charges to */
-    payment: { methods: ["Apple Pay"], primary: "Apple Pay" },
+    payment: { methods: [...PAYMENT_METHODS], primary: PAYMENT_METHODS[0] },
     /* what the Account rows hold. Empty until typed — the frames draw the
        rows without values, which is exactly an account nothing has been
        written into yet. */

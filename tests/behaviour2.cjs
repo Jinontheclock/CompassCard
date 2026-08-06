@@ -56,8 +56,9 @@ const is = (label, got, want) => {
   console.log("the payment method is chosen once, read everywhere");
   await go(".nav-account");
   await go(".section:nth-of-type(2) .settings-row:nth-of-type(1)");
-  await go(".settings-label--action");                     // Add payment method
-  is("a method joins the list", await p.locator(".section:nth-of-type(1) .pay-method").count(), 2);
+  is("every method on file is listed", await p.locator(".section:nth-of-type(1) .pay-method").count(), 4);
+  is("and nothing is left to add", await p.locator(".settings-label--action").count(), 0);
+  is("each one is known by its mark", await p.locator(".section:nth-of-type(1) .pay-marks").count(), 4);
   await go(".section:nth-of-type(1) .settings-row:nth-of-type(2)"); // pick Credit Card
   is("auto payment restates it", await txt(".section:nth-of-type(2) .pay-method"), "Credit Card");
   await go(".nav-back"); await go(".nav-back");

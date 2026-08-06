@@ -2,22 +2,50 @@ import { Fragment } from "react";
 import { StatusBar, HomeIndicator } from "../components/Chrome.jsx";
 import NavHeader from "../components/NavHeader.jsx";
 import appleLogo from "../assets/apple-logo.png";
+import visaMark from "../assets/visa.png";
+import mastercardMark from "../assets/mastercard.png";
+import amexMark from "../assets/amex.png";
+import paypalMark from "../assets/paypal.png";
+import giftcardMark from "../assets/giftcard.png";
 import tick from "../assets/icon-tick.svg";
 import chevron from "../assets/icon-chevron.svg";
+import { PAYMENT_METHODS } from "../data/seed.js";
 
 /* The methods on file. The tick marks the one everything charges to, and
    tapping another row moves it there — the auto-payment panel below simply
    restates the choice, since Autoload draws on the same method. Adding a
    method puts a generic card on file; only Apple Pay carries the mark. */
+/* What each method is known by on sight. A credit card is not one brand, so
+   it carries the three the network marks cover, overlapped the way a till
+   sticker sets them; the rest are one mark each. Apple Pay keeps the Apple
+   mark it already had rather than a card of its own. */
+const MARKS = {
+  "Credit Card": [visaMark, mastercardMark, amexMark],
+  PayPal: [paypalMark],
+  "Gift Card": [giftcardMark],
+};
+
+function PayMark({ label }) {
+  return (
+    <span className="pay-marks">
+      {label === "Apple Pay" ? (
+        <span className="tile-apple">
+          <img src={appleLogo} alt="" />
+        </span>
+      ) : (
+        (MARKS[label] ?? []).map((src) => (
+          <img key={src} className="pay-mark" src={src} alt="" />
+        ))
+      )}
+    </span>
+  );
+}
+
 function PayRow({ label, chosen, onPick }) {
   return (
     <button type="button" className="settings-row" onClick={onPick}>
       <span className="pay-method">
-        {label === "Apple Pay" && (
-          <span className="tile-apple">
-            <img src={appleLogo} alt="" />
-          </span>
-        )}
+        <PayMark label={label} />
         {label}
       </span>
       {chosen && <img src={tick} alt="in use" width="12.45" height="9.075" />}
@@ -44,10 +72,12 @@ export default function PaymentMethod({ methods, primary, onSelect, onAdd, onBac
                   <div className="panel-rule panel-rule--inset" />
                 </Fragment>
               ))}
-              <button type="button" className="settings-row" onClick={onAdd}>
-                <span className="settings-label settings-label--action">Add payment method</span>
-                <img src={chevron} alt="" width="8" height="14" />
-              </button>
+              {methods.length < PAYMENT_METHODS.length && (
+                <button type="button" className="settings-row" onClick={onAdd}>
+                  <span className="settings-label settings-label--action">Add payment method</span>
+                  <img src={chevron} alt="" width="8" height="14" />
+                </button>
+              )}
             </div>
           </section>
 
