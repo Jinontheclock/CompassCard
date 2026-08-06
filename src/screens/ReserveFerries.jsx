@@ -96,7 +96,7 @@ function CalendarPop({ open, value, onPick, onClose }) {
    real Metro Vancouver – Island ones and the partner list follows the route
    map, so a harbour only offers the crossings that exist; the schedule and
    crossing time follow the chosen run. Paying is the next screen's business. */
-export default function ReserveFerries({ onBack, onNext }) {
+export default function ReserveFerries({ onBack, backLabel, onNext }) {
   const [fareType, setFareType] = useState(FARE_TYPES[0]);
   const [from, setFrom] = useState("Vancouver (Tsawwassen)");
   const [to, setTo] = useState("Victoria (Swartz Bay)");
@@ -152,7 +152,7 @@ export default function ReserveFerries({ onBack, onNext }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Tickets" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Reserve Ferries</h1>

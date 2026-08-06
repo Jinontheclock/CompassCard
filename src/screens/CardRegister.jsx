@@ -56,11 +56,11 @@ function CardNumber({ value, onChange }) {
   );
 }
 
-export default function CardRegister({ values, onChange, onBack, onNext, onSkip }) {
+export default function CardRegister({ values, onChange, onBack, backLabel, onNext, onSkip }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} account />
+      <NavHeader onBack={onBack} backLabel={backLabel} account />
 
       <div className="scr-body">
         <h1 className="scr-title">Register Your Card</h1>

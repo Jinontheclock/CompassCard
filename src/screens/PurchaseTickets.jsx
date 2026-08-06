@@ -9,14 +9,14 @@ import onTimeIcon from "../assets/icon-ontime.svg";
    clothes — all zones, the day of the event — and it charges the payment
    method the way any purchase does, so Apple Pay presents its sheet on the
    way through. */
-export default function PurchaseTickets({ tickets, onBack, onBuyEvent }) {
+export default function PurchaseTickets({ tickets, onBack, backLabel, onBuyEvent }) {
   const [open, setOpen] = useState(null);
   const ticketed = (ev) => tickets.some((t) => t.eventId === ev.id);
 
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Tickets" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Purchase Tickets</h1>

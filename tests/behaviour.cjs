@@ -107,7 +107,7 @@ const is = (label, got, want) => {
   await go(".nav-back"); await go(".nav-back");
   await go(".tile-grid > *:nth-child(8)");
   await go(".wallet-card");
-  is("balance in Wallet", await txt(".wallet-balance-amount"), "CAD$22.15");
+  is("balance in Wallet", await txt(".wallet-balance-amount"), "$22.15");
   await go(".wallet-pill");
   is("Add Money opens", await txt(".scr-title"), "Reload");
   await go(".nav-back");

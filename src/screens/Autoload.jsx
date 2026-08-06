@@ -13,14 +13,14 @@ import chevron from "../assets/icon-chevron.svg";
    on it when it does. Both rows open a menu of TransLink's own amounts —
    the chevron says a row opens something, and this is the something. The
    footer says whether any of it is running, and the button starts it. */
-export default function Autoload({ card, autoload, method, onBack, onSet, onToggle, onOpen }) {
+export default function Autoload({ autoload, method, onBack, backLabel, onSet, onToggle, onOpen }) {
   const [menu, setMenu] = useState(null);
   const amounts = (list) => list.map((n) => ({ label: money(n), value: n }));
 
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={card.name} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Autoload</h1>
@@ -60,8 +60,6 @@ export default function Autoload({ card, autoload, method, onBack, onSet, onTogg
               />
             </div>
           </div>
-
-          <NotePanel>You will get a notification before each reload runs.</NotePanel>
 
           <section className="section section--gap8">
             <h2 className="section-label">PAYMENT</h2>

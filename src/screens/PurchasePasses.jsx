@@ -9,14 +9,14 @@ import radioTick from "../assets/icon-radio-tick.svg";
    how the frame writes it: the product's short name, and the zone where the
    product has zones. Picking a zone reprices the monthly, since a monthly
    is priced by zone; a DayPass covers them all and holds its price. */
-export default function PurchasePasses({ card, passId, zone, onPass, onZone, onBack, onPurchase }) {
+export default function PurchasePasses({ passId, zone, onPass, onZone, onBack, backLabel, onPurchase }) {
   const chosen = PASSES.find((p) => p.id === passId) ?? PASSES[0];
   const label = "Purchase " + chosen.short + (chosen.zones ? ` · ${zone}-Zone` : "");
 
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={card.name} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <div className="passes-stack">

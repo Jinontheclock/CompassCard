@@ -9,7 +9,7 @@ import { money, whenLabel } from "../data/seed.js";
    cancel link only leads here, where the rows state the whole of it and
    the button below is the one that actually lets go, the way the card's
    own Refund screen asks before it acts. */
-export default function CancelConfirm({ ticket, onBack, onConfirm }) {
+export default function CancelConfirm({ ticket, onBack, backLabel, onConfirm }) {
   if (!ticket) return null;
   const ferry = ticket.kind === "ferry";
   const rows = ferry
@@ -35,7 +35,7 @@ export default function CancelConfirm({ ticket, onBack, onConfirm }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Tickets" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">{ferry ? "Cancel Reservation" : "Refund Ticket"}</h1>

@@ -8,7 +8,7 @@ import { money } from "../data/seed.js";
 /* Giving the stored value back. The rows state the whole of it before the
    button — what is going back, where to, and when — and the panel says what
    the button costs, which is the card itself. */
-export default function Refund({ card, method, onBack, onRequest }) {
+export default function Refund({ card, method, onBack, backLabel, onRequest }) {
   const rows = [
     { label: "Card", value: card.name },
     { label: "Balance to refund", value: money(card.balance) },
@@ -19,7 +19,7 @@ export default function Refund({ card, method, onBack, onRequest }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={card.name} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Refund</h1>

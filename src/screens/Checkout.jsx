@@ -12,7 +12,7 @@ import tick from "../assets/icon-tick.svg";
    Pay — which presents its sheet, as a reload does — or a credit card.
    Stored value is the one that can fall short, and a short balance is told
    to reload rather than charged. */
-export default function Checkout({ order, card, onBack, onPay }) {
+export default function Checkout({ order, card, onBack, backLabel, onPay }) {
   const ferry = order.kind === "ferry";
   const methods = [...(card ? ["Compass Card"] : []), "Apple Pay", "Credit Card"];
   const [payWith, setPayWith] = useState(methods[0]);
@@ -30,7 +30,7 @@ export default function Checkout({ order, card, onBack, onPay }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={ferry ? "Reserve Ferries" : "Purchase Tickets"} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title scr-title--alone">Payment</h1>

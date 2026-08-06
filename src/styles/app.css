@@ -1386,14 +1386,6 @@
   flex-direction: column;
   gap: 16px;
 }
-/* the closing line simply follows the panels — the E-mail row spent the
-   slack the old fixed-height stack squeezed it into */
-.account-note {
-  margin: 0;
-  font: var(--app-callout);
-  letter-spacing: var(--app-callout-tracking);
-  color: var(--text-secondary);
-}
 .account-footer {
   flex: 0 0 74px;
   padding: 0 var(--margin);

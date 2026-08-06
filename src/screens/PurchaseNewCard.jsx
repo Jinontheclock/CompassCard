@@ -16,7 +16,7 @@ import contactless from "../assets/icon-contactless.svg";
    The big figure counts money the way every other figure in the app does,
    so an empty card reads $0.00 rather than a doubled zero. */
 
-export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee, onBack, onPurchase }) {
+export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee, onBack, backLabel, onPurchase }) {
   const shownName = name || defaultName;
   const amount = parseFloat(fee) || 0;
   /* digits and one dot, nothing else — this is money being typed */
@@ -29,7 +29,7 @@ export default function PurchaseNewCard({ defaultName, name, fee, onName, onFee,
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Cards" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Purchase New Card</h1>

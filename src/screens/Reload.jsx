@@ -9,11 +9,11 @@ import chevron from "../assets/icon-chevron.svg";
    is chosen carries the frame's filled treatment rather than a checkmark, so
    the choice reads at a glance. Nothing is charged — the payment row opens
    the method screen and the button moves the flow on. */
-export default function Reload({ card, amount, method, onAmount, onBack, onNext, onOpen }) {
+export default function Reload({ card, amount, method, onAmount, onBack, backLabel, onNext, onOpen }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={card.name} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title scr-title--alone">Reload</h1>

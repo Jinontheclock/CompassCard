@@ -43,6 +43,40 @@ import "./styles/app.css";
    every load and never persisted, so the iframe always opens on the same
    starting state. */
 
+/* What each screen is called when another one points back at it. A back
+   control names where it goes, so the name belongs to the stack rather than
+   to whichever screen happens to be drawing the control — Replace Card is
+   reached from the card and from Lost Card, and only one of those is a card.
+   Two entries are the name the frames write rather than the screen's own
+   heading: the card list is "Cards" on every control that returns to it, and
+   Log In is written as two words there. */
+const TITLES = {
+  signup: "Sign Up",
+  login: "Log In",
+  forgot: "Forgot Password",
+  cardregister: "Register Your Card",
+  home: "Cards",
+  tickets: "Tickets",
+  account: "Account",
+  acctedit: "Account",
+  reload: "Reload",
+  autoload: "Autoload",
+  payment: "Payment Method",
+  history: "History",
+  lost: "Lost Card",
+  replace: "Replace Card",
+  refund: "Refund",
+  purchase: "Purchase New Card",
+  passes: "Purchase Passes",
+  upass: "U-Pass BC",
+  upassconnect: "Connect U-Pass BC",
+  help: "Help",
+  contact: "Contact Info",
+  ferryreserve: "Reserve Ferries",
+  buytickets: "Purchase Tickets",
+  checkout: "Payment",
+};
+
 /* What has been typed. It is held here rather than in the screens so a value
    survives leaving a screen and coming back to it — the screens unmount as
    the stack moves. Memory only, like the rest of the state: a reload starts
@@ -129,7 +163,9 @@ export default function App() {
   const animate = (dir) => {
     const leaving = bodyOf(document.querySelector(".stage"));
     if (leaving) scrollMem.current[current] = leaving.scrollTop;
-    setAnim({ from: current, node: screen(current), dir, n: ++animCount.current });
+    /* the label goes with it: the stack is about to move, and the screen
+       sliding out must keep naming where it would have gone back to */
+    setAnim({ from: current, back: backLabel, node: screen(current, backLabel), dir, n: ++animCount.current });
   };
   useEffect(() => {
     if (!anim) return undefined;
@@ -186,6 +222,14 @@ export default function App() {
   /* Whichever card is open. Every screen under a card is handed this one
      rather than looking it up again. */
   const card = model.cards.find((c) => c.id === openCard) ?? model.cards[0];
+  /* what the back control says: the name of the screen under this one. A
+     card's own screen is called by its card's name, which is the one title
+     the map cannot hold. */
+  const backLabel = (() => {
+    const under = stack[stack.length - 2];
+    if (under === "carddetail") return card?.name ?? "Card";
+    return TITLES[under] ?? "Back";
+  })();
   /* a stored-value charge: the fare comes off, and if the balance lands
      under the Autoload line, the reload it stands for runs in the same
      breath — written down above the fare it answered */
@@ -258,7 +302,7 @@ export default function App() {
      goes straight to the cards, since a returning account already has them.
      Both ways out of Card Register — registering one and carrying on without
      one — end at the same place. */
-  const screen = (id) => {
+  const screen = (id, backLabel) => {
     /* A screen about one card cannot draw without one. push() turns those
        away, but the stack may still hold one from before the last card left,
        so the renderer checks too rather than trusting the way in. */
@@ -267,6 +311,7 @@ export default function App() {
       case "signup":
         return (
           <SignUp
+            backLabel={backLabel}
             values={form.signup}
             onChange={change("signup")}
             onBack={back}
@@ -281,6 +326,7 @@ export default function App() {
       case "cardregister":
         return (
           <CardRegister
+            backLabel={backLabel}
             values={form.card}
             onChange={change("card")}
             onBack={back}
@@ -298,6 +344,7 @@ export default function App() {
       case "login":
         return (
           <Login
+            backLabel={backLabel}
             values={form.login}
             onChange={change("login")}
             onBack={back}
@@ -314,6 +361,7 @@ export default function App() {
       case "forgot":
         return (
           <Forgot
+            backLabel={backLabel}
             email={form.login.email}
             onBack={back}
             onSent={back}
@@ -353,6 +401,7 @@ export default function App() {
       case "cancelconfirm":
         return (
           <CancelConfirm
+            backLabel={backLabel}
             ticket={cancelTicket}
             onBack={back}
             /* confirming undoes exactly what issuing did: only stored value
@@ -391,6 +440,7 @@ export default function App() {
       case "ferryreserve":
         return (
           <ReserveFerries
+            backLabel={backLabel}
             onBack={back}
             /* choosing is this screen's whole job — paying is the next one's */
             onNext={(sail) => {
@@ -402,6 +452,7 @@ export default function App() {
       case "buytickets":
         return (
           <PurchaseTickets
+            backLabel={backLabel}
             tickets={model.tickets}
             onBack={back}
             onBuyEvent={(ev) => {
@@ -414,6 +465,7 @@ export default function App() {
         return (
           order && (
             <Checkout
+            backLabel={backLabel}
               order={order}
               card={model.cards[0]}
               onBack={back}
@@ -466,6 +518,7 @@ export default function App() {
       case "carddetail":
         return (
           <CardDetail
+            backLabel={backLabel}
             card={card}
             avatar={model.avatar}
             onBack={back}
@@ -477,7 +530,7 @@ export default function App() {
       case "upass":
         return (
           <UPass
-            card={card}
+            backLabel={backLabel}
             upass={{ ...model.upass, autoRenew }}
             nextMonth={monthName((model.upass.offset ?? 0) + 1)}
             onBack={back}
@@ -513,7 +566,7 @@ export default function App() {
       case "upassconnect":
         return (
           <UPassConnect
-            card={card}
+            backLabel={backLabel}
             upass={model.upass}
             studentId={form.upass.studentId}
             onStudentId={(v) => change("upass")("studentId", v)}
@@ -535,6 +588,7 @@ export default function App() {
       case "reload":
         return (
           <Reload
+            backLabel={backLabel}
             card={card}
             amount={reloadAmount}
             method={method}
@@ -568,6 +622,7 @@ export default function App() {
       case "refund":
         return (
           <Refund
+            backLabel={backLabel}
             card={card}
             method={method}
             onBack={back}
@@ -582,6 +637,7 @@ export default function App() {
       case "replace":
         return (
           <Replace
+            backLabel={backLabel}
             card={card}
             /* a card carrying a U-Pass is a Program pass card, and costs the
                Program pass fee to replace */
@@ -612,6 +668,7 @@ export default function App() {
       case "lost":
         return (
           <LostCard
+            backLabel={backLabel}
             card={card}
             onBack={back}
             onFreeze={(frozen) => patchCard({ frozen })}
@@ -621,6 +678,7 @@ export default function App() {
       case "history":
         return (
           <History
+            backLabel={backLabel}
             card={card}
             open={historyOpen}
             onOpen={setHistoryOpen}
@@ -632,6 +690,7 @@ export default function App() {
       case "help":
         return (
           <Help
+            backLabel={backLabel}
             messages={chat}
             draft={draft}
             onDraft={setDraft}
@@ -707,6 +766,7 @@ export default function App() {
       case "purchase":
         return (
           <PurchaseNewCard
+            backLabel={backLabel}
             defaultName={defaultName()}
             name={form.purchase.name}
             fee={form.purchase.fee}
@@ -729,7 +789,7 @@ export default function App() {
       case "passes":
         return (
           <PurchasePasses
-            card={card}
+            backLabel={backLabel}
             passId={passId}
             zone={passZone}
             onPass={setPassId}
@@ -746,6 +806,7 @@ export default function App() {
       case "payment":
         return (
           <PaymentMethod
+            backLabel={backLabel}
             methods={model.payment.methods}
             primary={method}
             onSelect={(m) => setModel((mm) => ({ ...mm, payment: { ...mm.payment, primary: m } }))}
@@ -762,7 +823,7 @@ export default function App() {
       case "autoload":
         return (
           <Autoload
-            card={card}
+            backLabel={backLabel}
             autoload={model.autoload}
             method={method}
             onBack={back}
@@ -776,6 +837,7 @@ export default function App() {
       case "account":
         return (
           <Account
+            backLabel={backLabel}
             account={model.account}
             onBack={back}
             onOpen={(id) => push(id)}
@@ -787,6 +849,7 @@ export default function App() {
       case "acctedit":
         return (
           <AccountEdit
+            backLabel={backLabel}
             field={editField}
             value={model.account[editField] ?? ""}
             onBack={back}
@@ -794,7 +857,7 @@ export default function App() {
           />
         );
       case "contact":
-        return <Contact onBack={back} />;
+        return <Contact onBack={back} backLabel={backLabel} />;
       default:
         return <Landing onSignUp={() => push("signup")} onLogin={() => push("login")} />;
     }
@@ -804,11 +867,11 @@ export default function App() {
     <div className="screen" data-cards={model.cards.length}>
       {anim && (
         <div key={`scr-${anim.from}`} className={`stage stage--out-${anim.dir}`} aria-hidden="true">
-          {screen(anim.from) ?? anim.node}
+          {screen(anim.from, anim.back) ?? anim.node}
         </div>
       )}
       <div key={`scr-${current}`} className={"stage" + (anim ? ` stage--in-${anim.dir}` : "")}>
-        {screen(current)}
+        {screen(current, backLabel)}
       </div>
       {/* The status bar is the phone's, not the app's: one fixed bar rides
           above the sliding stages, going light on the dark landing and

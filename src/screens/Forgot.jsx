@@ -9,14 +9,14 @@ import NotePanel from "../components/NotePanel.jsx";
    arrives already holding whatever was typed on the login screen, since
    that is the address being reset. Sending turns the screen into its own
    receipt — the note says where the link went, and the button stays sent. */
-export default function Forgot({ email: initial, onBack, onSent }) {
+export default function Forgot({ email: initial, onBack, backLabel, onSent }) {
   const [email, setEmail] = useState(initial);
   const [sent, setSent] = useState(false);
 
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Log In" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Forgot Password</h1>

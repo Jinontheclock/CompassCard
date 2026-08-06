@@ -28,7 +28,7 @@ export default function WalletCard({ card, onClose, onAddMoney, onOpenApp }) {
         <div className="wallet-panel wallet-panel--balance">
           <div className="wallet-balance">
             <span className="wallet-balance-label">Balance</span>
-            <span className="wallet-balance-amount tnum">CAD${card.balance.toFixed(2)}</span>
+            <span className="wallet-balance-amount tnum">${card.balance.toFixed(2)}</span>
           </div>
           {/* Wallet has no way to take money itself — adding to the card is
               the app's job, so the pill hands back to it */}

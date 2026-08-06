@@ -21,7 +21,7 @@ const complain = (values) => {
   return errors;
 };
 
-export default function SignUp({ values, onChange, onBack, onNext, onLogin }) {
+export default function SignUp({ values, onChange, onBack, backLabel, onNext, onLogin }) {
   const [errors, setErrors] = useState({});
 
   const submit = () => {
@@ -33,7 +33,7 @@ export default function SignUp({ values, onChange, onBack, onNext, onLogin }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} account />
+      <NavHeader onBack={onBack} backLabel={backLabel} account />
 
       <div className="scr-body">
         <h1 className="scr-title">Sign Up</h1>

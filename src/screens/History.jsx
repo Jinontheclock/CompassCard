@@ -83,7 +83,7 @@ function Row({ entry, first, open, onToggle, onShot }) {
   );
 }
 
-export default function History({ card, open, onOpen, onBack, onSelectTab, onShot }) {
+export default function History({ card, open, onOpen, onBack, backLabel, onSelectTab, onShot }) {
   /* An entry opens to show the taps behind it. Only a trip has any, so only
      a trip opens. The list arrives closed, as the History frame draws it,
      and opening one gives the frame drawn with details. Which row stands
@@ -94,7 +94,7 @@ export default function History({ card, open, onOpen, onBack, onSelectTab, onSho
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={card.name} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">History</h1>

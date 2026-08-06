@@ -8,11 +8,11 @@ import { money } from "../data/seed.js";
    and offers to stop the card rather than to replace what it held. The
    button does what it says — a frozen card can be let go again from the
    same place, so it turns around rather than leaving. */
-export default function LostCard({ card, onBack, onFreeze, onMove }) {
+export default function LostCard({ card, onBack, backLabel, onFreeze, onMove }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={card.name} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Lost Card</h1>

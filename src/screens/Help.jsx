@@ -43,7 +43,7 @@ function Bubble({ message, onAction }) {
   );
 }
 
-export default function Help({ messages = [], draft, onDraft, onSend, onBack, onAction, onPerson }) {
+export default function Help({ messages = [], draft, onDraft, onSend, onBack, backLabel, onAction, onPerson }) {
   /* the newest bubble is the one being read: the conversation keeps itself
      scrolled to its own end — landing there at once when the screen opens,
      and easing down as each new bubble arrives */
@@ -60,7 +60,7 @@ export default function Help({ messages = [], draft, onDraft, onSend, onBack, on
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Account" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body" ref={bodyRef}>
         <h1 className="scr-title">Help</h1>

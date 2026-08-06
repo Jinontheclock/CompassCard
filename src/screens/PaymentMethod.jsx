@@ -25,18 +25,18 @@ function PayRow({ label, chosen, onPick }) {
   );
 }
 
-export default function PaymentMethod({ methods, primary, onSelect, onAdd, onBack }) {
+export default function PaymentMethod({ methods, primary, onSelect, onAdd, onBack, backLabel }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Account" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title scr-title--alone">Payment Method</h1>
 
         <div className="payment-stack">
           <section className="section">
-            <h2 className="section-label">NOTIFICATION</h2>
+            <h2 className="section-label">PRIMARY PAYMENT</h2>
             <div className="panel panel--flat">
               {methods.map((method) => (
                 <Fragment key={method}>

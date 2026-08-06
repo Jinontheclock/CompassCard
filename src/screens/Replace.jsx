@@ -13,14 +13,14 @@ import { FARES, money, replacementFee } from "../data/seed.js";
    Ordering does what it says: the warning about the old card becomes the
    fact of it, and the button stays pressed rather than offering to order
    the same card twice. */
-export default function Replace({ card, programPass = false, onBack, onOrder }) {
+export default function Replace({ card, programPass = false, onBack, backLabel, onOrder }) {
   const fee = replacementFee(programPass);
   const moves = card.pass ? `${money(card.balance)} · ${card.pass.type}` : money(card.balance);
 
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel={card.name} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title">Replace Card</h1>

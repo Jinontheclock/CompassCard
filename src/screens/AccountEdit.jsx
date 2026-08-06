@@ -25,7 +25,7 @@ const FIELDS = {
   password: { title: "Password", placeholder: "New password", type: "password" },
 };
 
-export default function AccountEdit({ field, value, onSave, onBack }) {
+export default function AccountEdit({ field, value, onSave, onBack, backLabel }) {
   const spec = FIELDS[field] ?? FIELDS.name;
   const [draft, setDraft] = useState(field === "password" ? "" : value);
   /* the password screen's extra proofs, and what Save last found wrong */
@@ -55,7 +55,7 @@ export default function AccountEdit({ field, value, onSave, onBack }) {
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} backLabel="Account" />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title scr-title--alone">

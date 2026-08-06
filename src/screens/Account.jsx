@@ -9,13 +9,13 @@ import Toggle from "../components/Toggle.jsx";
    row opens the editor for what it names, so a saved value comes back and
    sits in the slot. Notification is the one row that is not an editor: it
    is a switch, thrown where it lies. */
-export default function Account({ account, onBack, onOpen, onEdit, onNotifications, onRefund }) {
+export default function Account({ account, onBack, backLabel, onOpen, onEdit, onNotifications, onRefund }) {
   const dots = account.password ? "•".repeat(8) : undefined;
 
   return (
     <div className="scr">
       <StatusBar />
-      <NavHeader onBack={onBack} />
+      <NavHeader onBack={onBack} backLabel={backLabel} />
 
       <div className="scr-body">
         <h1 className="scr-title scr-title--alone">Account</h1>
@@ -59,7 +59,6 @@ export default function Account({ account, onBack, onOpen, onEdit, onNotificatio
             </div>
           </section>
 
-          <p className="account-note">You can always reach a person from the assistant.</p>
         </div>
       </div>
 
