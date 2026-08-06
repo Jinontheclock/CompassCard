@@ -20,7 +20,7 @@ import NavHeader from "../components/NavHeader.jsx";
 const FIELDS = {
   name: { title: "Name", placeholder: "Your name" },
   email: { title: "E-mail", placeholder: "Your e-mail address", inputMode: "email" },
-  address: { title: "Mailing Address", placeholder: "Street, city, postal code" },
+  address: { title: "Address", placeholder: "Street, city, postal code" },
   phone: { title: "Phone", placeholder: "Your phone number", inputMode: "tel" },
   password: { title: "Password", placeholder: "New password", type: "password" },
 };

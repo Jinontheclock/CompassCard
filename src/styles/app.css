@@ -1300,6 +1300,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* the least the label and its value may come to, once a long value has
+     been cut back to one line */
+  gap: 12px;
   width: 100%;
   height: 48px;
   padding: 0 16px;
@@ -1309,6 +1312,8 @@
   height: 50px;
 }
 .settings-label {
+  flex: none;
+  white-space: nowrap;
   font: var(--app-body);
   color: var(--text-primary);
 }
@@ -1316,10 +1321,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 .settings-value {
   font: var(--app-body);
   color: var(--text-secondary);
+  /* A row is one line tall. A value longer than the room left over — an
+     address, most often — is cut with an ellipsis rather than wrapping
+     under itself and pushing out of the row it belongs to. */
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 /* a row whose value is a figure rather than a word: it is set in subhead,
    which is what makes these rows 54 rather than 48 */

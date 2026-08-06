@@ -28,7 +28,7 @@ export default function Account({ account, onBack, onOpen, onEdit, onNotificatio
               <div className="panel-rule panel-rule--inset" />
               <SettingsRow label="E-mail" value={account.email || undefined} onClick={() => onEdit?.("email")} />
               <div className="panel-rule panel-rule--inset" />
-              <SettingsRow label="Mailing address" value={account.address || undefined} onClick={() => onEdit?.("address")} />
+              <SettingsRow label="Address" value={account.address || undefined} onClick={() => onEdit?.("address")} />
               <div className="panel-rule panel-rule--inset" />
               <SettingsRow label="Phone" value={account.phone || undefined} onClick={() => onEdit?.("phone")} />
               <div className="panel-rule panel-rule--inset" />
