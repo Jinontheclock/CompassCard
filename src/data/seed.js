@@ -176,96 +176,124 @@ export const registeredCard = (digits = "") => ({
   twin: digits ? `Plastic ···· ${digits.slice(-4)} · one balance` : seedState().cards[0].twin,
 });
 
+/* What the card held before the oldest line below. It is the only balance
+   written down anywhere: every other figure — each entry's running total,
+   and the card's own balance — is this one plus the lines that followed. */
+const OPENING_BALANCE = 7.4;
+
+/* The card's life so far, newest first, the way History reads it. Not one
+   line carries a balance: a balance is what the lines before it add up to,
+   not a number kept beside them. */
+const LEDGER = [
+  /* the two entries the tap frames are the confirmation of: the figures on
+     those screens are these, read back */
+  {
+    label: "1-Zone trip",
+    sub: "Stored value",
+    amount: -FARES.storedValue[1],
+    daysAgo: 0,
+    taps: [
+      { time: "09:12 AM", place: "Tap in at Main St–Science World Stn", amount: money(0) },
+      { time: "09:26 AM", place: "Tap out at Waterfront Stn", amount: money(-FARES.storedValue[1]) },
+    ],
+    shot: "tap",
+  },
+  { label: "Reload", sub: "Apple Pay", amount: 10.0, daysAgo: 0 },
+  {
+    label: "BC Ferries · Walk-on",
+    sub: "Adult foot passenger",
+    amount: -FARES.ferryWalkOn,
+    daysAgo: 4,
+    /* a ferry pays the whole fare at the gangway — one tap */
+    taps: [{ time: "04:45 PM", place: "Tap in at Tsawwassen terminal", amount: money(-FARES.ferryWalkOn) }],
+    shot: "ferry",
+  },
+  {
+    label: "3-Zone trip",
+    sub: "Stored value",
+    amount: -FARES.storedValue[3],
+    daysAgo: 4,
+    /* the only entry the frames open up: a trip is two taps, and the fare is
+       only known at the second */
+    taps: [
+      { time: "07:31 AM", place: "Tap in at Burrard Stn", amount: money(0) },
+      { time: "08:24 AM", place: "Tap out at Bridgeport Stn", amount: money(-FARES.storedValue[3]) },
+    ],
+  },
+  { label: "Reload", sub: "Apple Pay", amount: 10.0, daysAgo: 4 },
+  /* the weeks before the frames: ordinary riding, written the way a real
+     ledger falls — clumped some days, quiet others. The reload sits above
+     the trip that took the card down to single figures, being the answer
+     to it. */
+  { label: "Reload", sub: "Apple Pay", amount: 10.0, daysAgo: 8 },
+  {
+    label: "2-Zone trip",
+    sub: "Stored value",
+    amount: -FARES.storedValue[2],
+    daysAgo: 8,
+    taps: [
+      { time: "05:12 PM", place: "Tap in at Waterfront Stn", amount: money(0) },
+      { time: "05:46 PM", place: "Tap out at Lougheed Tn Ctr Stn", amount: money(-FARES.storedValue[2]) },
+    ],
+  },
+  { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 13 },
+  { label: "SeaBus trip", sub: "Stored value", amount: -FARES.storedValue[2], daysAgo: 16 },
+  { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 16 },
+  /* the top-up that carried the card through the quiet weeks after Victoria */
+  { label: "Reload", sub: "Apple Pay", amount: 20.0, daysAgo: 20 },
+  { label: "2-Zone trip", sub: "Stored value", amount: -FARES.storedValue[2], daysAgo: 27 },
+  { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 32 },
+  { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 32 },
+  /* two days on the Island: over six and a half weeks back, home two days
+     later, with a top-up first and the 620 out to the terminal — a bus trip
+     is one tap, there being no tap out on a bus */
+  { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, daysAgo: 43 },
+  { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, daysAgo: 45 },
+  {
+    label: "1-Zone trip",
+    sub: "Stored value",
+    amount: -FARES.storedValue[1],
+    daysAgo: 45,
+    taps: [{ time: "07:05 AM", place: "Tap in on Bus 620", amount: money(-FARES.storedValue[1]) }],
+  },
+  { label: "Reload", sub: "Apple Pay", amount: 50.0, daysAgo: 45 },
+  { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 61 },
+];
+
+/* The ledger's own arithmetic. A balance only makes sense forwards, so the
+   running total is walked from the oldest line up, and each line that moved
+   the stored value keeps what the card held once it had settled — the
+   card's balance being simply the last of those.
+   Not every line moves it. A pass is bought with Apple Pay, so its ledger
+   line records a payment the card never made; a U-Pass month costs nothing
+   at all and carries words where an amount would be. Both are stepped over,
+   and neither is given a balance to show. */
+export const settle = (history, opening = OPENING_BALANCE) => {
+  let balance = opening;
+  const settled = new Array(history.length);
+  for (let i = history.length - 1; i >= 0; i--) {
+    const entry = history[i];
+    const moves = entry.movesBalance !== false && typeof entry.amount === "number";
+    if (moves) balance = Math.round((balance + entry.amount) * 100) / 100;
+    settled[i] = moves ? { ...entry, balanceAfter: balance } : entry;
+  }
+  return { history: settled, balance };
+};
+
 export function seedState() {
   return {
     cards: [
       {
         id: "c1",
         name: "My Compass Card",
-        balance: 15.0,
         twin: "Plastic + Wallet pass · one balance",
         frozen: false,
-        /* the pass on the card is this month's — a monthly bought now is
-           valid to the month's end, whichever month the demo is opened in */
-        pass: { type: "Monthly · 2-Zone", expires: TODAY.monthEnd },
-        history: [
-          /* the two entries the tap frames are the confirmation of: the
-             figures on those screens are these, read back */
-          {
-            label: "1-Zone trip",
-            sub: "Stored value",
-            amount: -FARES.storedValue[1],
-            daysAgo: 0,
-            taps: [
-              { time: "09:12 AM", place: "Tap in at Main St–Science World Stn", amount: money(0) },
-              { time: "09:26 AM", place: "Tap out at Waterfront Stn", amount: money(-FARES.storedValue[1]) },
-            ],
-            /* the figure the tap frame reads back */
-            balanceAfter: 12.15,
-            shot: "tap",
-          },
-          { label: "Reload", sub: "Apple Pay", amount: 20.0, daysAgo: 0 },
-          {
-            label: "BC Ferries · Walk-on",
-            sub: "Adult foot passenger",
-            amount: -FARES.ferryWalkOn,
-            daysAgo: 4,
-            /* a ferry pays the whole fare at the gangway — one tap */
-            taps: [{ time: "04:45 PM", place: "Tap in at Tsawwassen terminal", amount: money(-FARES.ferryWalkOn) }],
-            shot: "ferry",
-          },
-          {
-            label: "3-Zone trip",
-            sub: "Stored value",
-            amount: -FARES.storedValue[3],
-            daysAgo: 4,
-            /* the only entry the frames open up: a trip is two taps, and the
-               fare is only known at the second */
-            taps: [
-              { time: "07:31 AM", place: "Tap in at Burrard Stn", amount: money(0) },
-              { time: "08:24 AM", place: "Tap out at Bridgeport Stn", amount: money(-FARES.storedValue[3]) },
-            ],
-            balanceAfter: 24.6,
-          },
-          { label: "Reload", sub: "Apple Pay", amount: 10.0, daysAgo: 4 },
-          /* the weeks before the frames: ordinary riding, written the way a
-             real ledger falls — clumped some days, quiet others. The reload
-             sits above the trip that all but emptied the card, being the
-             answer to it. */
-          { label: "Reload", sub: "Apple Pay", amount: 20.0, daysAgo: 8 },
-          {
-            label: "2-Zone trip",
-            sub: "Stored value",
-            amount: -FARES.storedValue[2],
-            daysAgo: 8,
-            taps: [
-              { time: "05:12 PM", place: "Tap in at Waterfront Stn", amount: money(0) },
-              { time: "05:46 PM", place: "Tap out at Lougheed Tn Ctr Stn", amount: money(-FARES.storedValue[2]) },
-            ],
-            balanceAfter: 0.4,
-          },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 13 },
-          { label: "SeaBus trip", sub: "Stored value", amount: -FARES.storedValue[2], daysAgo: 16 },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 16 },
-          { label: "2-Zone trip", sub: "Stored value", amount: -FARES.storedValue[2], daysAgo: 27 },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 32 },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 32 },
-          /* two days in Victoria: over on the 15th, back on the 17th, with a
-             top-up first and the 620 out to the terminal — a bus trip is one
-             tap, there being no tap out on a bus */
-          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, daysAgo: 43 },
-          { label: "BC Ferries · Walk-on", sub: "Adult foot passenger", amount: -FARES.ferryWalkOn, daysAgo: 45 },
-          {
-            label: "1-Zone trip",
-            sub: "Stored value",
-            amount: -FARES.storedValue[1],
-            daysAgo: 45,
-            taps: [{ time: "07:05 AM", place: "Tap in on Bus 620", amount: money(-FARES.storedValue[1]) }],
-            balanceAfter: 62.15,
-          },
-          { label: "Reload", sub: "Apple Pay", amount: 50.0, daysAgo: 45 },
-          { label: "1-Zone trip", sub: "Stored value", amount: -FARES.storedValue[1], daysAgo: 61 },
-        ],
+        /* no pass on it: every fare below was paid out of stored value,
+           which is what a card without a monthly does */
+        pass: null,
+        /* the balance and every figure in the history are settled from the
+           opening balance rather than written here */
+        ...settle(LEDGER),
       },
     ],
     /* the card writes the school short and the connect screen writes it out */
@@ -298,21 +326,26 @@ export function money(n) {
 
 /* The two shots of a tap going through — the gate's own screen rather than
    the app's, which is why nothing on them is drawn from the app's chrome.
-   Both read back an entry the card already holds, down to what was left. */
-const START_BALANCE = 15.0;
+   How a kind of tap presents itself is fixed here; what it says was taken
+   is not. That comes from the entry the screen was opened from, so the
+   gate reads back the trip it belongs to rather than one figure for all. */
 export const SHOTS = {
   tap: {
-    amount: `${money(FARES.storedValue[1])} Deducted · ${money(START_BALANCE - FARES.storedValue[1])} Remaining`,
     sub: "1-Zone · Stored value",
     centred: false,
   },
   ferry: {
     eyebrow: "BC FERRIES · WALK-ON",
-    amount: `${money(FARES.ferryWalkOn)} Deducted`,
     sub: "BC Ferries · Adult foot passenger",
     centred: true,
   },
 };
+
+/* what the gate took, and what it left. The ledger keeps a fare as the debit
+   it is; the gate states it plainly, so the sign comes off on the way. */
+export const gateAmount = (entry) =>
+  `${money(Math.abs(entry.amount))} Deducted` +
+  (entry.balanceAfter != null ? ` · ${money(entry.balanceAfter)} Remaining` : "");
 
 /* The two passes the purchase frame offers, in the order it lists them.
    `short` is how the button names the product — "Monthly", not "Monthly

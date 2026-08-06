@@ -74,7 +74,7 @@ const is = (label, got, want) => {
   is("and the pass prints Child", (await txt(".sailing-card--open .wpass--ferry")).includes("Child"), "true");
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
-  is("the card was charged the child fare", await txt(".hero-figure"), "5.45");
+  is("the card was charged the child fare", await txt(".hero-figure"), "2.60");
 
   /* Every question that two topics both have a word for. The table is read
      straight from the assistant rather than through the screen, because what

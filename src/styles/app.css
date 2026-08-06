@@ -454,7 +454,7 @@
 .settings-row:active:not(.settings-row--still),
 .value-row--tap:active,
 .tile:active:not(.tile--apple),
-.history-card:active,
+.history-card:active:not(.history-card--still),
 .panel--tap:active:not(.panel--tap-still),
 .chat-action:active,
 .pick-box--tap:active,
@@ -727,7 +727,9 @@
   color: inherit;
   text-align: inherit;
 }
-.panel--tap .history-head {
+/* the header of a row that opens — the only pressable part of it, in either
+   box, so it carries no chrome of its own */
+.history-head {
   all: unset;
   box-sizing: border-box;
   display: block;
@@ -923,12 +925,6 @@
    panel and costs it two pixels; the rest are plain bordered rows. The
    frames build them both ways, so both are kept. */
 .history-card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-.history-card {
-  all: unset;
   box-sizing: border-box;
   display: block;
   width: 100%;

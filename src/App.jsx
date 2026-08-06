@@ -89,7 +89,8 @@ export default function App() {
   /* what tags each pending bubble, so its own reply finds it */
   const chatCount = useRef(0);
   const [draft, setDraft] = useState("");
-  const [shot, setShot] = useState("tap");
+  /* the ledger entry whose gate screen is being looked back at */
+  const [shot, setShot] = useState(null);
   /* what the Tickets tab is in the middle of buying: a sailing or an event
      pass, waiting on the payment step */
   const [order, setOrder] = useState(null);
@@ -221,7 +222,9 @@ export default function App() {
     else then();
   };
   /* buying a pass puts it on the card, and the ledger gains the line that
-     says what was paid for it */
+     says what was paid for it. The pass is paid for on its own — Apple Pay,
+     or whatever else is on file — so the line records a payment the stored
+     value never made, and says so. */
   const applyPass = (pass) => {
     patchCard({
       pass: {
@@ -229,7 +232,7 @@ export default function App() {
         expires: TODAY.monthEnd,
       },
       history: [
-        { label: pass.name, sub: method, amount: -passPrice(pass, passZone), daysAgo: 0 },
+        { label: pass.name, sub: method, amount: -passPrice(pass, passZone), daysAgo: 0, movesBalance: false },
         ...card.history,
       ],
     });
@@ -623,7 +626,7 @@ export default function App() {
             onOpen={setHistoryOpen}
             onBack={back}
             onSelectTab={selectTab}
-            onShot={(id) => { setShot(id); push("shot"); }}
+            onShot={(entry) => { setShot(entry); push("shot"); }}
           />
         );
       case "help":
@@ -674,7 +677,7 @@ export default function App() {
           />
         );
       case "shot":
-        return <TapResult shot={shot} declined={!!card?.frozen} onDismiss={back} />;
+        return shot && <TapResult entry={shot} declined={!!card?.frozen} onDismiss={back} />;
       case "wallet":
         return (
           <Wallet

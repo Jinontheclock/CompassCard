@@ -51,10 +51,10 @@ const is = (label, got, want) => {
   await go(".escape");
 
   console.log("the ledger runs deep");
-  is("ten days of riding", await p.locator(".history-groups .section").count(), 10);
-  await go(".section:nth-of-type(3) > *:nth-child(3)");   // Feb-21, the 2-Zone trip
+  is("eleven days of riding", await p.locator(".history-groups .section").count(), 11);
+  await go(".section:nth-of-type(3) > *:nth-child(3) .history-head");   // eight days back, the 2-Zone trip
   is("a trip opens onto its taps", (await txt(".section:nth-of-type(3) .history-taps")).includes("Lougheed Tn Ctr"), "true");
-  is("a bus trip is one tap", await p.locator(".section:nth-of-type(9) .history-tap").count(), 1);
+  is("a bus trip is one tap", await p.locator(".section:nth-of-type(10) .history-tap").count(), 1);
 
   console.log("the shelf starts empty, the reserve page books");
   await go(".tab-bar .tab:nth-of-type(2)");
@@ -87,13 +87,13 @@ const is = (label, got, want) => {
   await go(".scr-footer--fixed .btn");                     // Next
   is("paying is its own step", await txt(".scr-title"), "Payment");
   is("three ways to pay", await p.locator(".section .settings-row").count(), 3);
-  await go(".scr-footer--fixed .btn");                     // Compass Card, 15.00 < 19.10
+  await go(".scr-footer--fixed .btn");                     // Compass Card, 12.15 < 19.10
   is("short balance is refused", (await txt(".reserve-warn")).startsWith("Not enough stored value"), "true");
   await go(".nav-back"); await go(".nav-back");
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
   await go(".tile-grid > *:nth-child(1)");
-  await go(".preset-row > *:nth-child(1)");                // +$10 -> 25.00
+  await go(".preset-row > *:nth-child(1)");                // +$10 -> 22.15
   await go(".scr-footer .btn");
   await p.click(".apay-pay"); await p.waitForTimeout(2400);
   await go(".done-footer .btn");
@@ -108,7 +108,7 @@ const is = (label, got, want) => {
   is("and issues the ticket", (await txt(".ticket-card")).includes("Victoria (Swartz Bay)"), "true");
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
-  is("paid from stored value", await txt(".hero-figure"), "5.90");
+  is("paid from stored value", await txt(".hero-figure"), "3.05");
   is("and written down", await txt(".history-row .history-label"), "BC Ferries · Walk-on");
 
   console.log("a ticket unfolds into its wallet pass");
@@ -133,7 +133,7 @@ const is = (label, got, want) => {
   is("and the empty card returns", await p.locator(".empty-card").count(), 1);
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
-  is("the fare comes home", await txt(".hero-figure"), "25.00");
+  is("the fare comes home", await txt(".hero-figure"), "22.15");
   is("as a refund line", await txt(".history-row .history-label"), "BC Ferries · Refund");
 
   console.log("an event sells its pass through the same till");
@@ -239,7 +239,7 @@ const is = (label, got, want) => {
   await go(".menu-item:nth-of-type(2)");                   // below $10
   await go(".scr-footer .btn");                            // Turn on Autoload
   await go(".nav-back");
-  await go(".tile-grid > *:nth-child(1)");                 // Reload +$10 -> 25.00
+  await go(".tile-grid > *:nth-child(1)");                 // Reload +$10 -> 22.15
   await go(".preset-row > *:nth-child(1)");
   await go(".scr-footer .btn");
   await pay();
@@ -249,11 +249,11 @@ const is = (label, got, want) => {
   await go(".reserve-row .pick-group:nth-of-type(2) .pick-box--tap");
   await go(".menu-item:nth-of-type(6)");
   await go(".scr-footer--fixed .btn");
-  await go(".scr-footer--fixed .btn");                     // stored value: 25 - 19.10 = 5.90 < 10
+  await go(".scr-footer--fixed .btn");                     // stored value: 22.15 - 19.10 = 3.05 < 10
   await go(".tab-bar .tab:nth-of-type(1)");
   await go(".card-stack > *:nth-child(1)");
   is("autoload catches the dip", await txt(".history-row .history-label"), "Autoload");
-  is("and tops the card back up", await txt(".hero-figure"), "15.90");
+  is("and tops the card back up", await txt(".hero-figure"), "13.05");
 
   console.log("the month turns for the U-Pass");
   await go(".tile-grid > *:nth-child(4)");                 // U-Pass -> connect first

@@ -33,7 +33,7 @@ const is = (label, got, want) => {
   await go(".scr-footer .btn");                            // Register Card
   is("registering imports the plastic", await p.locator(".card-stack > *").count(), 1);
   await go(".card-stack > *:nth-child(1)");
-  is("with its balance", await txt(".hero-figure"), "15.00");
+  is("with its balance", await txt(".hero-figure"), "12.15");
   is("and its history", await p.locator(".history-row").count() > 0, "true");
   await go(".tab-bar .tab:nth-of-type(1)");
 
@@ -119,7 +119,7 @@ const is = (label, got, want) => {
 
   console.log("ordering a replacement is done once");
   await go(".tile-grid > *:nth-child(6)");
-  is("the row carries the pass and balance", await txt(".settings-row--value:nth-of-type(2) .settings-value"), "$35.00 · U-Pass BC");
+  is("the row carries the pass and balance", await txt(".settings-row--value:nth-of-type(2) .settings-value"), "$32.15 · U-Pass BC");
   await go(".scr-footer--fixed .btn");                     // Order
   is("the button stays pressed", await txt(".scr-footer--fixed .btn"), "Replacement Ordered");
   is("and is inert", await p.locator(".scr-footer--fixed .btn").isDisabled(), "true");

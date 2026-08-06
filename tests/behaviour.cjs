@@ -84,7 +84,7 @@ const is = (label, got, want) => {
   is("Apple Pay asks the amount", await txt(".apay-total"), "$10.00");
   await pay();
   await go(".done-footer .btn");
-  is("balance", `${before} -> ${await txt(".hero-figure")}`, "15.00 -> 25.00");
+  is("balance", `${before} -> ${await txt(".hero-figure")}`, "12.15 -> 22.15");
   is("newest history line", await txt(".history-row .history-label"), "Reload");
 
   console.log("the assistant answers");
@@ -107,7 +107,7 @@ const is = (label, got, want) => {
   await go(".nav-back"); await go(".nav-back");
   await go(".tile-grid > *:nth-child(8)");
   await go(".wallet-card");
-  is("balance in Wallet", await txt(".wallet-balance-amount"), "CAD$25.00");
+  is("balance in Wallet", await txt(".wallet-balance-amount"), "CAD$22.15");
   await go(".wallet-pill");
   is("Add Money opens", await txt(".scr-title"), "Reload");
   await go(".nav-back");

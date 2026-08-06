@@ -4,7 +4,13 @@
   "steps": [
     ".landing-actions > *:nth-child(2)",
     ".scr-footer .btn",
-    ".scr-footer .btn"
+    ".scr-footer .btn",
+    ".card-stack > *:nth-child(1)",
+    ".tile-grid > *:nth-child(3)",
+    ".scr-footer .btn",
+    ".apay-pay",
+    "wait:2200",
+    ".nav-back"
   ],
   "selectors": {
     "navRow": ".nav-header",

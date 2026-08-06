@@ -1,5 +1,5 @@
 import { useClock } from "../components/useClock.js";
-import { SHOTS } from "../data/seed.js";
+import { SHOTS, gateAmount } from "../data/seed.js";
 import tapArt from "../assets/tap-art.webp";
 import tapCheck from "../assets/icon-tap-check.svg";
 import signal from "../assets/icon-tap-signal.svg";
@@ -18,9 +18,12 @@ import battery from "../assets/icon-tap-battery.svg";
    The frames give the screen no way out. The whole of it dismisses, and
    because that is not something you can see, it also carries the way out
    written down — placed in the empty half of the frame, where it displaces
-   nothing the frame draws. */
-export default function TapResult({ shot, declined = false, onDismiss }) {
-  const s = SHOTS[shot] ?? SHOTS.tap;
+   nothing the frame draws.
+
+   The screen is about one trip — the entry it was opened from. The kind of
+   tap decides how it is laid out; the entry decides what it says. */
+export default function TapResult({ entry, declined = false, onDismiss }) {
+  const s = SHOTS[entry.shot] ?? SHOTS.tap;
   const time = useClock();
 
   return (
@@ -53,7 +56,7 @@ export default function TapResult({ shot, declined = false, onDismiss }) {
 
       <span className="tap-title">{declined ? "Declined" : "Accepted"}</span>
       <span className={"tap-amount tnum" + (s.centred || declined ? " tap-amount--centred" : "")}>
-        {declined ? "Card frozen" : s.amount}
+        {declined ? "Card frozen" : gateAmount(entry)}
       </span>
       <span className="tap-sub">{declined ? "Unfreeze it in the Compass app" : s.sub}</span>
 
